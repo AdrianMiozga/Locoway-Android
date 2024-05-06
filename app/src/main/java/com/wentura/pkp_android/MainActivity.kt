@@ -4,43 +4,29 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.wentura.pkp_android.ui.PKPApp
 import com.wentura.pkp_android.ui.theme.PKPAndroidTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
         setContent {
             PKPAndroidTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android", modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                PKPApp()
             }
         }
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!", modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
+fun HomePreview() {
     PKPAndroidTheme {
-        Greeting("Android")
+        PKPApp()
     }
 }

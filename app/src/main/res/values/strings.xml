@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">PKP-Android</string>
+    <string name="app_name">PKP</string>
+    <string name="departure_station">Stacja początkowa</string>
+    <string name="arrival_station">Stacja docelowa</string>
+    <string name="departure_date">Data wyjazdu</string>
+    <string name="departure_time">Godzina wyjazdu</string>
+    <string name="search">Szukaj</string>
+    <string name="menu">Menu</string>
+    <string name="connection_search">Szukaj połączenia</string>
+    <string name="login">Zaloguj się</string>
+    <string name="my_tickets">Moje bilety</string>
+    <string name="passengers">Pasażerowie</string>
 </resources>
