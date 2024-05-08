@@ -11,5 +11,5 @@
     <string name="my_tickets">Moje bilety</string>
     <string name="passengers">Pasażerowie</string>
     <string name="ok">OK</string>
-    <string name="Cancel">Anuluj</string>
+    <string name="cancel">Anuluj</string>
 </resources>

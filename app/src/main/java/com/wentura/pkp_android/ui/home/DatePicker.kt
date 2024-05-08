@@ -46,7 +46,7 @@ fun DatePicker(
         }, enabled = confirmEnabled) { Text(stringResource(R.string.ok)) }
     }, dismissButton = {
         TextButton(onClick = { showDatePicker.value = false }) {
-            Text(stringResource(R.string.Cancel))
+            Text(stringResource(R.string.cancel))
         }
     }) {
         androidx.compose.material3.DatePicker(state = datePickerState)

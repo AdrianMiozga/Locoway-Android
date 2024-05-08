@@ -37,10 +37,22 @@ fun Home(
         )
     }
 
+    val departureTime = remember {
+        mutableStateOf(
+            DateFormat.getTimeInstance(DateFormat.SHORT).format(Calendar.getInstance().time)
+        )
+    }
+
     val showDatePicker = remember { mutableStateOf(false) }
 
     if (showDatePicker.value) {
         DatePicker(showDatePicker, departureDate)
+    }
+
+    val showTimePicker = remember { mutableStateOf(false) }
+
+    if (showTimePicker.value) {
+        TimePicker(showTimePicker, departureTime)
     }
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -86,13 +98,21 @@ fun Home(
 
             OutlinedTextField(
                 label = { Text(stringResource(R.string.departure_time)) },
-                value = DateFormat.getTimeInstance(DateFormat.SHORT)
-                    .format(Calendar.getInstance().time),
+                value = departureTime.value,
                 onValueChange = {},
                 readOnly = true,
+                enabled = false,
                 modifier = Modifier
                     .padding(10.dp)
                     .weight(1f)
+                    .clickable {
+                        showTimePicker.value = true
+                    },
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             )
         }
 
