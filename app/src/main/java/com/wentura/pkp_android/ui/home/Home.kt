@@ -1,10 +1,14 @@
+package com.wentura.pkp_android.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +31,17 @@ fun Home(
 ) {
     var departureStationText by remember { mutableStateOf(departureStation) }
     var arrivalStationText by remember { mutableStateOf(arrivalStation) }
+    val departureDate = remember {
+        mutableStateOf(
+            DateFormat.getDateInstance().format(Calendar.getInstance().time)
+        )
+    }
+
+    val showDatePicker = remember { mutableStateOf(false) }
+
+    if (showDatePicker.value) {
+        DatePicker(showDatePicker, departureDate)
+    }
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         OutlinedTextField(
@@ -52,12 +67,21 @@ fun Home(
         Row {
             OutlinedTextField(
                 label = { Text(stringResource(R.string.departure_date)) },
-                value = DateFormat.getDateInstance().format(Calendar.getInstance().time),
+                value = departureDate.value,
                 onValueChange = {},
                 readOnly = true,
+                enabled = false,
                 modifier = Modifier
                     .padding(10.dp)
                     .weight(1f)
+                    .clickable {
+                        showDatePicker.value = true
+                    },
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             )
 
             OutlinedTextField(

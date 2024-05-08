@@ -1,6 +1,5 @@
 package com.wentura.pkp_android.ui
 
-import Home
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.ui.home.Home
 import com.wentura.pkp_android.ui.theme.PKPAndroidTheme
 import kotlinx.coroutines.launch
 
@@ -46,7 +46,8 @@ fun PKPApp() {
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.connection_search)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.connection_search)) },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Search, contentDescription = null
@@ -65,7 +66,8 @@ fun PKPApp() {
                 )
             }, selected = false, onClick = {}, modifier = Modifier.padding(horizontal = 12.dp))
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.my_tickets)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.my_tickets)) },
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.outline_confirmation_number_24),
@@ -77,7 +79,8 @@ fun PKPApp() {
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.passengers)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.passengers)) },
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.outline_groups_24),
