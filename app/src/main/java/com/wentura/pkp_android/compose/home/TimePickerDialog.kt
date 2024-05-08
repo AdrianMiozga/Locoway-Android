@@ -35,7 +35,7 @@ fun TimePickerDialog(
     confirmButton: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     dismissButton: @Composable (() -> Unit)? = null,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     BasicAlertDialog(onDismissRequest = onDismissRequest, modifier = modifier) {
         Surface(

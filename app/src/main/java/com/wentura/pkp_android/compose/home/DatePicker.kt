@@ -22,7 +22,7 @@ import java.util.Date
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun DatePicker(
-    showDatePicker: MutableState<Boolean>, departureDate: MutableState<String>
+    showDatePicker: MutableState<Boolean>, departureDate: MutableState<String>,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
