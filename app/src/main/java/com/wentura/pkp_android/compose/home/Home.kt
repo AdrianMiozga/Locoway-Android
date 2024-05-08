@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -41,14 +42,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Calendar
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-fun Home(onSearchClick: () -> Unit = {}) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+fun Home(onSearchClick: () -> Unit = {}, drawerValue: DrawerValue = DrawerValue.Closed) {
+    val drawerState = rememberDrawerState(initialValue = drawerValue)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
@@ -60,8 +61,7 @@ fun Home(onSearchClick: () -> Unit = {}) {
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.connection_search)) },
+            NavigationDrawerItem(label = { Text(text = stringResource(R.string.connection_search)) },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Search, contentDescription = null
@@ -80,8 +80,7 @@ fun Home(onSearchClick: () -> Unit = {}) {
                 )
             }, selected = false, onClick = {}, modifier = Modifier.padding(horizontal = 12.dp))
 
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.my_tickets)) },
+            NavigationDrawerItem(label = { Text(text = stringResource(R.string.my_tickets)) },
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.outline_confirmation_number_24),
@@ -93,8 +92,7 @@ fun Home(onSearchClick: () -> Unit = {}) {
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
 
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.passengers)) },
+            NavigationDrawerItem(label = { Text(text = stringResource(R.string.passengers)) },
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.outline_groups_24),
@@ -108,17 +106,7 @@ fun Home(onSearchClick: () -> Unit = {}) {
         }
     }) {
         Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(title = { Text(stringResource(R.string.app_name)) },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = stringResource(R.string.menu)
-                            )
-                        }
-                    })
-            }, modifier = Modifier.fillMaxSize()
+            topBar = { TopAppBar(scope, drawerState) }, modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
             Fields(
                 modifier = Modifier.padding(innerPadding),
@@ -129,11 +117,25 @@ fun Home(onSearchClick: () -> Unit = {}) {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun TopAppBar(
+    scope: CoroutineScope, drawerState: DrawerState,
+) {
+    CenterAlignedTopAppBar(title = { Text(stringResource(R.string.app_name)) }, navigationIcon = {
+        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+            Icon(
+                imageVector = Icons.Filled.Menu, contentDescription = stringResource(R.string.menu)
+            )
+        }
+    })
+}
+
+@Composable
 fun Fields(
     modifier: Modifier = Modifier,
     onSearchClick: () -> Unit = {},
     departureStation: String = "",
-    arrivalStation: String = ""
+    arrivalStation: String = "",
 ) {
     var departureStationText by remember { mutableStateOf(departureStation) }
     var arrivalStationText by remember { mutableStateOf(arrivalStation) }
@@ -162,8 +164,7 @@ fun Fields(
     }
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        OutlinedTextField(
-            label = { Text(stringResource(R.string.departure_station)) },
+        OutlinedTextField(label = { Text(stringResource(R.string.departure_station)) },
             onValueChange = { departureStationText = it },
             value = departureStationText,
             singleLine = true,
@@ -172,8 +173,7 @@ fun Fields(
                 .fillMaxWidth()
         )
 
-        OutlinedTextField(
-            label = { Text(stringResource(R.string.arrival_station)) },
+        OutlinedTextField(label = { Text(stringResource(R.string.arrival_station)) },
             onValueChange = { arrivalStationText = it },
             value = arrivalStationText,
             singleLine = true,
@@ -235,5 +235,13 @@ fun Fields(
 fun HomePreview() {
     PKPAndroidTheme {
         Home()
+    }
+}
+
+@Preview
+@Composable
+fun NavigationDrawerPreview() {
+    PKPAndroidTheme {
+        Home(drawerValue = DrawerValue.Open)
     }
 }

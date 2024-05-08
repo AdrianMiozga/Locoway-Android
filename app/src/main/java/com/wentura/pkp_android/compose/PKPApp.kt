@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
@@ -31,7 +32,10 @@ fun PKPApp() {
         )
     }) {
         composable(Screen.Home.route) {
-            Home(onSearchClick = { navController.navigate(Screen.Search.route) })
+            Home(
+                onSearchClick = { navController.navigate(Screen.Search.route) },
+                drawerValue = DrawerValue.Closed
+            )
         }
 
         composable(Screen.Search.route) {
