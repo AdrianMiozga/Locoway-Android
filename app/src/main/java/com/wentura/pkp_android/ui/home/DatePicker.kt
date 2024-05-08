@@ -10,8 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.wentura.pkp_android.R
 import java.text.DateFormat
 import java.util.Calendar
@@ -20,8 +22,7 @@ import java.util.Date
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun DatePicker(
-    showDatePicker: MutableState<Boolean>,
-    departureDate: MutableState<String>
+    showDatePicker: MutableState<Boolean>, departureDate: MutableState<String>
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
@@ -50,4 +51,10 @@ fun DatePicker(
     }) {
         androidx.compose.material3.DatePicker(state = datePickerState)
     }
+}
+
+@Preview
+@Composable
+private fun DatePickerPreview() {
+    DatePicker(remember { mutableStateOf(true) }, remember { mutableStateOf("") })
 }
