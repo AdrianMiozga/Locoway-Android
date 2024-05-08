@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.ui
+package com.wentura.pkp_android.compose
 
 import Search
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -10,14 +10,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.wentura.pkp_android.ui.home.Home
-import com.wentura.pkp_android.ui.theme.PKPAndroidTheme
+import com.wentura.pkp_android.compose.home.Home
+import com.wentura.pkp_android.ui.PKPAndroidTheme
 
 @Composable
 fun PKPApp() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "home", enterTransition = {
+    NavHost(navController = navController, startDestination = Screen.Home.route, enterTransition = {
         slideIntoContainer(
             AnimatedContentTransitionScope.SlideDirection.Up, tween(700)
         )
@@ -30,11 +30,11 @@ fun PKPApp() {
             AnimatedContentTransitionScope.SlideDirection.Down, tween(700)
         )
     }) {
-        composable("home") {
-            Home(onSearchClick = { navController.navigate("search") })
+        composable(Screen.Home.route) {
+            Home(onSearchClick = { navController.navigate(Screen.Search.route) })
         }
 
-        composable("search") {
+        composable(Screen.Search.route) {
             Search(onUpClick = { navController.navigateUp() })
         }
     }

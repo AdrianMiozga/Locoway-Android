@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.ui.theme
+package com.wentura.pkp_android.ui
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme

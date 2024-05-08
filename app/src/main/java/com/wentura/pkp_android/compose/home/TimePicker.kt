@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.ui.home
+package com.wentura.pkp_android.compose.home
 
 import android.icu.util.Calendar
 import androidx.compose.material3.ExperimentalMaterial3Api

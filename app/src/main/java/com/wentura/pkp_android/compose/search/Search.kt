@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.wentura.pkp_android.ui.theme.PKPAndroidTheme
+import com.wentura.pkp_android.ui.PKPAndroidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

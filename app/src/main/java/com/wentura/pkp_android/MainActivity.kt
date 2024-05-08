@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.wentura.pkp_android.ui.PKPApp
-import com.wentura.pkp_android.ui.theme.PKPAndroidTheme
+import com.wentura.pkp_android.compose.PKPApp
+import com.wentura.pkp_android.ui.PKPAndroidTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
