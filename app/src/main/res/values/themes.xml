@@ -2,5 +2,8 @@
 
 <resources>
 
-    <style name="Theme.PKPAndroid" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.PKPAndroid" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/purple_200</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/nothing</item>
+    </style>
 </resources>
