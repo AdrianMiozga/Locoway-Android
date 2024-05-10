@@ -9,6 +9,7 @@
 - [Firebase](https://firebase.google.com/)
 - [Android Jetpack](https://developer.android.com/jetpack)
   - [Compose](https://developer.android.com/jetpack/compose) - modern UI toolkit
+  - [Navigation](https://developer.android.com/guide/navigation) - navigation in application
 - [Material Design 3](https://m3.material.io/)
 
 ### Architecture
