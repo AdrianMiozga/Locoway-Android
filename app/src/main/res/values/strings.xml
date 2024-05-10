@@ -13,4 +13,13 @@
     <string name="ok">OK</string>
     <string name="cancel">Anuluj</string>
     <string name="register">Zarejestruj się</string>
+    <string name="email">Adres email</string>
+    <string name="password">Hasło</string>
+    <string name="forgot_password">Zapomniałeś hasła?</string>
+    <string name="confirm_password">Potwierdź hasło</string>
+    <string name="hide_password">Ukryj hasło</string>
+    <string name="show_password">Pokaż hasło</string>
+    <string name="passwords_not_the_same">Hasła nie są takie same</string>
+    <string name="invalid_email">Niepoprawny adres email</string>
+    <string name="password_too_short">Hasło musi zawierać przynajmniej 8 znaków</string>
 </resources>

@@ -1,95 +1,113 @@
 package com.wentura.pkp_android.compose.login
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import kotlinx.coroutines.launch
 
-enum class LoginPage(@StringRes val titleResId: Int) {
-    LOGIN(R.string.login), REGISTER(R.string.register)
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun Login(onUpClick: () -> Unit = {}, pages: Array<LoginPage> = LoginPage.entries.toTypedArray()) {
-    val pagerState = rememberPagerState(pageCount = { pages.size })
-    val coroutineScope = rememberCoroutineScope()
+fun Login(modifier: Modifier = Modifier) {
+    val emailText = remember { mutableStateOf("") }
+    val passwordText = remember { mutableStateOf("") }
+    val passwordVisible = remember { mutableStateOf(false) }
 
-    Scaffold(topBar = { LoginTopAppBar(onUpClick = onUpClick) }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
-                pages.forEachIndexed { index, page ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                        unselectedContentColor = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.height(49.dp)
-                    ) {
-                        Text(stringResource(page.titleResId))
-                    }
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+        OutlinedTextField(
+            value = emailText.value,
+            onValueChange = { emailText.value = it },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
+            ),
+            singleLine = true,
+            label = { Text(stringResource(R.string.email)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(top = 20.dp, bottom = 10.dp)
+        )
+
+        OutlinedTextField(
+            value = passwordText.value,
+            visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                IconButton(onClick = {
+                    passwordVisible.value = !passwordVisible.value
+                }) {
+                    val resource =
+                        if (passwordVisible.value) R.drawable.outline_visibility_off_24 else R.drawable.outline_visibility_24
+
+                    val description =
+                        if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
+                            R.string.show_password
+                        )
+
+                    Icon(
+                        painter = painterResource(resource), contentDescription = description
+                    )
                 }
+            },
+            onValueChange = { passwordText.value = it },
+            singleLine = true,
+            label = { Text(stringResource(R.string.password)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth()
+        ) {
+            TextButton(onClick = {}, modifier = Modifier.padding(vertical = 10.dp)) {
+                Text(stringResource(R.string.forgot_password))
             }
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.Top
-            ) { index ->
-                when (pages[index]) {
-                    LoginPage.LOGIN -> {
-                        Text("Login")
-                    }
-
-                    LoginPage.REGISTER -> {
-                        Text("Register")
-                    }
-                }
+            Button(onClick = {}, modifier = Modifier.padding(vertical = 10.dp)) {
+                Text(stringResource(R.string.login))
             }
         }
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun LoginTopAppBar(onUpClick: () -> Unit) {
-    CenterAlignedTopAppBar(title = {
-        Text(stringResource(R.string.app_name))
-    }, navigationIcon = {
-        IconButton(onClick = onUpClick) {
-            Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
-        }
-    })
 }
 
 @Composable
 @Preview(showBackground = true)
 private fun LoginPreview() {
     PKPAndroidTheme {
-        Login()
+        Login(
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+        )
     }
 }

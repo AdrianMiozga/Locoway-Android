@@ -13,7 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.wentura.pkp_android.compose.home.Home
-import com.wentura.pkp_android.compose.login.Login
+import com.wentura.pkp_android.compose.login.Pager
 import com.wentura.pkp_android.compose.search.Search
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import kotlinx.coroutines.launch
@@ -60,7 +60,7 @@ fun PKPApp() {
         }
 
         composable(Screen.Login.route) {
-            Login(onUpClick = { navController.navigateUp() })
+            Pager(onUpClick = { navController.navigateUp() })
         }
     }
 }
