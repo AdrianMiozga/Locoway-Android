@@ -1,22 +1,28 @@
 package com.wentura.pkp_android.compose
 
-import Search
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.wentura.pkp_android.compose.home.Home
+import com.wentura.pkp_android.compose.login.Login
+import com.wentura.pkp_android.compose.search.Search
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun PKPApp() {
     val navController = rememberNavController()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     NavHost(navController = navController, startDestination = Screen.Home.route, enterTransition = {
         slideIntoContainer(
@@ -33,13 +39,28 @@ fun PKPApp() {
     }) {
         composable(Screen.Home.route) {
             Home(
-                onSearchClick = { navController.navigate(Screen.Search.route) },
-                drawerValue = DrawerValue.Closed
+                drawerState = drawerState,
+                onSearchClick = {
+                    navController.navigate(Screen.Search.route)
+                    scope.launch {
+                        drawerState.close()
+                    }
+                },
+                onLoginClick = {
+                    navController.navigate(Screen.Login.route)
+                    scope.launch {
+                        drawerState.close()
+                    }
+                },
             )
         }
 
         composable(Screen.Search.route) {
             Search(onUpClick = { navController.navigateUp() })
+        }
+
+        composable(Screen.Login.route) {
+            Login(onUpClick = { navController.navigateUp() })
         }
     }
 }

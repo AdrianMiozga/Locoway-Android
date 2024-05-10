@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.compose.search
+package com.wentura.pkp_android.compose.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -11,39 +11,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.wentura.pkp_android.ui.PKPAndroidTheme
+import androidx.compose.ui.res.stringResource
+import com.wentura.pkp_android.R
 
 @Composable
-fun Search(onUpClick: () -> Unit = {}) {
-    Scaffold(topBar = { SearchTopAppBar(onUpClick) }) { innerPadding ->
+fun Login(onUpClick: () -> Unit = {}) {
+    Scaffold(topBar = { LoginTopAppBar(onUpClick = onUpClick) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Text("Search")
+            Text("login")
         }
     }
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SearchTopAppBar(onUpClick: () -> Unit) {
+private fun LoginTopAppBar(onUpClick: () -> Unit) {
     CenterAlignedTopAppBar(title = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Strzelce Opolskie")
-            Text("Gliwice")
-        }
+        Text(stringResource(R.string.app_name))
     }, navigationIcon = {
         IconButton(onClick = onUpClick) {
             Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
         }
     })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SearchPreview() {
-    PKPAndroidTheme {
-        Search()
-    }
 }

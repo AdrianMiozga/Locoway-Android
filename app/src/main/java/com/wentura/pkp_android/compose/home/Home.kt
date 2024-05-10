@@ -48,8 +48,11 @@ import java.text.DateFormat
 import java.util.Calendar
 
 @Composable
-fun Home(onSearchClick: () -> Unit = {}, drawerValue: DrawerValue = DrawerValue.Closed) {
-    val drawerState = rememberDrawerState(initialValue = drawerValue)
+fun Home(
+    drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
+    onSearchClick: () -> Unit = {},
+    onLoginClick: () -> Unit = {},
+) {
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
@@ -68,17 +71,22 @@ fun Home(onSearchClick: () -> Unit = {}, drawerValue: DrawerValue = DrawerValue.
                     )
                 },
                 selected = true,
-                onClick = {},
+                onClick = { scope.launch { drawerState.close() } },
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.login)) }, icon = {
-                Icon(
-                    imageVector = Icons.Outlined.AccountCircle, contentDescription = null
-                )
-            }, selected = false, onClick = {}, modifier = Modifier.padding(horizontal = 12.dp))
+            NavigationDrawerItem(label = { Text(text = stringResource(R.string.login)) },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.AccountCircle, contentDescription = null
+                    )
+                },
+                selected = false,
+                onClick = onLoginClick,
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
 
             NavigationDrawerItem(label = { Text(text = stringResource(R.string.my_tickets)) },
                 icon = {
@@ -242,6 +250,6 @@ fun HomePreview() {
 @Composable
 fun NavigationDrawerPreview() {
     PKPAndroidTheme {
-        Home(drawerValue = DrawerValue.Open)
+        Home()
     }
 }
