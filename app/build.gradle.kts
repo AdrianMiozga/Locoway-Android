@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -65,6 +66,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.navigation.compose)
+
+    implementation(platform(libs.firebase.bom))
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
