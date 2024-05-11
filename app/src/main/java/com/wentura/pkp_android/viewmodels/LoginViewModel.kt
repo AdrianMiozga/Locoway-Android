@@ -15,6 +15,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -36,7 +37,7 @@ class LoginViewModel : ViewModel() {
         private val TAG = LoginViewModel::class.java.simpleName
     }
 
-    private lateinit var auth: FirebaseAuth
+    private var auth: FirebaseAuth = Firebase.auth
 
     private val _loginState = MutableStateFlow(LoginState())
 
@@ -91,8 +92,6 @@ class LoginViewModel : ViewModel() {
                         val firebaseCredential =
                             GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
 
-                        auth = Firebase.auth
-
                         auth.signInWithCredential(firebaseCredential)
                             .addOnCompleteListener(activity) { task ->
                                 if (task.isSuccessful) {
@@ -103,16 +102,15 @@ class LoginViewModel : ViewModel() {
                                             userMessage = R.string.logged_in
                                         )
                                     }
-                                } else if (task.exception is FirebaseNetworkException) {
-                                    _loginState.update {
-                                        it.copy(
-                                            userMessage = R.string.network_error, loading = false
-                                        )
-                                    }
                                 } else {
+                                    val userMessage = when (task.exception) {
+                                        is FirebaseNetworkException -> R.string.network_error
+                                        else -> R.string.unknown_error
+                                    }
+
                                     _loginState.update {
                                         it.copy(
-                                            userMessage = R.string.unknown_error, loading = false
+                                            userMessage = userMessage, loading = false
                                         )
                                     }
                                 }
@@ -141,5 +139,31 @@ class LoginViewModel : ViewModel() {
                 Log.e(TAG, "Unexpected type of credential")
             }
         }
+    }
+
+    fun passwordSignIn(activity: Activity, email: String, password: String) {
+        _loginState.update {
+            it.copy(loading = true)
+        }
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    _loginState.update {
+                        it.copy(
+                            loggedIn = true, loading = false, userMessage = R.string.created_account
+                        )
+                    }
+                } else {
+                    val userMessage = when (task.exception) {
+                        is FirebaseAuthUserCollisionException -> R.string.user_with_that_account_exists
+                        else -> R.string.unknown_error
+                    }
+
+                    _loginState.update {
+                        it.copy(userMessage = userMessage, loading = false)
+                    }
+                }
+            }
     }
 }

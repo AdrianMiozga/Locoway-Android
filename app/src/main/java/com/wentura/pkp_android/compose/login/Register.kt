@@ -63,6 +63,14 @@ fun Register(
 
     val coroutineScope = rememberCoroutineScope()
 
+    coroutineScope.launch {
+        loginViewModel.loginState.collect { loginState ->
+            if (loginState.loggedIn) {
+                onSignUp()
+            }
+        }
+    }
+
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -172,6 +180,12 @@ fun Register(
             isEmailWrong.value = !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches()
             isPasswordWrong.value = passwordText.value.length < 8
             isConfirmationPasswordWrong.value = passwordText.value != passwordConfirmationText.value
+
+            if (isEmailWrong.value || isPasswordWrong.value || isConfirmationPasswordWrong.value) {
+                return@Button
+            }
+
+            loginViewModel.passwordSignIn(activity, emailText.value, passwordText.value)
         }, modifier = Modifier.padding(bottom = 10.dp)) {
             Text(stringResource(R.string.register))
         }
@@ -179,14 +193,6 @@ fun Register(
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
         OutlinedButton(onClick = {
-            coroutineScope.launch {
-                loginViewModel.loginState.collect { loginState ->
-                    if (loginState.loggedIn) {
-                        onSignUp()
-                    }
-                }
-            }
-
             loginViewModel.googleSignIn(activity)
         }, modifier = Modifier.padding(10.dp)) {
             Icon(
