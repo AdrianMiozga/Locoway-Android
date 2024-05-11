@@ -37,4 +37,5 @@
     <string name="delete">Usuń</string>
     <string name="this_action_is_irreversible">Ta akcja jest nieodwracalna.</string>
     <string name="do_you_really_want_to_delete_account">Czy na pewno chcesz usunąć swoje konto?</string>
+    <string name="specify_time">Określ czas</string>
 </resources>

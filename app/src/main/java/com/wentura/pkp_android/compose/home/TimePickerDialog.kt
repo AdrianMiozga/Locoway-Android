@@ -50,7 +50,7 @@ fun TimePickerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Określ czas",
+                    stringResource(R.string.specify_time),
                     modifier = Modifier.align(Alignment.Start),
                     style = MaterialTheme.typography.labelLarge
                 )
