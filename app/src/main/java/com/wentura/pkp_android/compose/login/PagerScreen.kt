@@ -47,7 +47,7 @@ enum class LoginPage(@StringRes val titleResId: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun Pager(
+fun PagerScreen(
     onUpClick: () -> Unit = {},
     pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
@@ -125,6 +125,6 @@ private fun PagerTopAppBar(onUpClick: () -> Unit) {
 @Preview(showBackground = true)
 private fun PagerPreview() {
     PKPAndroidTheme {
-        Pager()
+        PagerScreen()
     }
 }

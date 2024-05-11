@@ -55,7 +55,7 @@ import java.text.DateFormat
 import java.util.Calendar
 
 @Composable
-fun Home(
+fun HomeScreen(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
@@ -269,7 +269,7 @@ fun Fields(
 @Composable
 fun HomePreview() {
     PKPAndroidTheme {
-        Home()
+        HomeScreen()
     }
 }
 
@@ -277,6 +277,6 @@ fun HomePreview() {
 @Composable
 fun NavigationDrawerPreview() {
     PKPAndroidTheme {
-        Home()
+        HomeScreen()
     }
 }

@@ -13,9 +13,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.wentura.pkp_android.compose.home.Home
-import com.wentura.pkp_android.compose.login.Pager
-import com.wentura.pkp_android.compose.search.Search
+import com.wentura.pkp_android.compose.home.HomeScreen
+import com.wentura.pkp_android.compose.login.PagerScreen
+import com.wentura.pkp_android.compose.search.SearchScreen
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
@@ -41,7 +41,7 @@ fun PKPApp() {
         )
     }) {
         composable(Screen.Home.route) {
-            Home(drawerState = drawerState, onSearchClick = {
+            HomeScreen(drawerState = drawerState, onSearchClick = {
                 navController.navigate(Screen.Search.route)
                 scope.launch {
                     drawerState.close()
@@ -56,11 +56,11 @@ fun PKPApp() {
         }
 
         composable(Screen.Search.route) {
-            Search(onUpClick = { navController.navigateUp() })
+            SearchScreen(onUpClick = { navController.navigateUp() })
         }
 
         composable(Screen.Login.route) {
-            Pager(
+            PagerScreen(
                 onUpClick = { navController.navigateUp() },
                 onSignUp = { navController.navigateUp() },
                 loginViewModel = loginViewModel

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 
 @Composable
-fun Search(onUpClick: () -> Unit = {}) {
+fun SearchScreen(onUpClick: () -> Unit = {}) {
     Scaffold(topBar = { SearchTopAppBar(onUpClick) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Text("Search")
@@ -44,6 +44,6 @@ private fun SearchTopAppBar(onUpClick: () -> Unit) {
 @Composable
 fun SearchPreview() {
     PKPAndroidTheme {
-        Search()
+        SearchScreen()
     }
 }
