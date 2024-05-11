@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">PKP</string>
+    <string name="app_name" translatable="false">PKP</string>
+    <string name="firebase_web_client_id" translatable="false">236434477481-72l9fn393h16f50bt4gvj96b907cs78q.apps.googleusercontent.com</string>
+
     <string name="departure_station">Stacja początkowa</string>
     <string name="arrival_station">Stacja docelowa</string>
     <string name="departure_date">Data wyjazdu</string>
@@ -22,4 +24,8 @@
     <string name="passwords_not_the_same">Hasła nie są takie same</string>
     <string name="invalid_email">Niepoprawny adres email</string>
     <string name="password_too_short">Hasło musi zawierać przynajmniej 8 znaków</string>
+    <string name="sign_up_with_google">Zarejestruj się przez Google</string>
+    <string name="logged_in">Zalogowano pomyślnie</string>
+    <string name="unknown_error">Nieznany błąd</string>
+    <string name="network_error">Brak internetu</string>
 </resources>

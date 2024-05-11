@@ -26,9 +26,12 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,12 +39,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.viewmodels.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -52,8 +59,11 @@ fun Home(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
+    loginViewModel: LoginViewModel = viewModel(),
 ) {
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet(modifier = Modifier.width(252.dp)) {
@@ -64,7 +74,8 @@ fun Home(
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.connection_search)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.connection_search)) },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Search, contentDescription = null
@@ -77,7 +88,8 @@ fun Home(
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.login)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.login)) },
                 icon = {
                     Icon(
                         imageVector = Icons.Outlined.AccountCircle, contentDescription = null
@@ -88,7 +100,8 @@ fun Home(
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.my_tickets)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.my_tickets)) },
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.outline_confirmation_number_24),
@@ -100,7 +113,8 @@ fun Home(
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
 
-            NavigationDrawerItem(label = { Text(text = stringResource(R.string.passengers)) },
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.passengers)) },
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.outline_groups_24),
@@ -113,13 +127,24 @@ fun Home(
             )
         }
     }) {
-        Scaffold(
-            topBar = { TopAppBar(scope, drawerState) }, modifier = Modifier.fillMaxSize()
-        ) { innerPadding ->
+        Scaffold(topBar = { TopAppBar(scope, drawerState) },
+            modifier = Modifier.fillMaxSize(),
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            }) { innerPadding ->
             Fields(
                 modifier = Modifier.padding(innerPadding),
                 onSearchClick = onSearchClick,
             )
+
+            val loginState = loginViewModel.loginState.collectAsStateWithLifecycle()
+
+            loginState.value.userMessage?.let { message ->
+                LaunchedEffect(snackbarHostState) {
+                    snackbarHostState.showSnackbar(context.getString(message))
+                    loginViewModel.snackbarMessageShown()
+                }
+            }
         }
     }
 }
@@ -172,7 +197,8 @@ fun Fields(
     }
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        OutlinedTextField(label = { Text(stringResource(R.string.departure_station)) },
+        OutlinedTextField(
+            label = { Text(stringResource(R.string.departure_station)) },
             onValueChange = { departureStationText = it },
             value = departureStationText,
             singleLine = true,
@@ -181,7 +207,8 @@ fun Fields(
                 .fillMaxWidth()
         )
 
-        OutlinedTextField(label = { Text(stringResource(R.string.arrival_station)) },
+        OutlinedTextField(
+            label = { Text(stringResource(R.string.arrival_station)) },
             onValueChange = { arrivalStationText = it },
             value = arrivalStationText,
             singleLine = true,

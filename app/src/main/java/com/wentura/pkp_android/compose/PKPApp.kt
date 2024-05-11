@@ -9,6 +9,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,6 +17,7 @@ import com.wentura.pkp_android.compose.home.Home
 import com.wentura.pkp_android.compose.login.Pager
 import com.wentura.pkp_android.compose.search.Search
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -23,6 +25,7 @@ fun PKPApp() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val loginViewModel: LoginViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screen.Home.route, enterTransition = {
         slideIntoContainer(
@@ -38,20 +41,17 @@ fun PKPApp() {
         )
     }) {
         composable(Screen.Home.route) {
-            Home(
-                drawerState = drawerState,
-                onSearchClick = {
-                    navController.navigate(Screen.Search.route)
-                    scope.launch {
-                        drawerState.close()
-                    }
-                },
-                onLoginClick = {
-                    navController.navigate(Screen.Login.route)
-                    scope.launch {
-                        drawerState.close()
-                    }
-                },
+            Home(drawerState = drawerState, onSearchClick = {
+                navController.navigate(Screen.Search.route)
+                scope.launch {
+                    drawerState.close()
+                }
+            }, onLoginClick = {
+                navController.navigate(Screen.Login.route)
+                scope.launch {
+                    drawerState.close()
+                }
+            }, loginViewModel = loginViewModel
             )
         }
 
@@ -60,7 +60,11 @@ fun PKPApp() {
         }
 
         composable(Screen.Login.route) {
-            Pager(onUpClick = { navController.navigateUp() })
+            Pager(
+                onUpClick = { navController.navigateUp() },
+                onSignUp = { navController.navigateUp() },
+                loginViewModel = loginViewModel
+            )
         }
     }
 }

@@ -2,24 +2,31 @@ package com.wentura.pkp_android.compose.login
 
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -28,11 +35,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.util.findActivity
+import com.wentura.pkp_android.viewmodels.LoginViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun Register(modifier: Modifier = Modifier) {
+fun Register(
+    modifier: Modifier = Modifier,
+    onSignUp: () -> Unit = {},
+    loginViewModel: LoginViewModel = viewModel(),
+) {
     val emailText = remember { mutableStateOf("") }
     val isEmailWrong = remember { mutableStateOf(false) }
 
@@ -43,6 +58,10 @@ fun Register(modifier: Modifier = Modifier) {
     val passwordConfirmationText = remember { mutableStateOf("") }
     val passwordConfirmationVisible = remember { mutableStateOf(false) }
     val isConfirmationPasswordWrong = remember { mutableStateOf(false) }
+
+    val activity = LocalContext.current.findActivity()
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -158,6 +177,28 @@ fun Register(modifier: Modifier = Modifier) {
         }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
+
+        OutlinedButton(onClick = {
+            coroutineScope.launch {
+                loginViewModel.loginState.collect { loginState ->
+                    if (loginState.loggedIn) {
+                        onSignUp()
+                    }
+                }
+            }
+
+            loginViewModel.googleSignIn(activity)
+        }, modifier = Modifier.padding(10.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.google_g_logo),
+                tint = Color.Unspecified,
+                contentDescription = null
+            )
+
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+
+            Text(stringResource(R.string.sign_up_with_google))
+        }
     }
 }
 
@@ -168,7 +209,7 @@ private fun RegisterPreview() {
         Register(
             Modifier
                 .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxWidth(), loginViewModel = viewModel()
         )
     }
 }
