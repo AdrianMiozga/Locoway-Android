@@ -18,7 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,9 +33,9 @@ import com.wentura.pkp_android.ui.PKPAndroidTheme
 
 @Composable
 fun Login(modifier: Modifier = Modifier) {
-    val emailText = remember { mutableStateOf("") }
-    val passwordText = remember { mutableStateOf("") }
-    val passwordVisible = remember { mutableStateOf(false) }
+    val emailText = rememberSaveable { mutableStateOf("") }
+    val passwordText = rememberSaveable { mutableStateOf("") }
+    val passwordVisible = rememberSaveable { mutableStateOf(false) }
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         OutlinedTextField(

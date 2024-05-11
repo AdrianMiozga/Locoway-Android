@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -187,27 +188,27 @@ fun Fields(
     departureStation: String = "",
     arrivalStation: String = "",
 ) {
-    var departureStationText by remember { mutableStateOf(departureStation) }
-    var arrivalStationText by remember { mutableStateOf(arrivalStation) }
-    val departureDate = remember {
+    var departureStationText by rememberSaveable { mutableStateOf(departureStation) }
+    var arrivalStationText by rememberSaveable { mutableStateOf(arrivalStation) }
+    val departureDate = rememberSaveable {
         mutableStateOf(
             DateFormat.getDateInstance().format(Calendar.getInstance().time)
         )
     }
 
-    val departureTime = remember {
+    val departureTime = rememberSaveable {
         mutableStateOf(
             DateFormat.getTimeInstance(DateFormat.SHORT).format(Calendar.getInstance().time)
         )
     }
 
-    val showDatePicker = remember { mutableStateOf(false) }
+    val showDatePicker = rememberSaveable { mutableStateOf(false) }
 
     if (showDatePicker.value) {
         DatePicker(showDatePicker, departureDate)
     }
 
-    val showTimePicker = remember { mutableStateOf(false) }
+    val showTimePicker = rememberSaveable { mutableStateOf(false) }
 
     if (showTimePicker.value) {
         TimePicker(showTimePicker, departureTime)

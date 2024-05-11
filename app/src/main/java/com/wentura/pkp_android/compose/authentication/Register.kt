@@ -21,7 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,16 +47,16 @@ fun Register(
     onSignUp: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
 ) {
-    val emailText = remember { mutableStateOf("") }
-    val isEmailWrong = remember { mutableStateOf(false) }
+    val emailText = rememberSaveable { mutableStateOf("") }
+    val isEmailWrong = rememberSaveable { mutableStateOf(false) }
 
-    val passwordText = remember { mutableStateOf("") }
-    val passwordVisible = remember { mutableStateOf(false) }
-    val isPasswordWrong = remember { mutableStateOf(false) }
+    val passwordText = rememberSaveable { mutableStateOf("") }
+    val passwordVisible = rememberSaveable { mutableStateOf(false) }
+    val isPasswordWrong = rememberSaveable { mutableStateOf(false) }
 
-    val passwordConfirmationText = remember { mutableStateOf("") }
-    val passwordConfirmationVisible = remember { mutableStateOf(false) }
-    val isConfirmationPasswordWrong = remember { mutableStateOf(false) }
+    val passwordConfirmationText = rememberSaveable { mutableStateOf("") }
+    val passwordConfirmationVisible = rememberSaveable { mutableStateOf(false) }
+    val isConfirmationPasswordWrong = rememberSaveable { mutableStateOf(false) }
 
     val activity = LocalContext.current.findActivity()
 
