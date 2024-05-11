@@ -48,7 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.LoginViewModel
+import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -59,7 +59,8 @@ fun HomeScreen(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
-    loginViewModel: LoginViewModel = viewModel(),
+    onMyAccountClick: () -> Unit = {},
+    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -88,43 +89,57 @@ fun HomeScreen(
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.login)) },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.AccountCircle, contentDescription = null
-                    )
-                },
-                selected = false,
-                onClick = onLoginClick,
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
+            if (authenticationViewModel.loginState.value.isSignedIn) {
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.my_account)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.AccountCircle, contentDescription = null
+                        )
+                    },
+                    selected = false,
+                    onClick = onMyAccountClick,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
 
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.my_tickets)) },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.outline_confirmation_number_24),
-                        contentDescription = null
-                    )
-                },
-                selected = false,
-                onClick = {},
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
+                NavigationDrawerItem(
+                    label = { Text(text = stringResource(R.string.my_tickets)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_confirmation_number_24),
+                            contentDescription = null
+                        )
+                    },
+                    selected = false,
+                    onClick = {},
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
 
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(R.string.passengers)) },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.outline_groups_24),
-                        contentDescription = null
-                    )
-                },
-                selected = false,
-                onClick = {},
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
+                NavigationDrawerItem(
+                    label = { Text(text = stringResource(R.string.passengers)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_groups_24),
+                            contentDescription = null
+                        )
+                    },
+                    selected = false,
+                    onClick = {},
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            } else {
+                NavigationDrawerItem(
+                    label = { Text(text = stringResource(R.string.login)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.AccountCircle, contentDescription = null
+                        )
+                    },
+                    selected = false,
+                    onClick = onLoginClick,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
         }
     }) {
         Scaffold(topBar = { TopAppBar(scope, drawerState) },
@@ -137,12 +152,12 @@ fun HomeScreen(
                 onSearchClick = onSearchClick,
             )
 
-            val loginState = loginViewModel.loginState.collectAsStateWithLifecycle()
+            val loginState = authenticationViewModel.loginState.collectAsStateWithLifecycle()
 
             loginState.value.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
-                    loginViewModel.snackbarMessageShown()
+                    authenticationViewModel.snackbarMessageShown()
                 }
             }
         }

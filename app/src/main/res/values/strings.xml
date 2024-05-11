@@ -30,4 +30,11 @@
     <string name="network_error">Brak internetu</string>
     <string name="created_account">Utworzono konto</string>
     <string name="user_with_that_account_exists">Użytkownik z tym adresem email istnieje</string>
+    <string name="my_account">Moje konto</string>
+    <string name="delete_account">Usuń konto</string>
+    <string name="logout">Wyloguj się</string>
+    <string name="email_address">Adres email</string>
+    <string name="delete">Usuń</string>
+    <string name="this_action_is_irreversible">Ta akcja jest nieodwracalna.</string>
+    <string name="do_you_really_want_to_delete_account">Czy na pewno chcesz usunąć swoje konto?</string>
 </resources>

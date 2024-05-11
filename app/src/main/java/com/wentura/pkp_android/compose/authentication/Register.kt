@@ -39,14 +39,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
-import com.wentura.pkp_android.viewmodels.LoginViewModel
+import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun Register(
     modifier: Modifier = Modifier,
     onSignUp: () -> Unit = {},
-    loginViewModel: LoginViewModel = viewModel(),
+    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
 ) {
     val emailText = remember { mutableStateOf("") }
     val isEmailWrong = remember { mutableStateOf(false) }
@@ -64,8 +64,8 @@ fun Register(
     val coroutineScope = rememberCoroutineScope()
 
     coroutineScope.launch {
-        loginViewModel.loginState.collect { loginState ->
-            if (loginState.loggedIn) {
+        authenticationViewModel.loginState.collect { loginState ->
+            if (loginState.isSignedIn) {
                 onSignUp()
             }
         }
@@ -185,7 +185,7 @@ fun Register(
                 return@Button
             }
 
-            loginViewModel.passwordSignIn(activity, emailText.value, passwordText.value)
+            authenticationViewModel.passwordSignIn(activity, emailText.value, passwordText.value)
         }, modifier = Modifier.padding(bottom = 10.dp)) {
             Text(stringResource(R.string.register))
         }
@@ -193,7 +193,7 @@ fun Register(
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
         OutlinedButton(onClick = {
-            loginViewModel.googleSignIn(activity)
+            authenticationViewModel.googleSignIn(activity)
         }, modifier = Modifier.padding(10.dp)) {
             Icon(
                 painter = painterResource(R.drawable.google_g_logo),
@@ -215,7 +215,7 @@ private fun RegisterPreview() {
         Register(
             Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(), loginViewModel = viewModel()
+                .fillMaxWidth()
         )
     }
 }

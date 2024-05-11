@@ -38,7 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.LoginViewModel
+import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.launch
 
 enum class LoginPage(@StringRes val titleResId: Int) {
@@ -51,7 +51,7 @@ fun AuthenticationScreen(
     onUpClick: () -> Unit = {},
     pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
-    loginViewModel: LoginViewModel = viewModel(),
+    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val coroutineScope = rememberCoroutineScope()
@@ -62,9 +62,9 @@ fun AuthenticationScreen(
         SnackbarHost(hostState = snackbarHostState)
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            val loginState = loginViewModel.loginState.collectAsStateWithLifecycle()
+            val loginState = authenticationViewModel.loginState.collectAsStateWithLifecycle()
 
-            if (loginState.value.loading) {
+            if (loginState.value.isLoading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             } else {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -94,7 +94,10 @@ fun AuthenticationScreen(
                     }
 
                     LoginPage.REGISTER -> {
-                        Register(onSignUp = onSignUp, loginViewModel = loginViewModel)
+                        Register(
+                            onSignUp = onSignUp,
+                            authenticationViewModel = authenticationViewModel
+                        )
                     }
                 }
             }
@@ -102,7 +105,7 @@ fun AuthenticationScreen(
             loginState.value.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
-                    loginViewModel.snackbarMessageShown()
+                    authenticationViewModel.snackbarMessageShown()
                 }
             }
         }

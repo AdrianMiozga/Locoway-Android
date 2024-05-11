@@ -9,17 +9,20 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.wentura.pkp_android.MainApplication
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.data.AuthenticationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,21 +30,27 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LoginState(
-    val loggedIn: Boolean = false,
-    val loading: Boolean = false,
+    val isSignedIn: Boolean = false,
+    val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null,
 )
 
-class LoginViewModel : ViewModel() {
-    companion object {
-        private val TAG = LoginViewModel::class.java.simpleName
-    }
-
-    private var auth: FirebaseAuth = Firebase.auth
-
-    private val _loginState = MutableStateFlow(LoginState())
-
+class AuthenticationViewModel(
+    private val authenticationRepository: AuthenticationRepository,
+) : ViewModel() {
+    private val _loginState =
+        MutableStateFlow(LoginState(isSignedIn = authenticationRepository.isUserSignedIn()))
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            authenticationRepository.isSignedIn.collect { isSignedIn ->
+                _loginState.update {
+                    it.copy(isSignedIn = isSignedIn)
+                }
+            }
+        }
+    }
 
     fun snackbarMessageShown() {
         _loginState.update {
@@ -79,7 +88,7 @@ class LoginViewModel : ViewModel() {
 
     private fun handleSignIn(result: GetCredentialResponse, activity: Activity) {
         _loginState.update {
-            it.copy(loading = true)
+            it.copy(isLoading = true)
         }
 
         when (val credential = result.credential) {
@@ -92,13 +101,13 @@ class LoginViewModel : ViewModel() {
                         val firebaseCredential =
                             GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
 
-                        auth.signInWithCredential(firebaseCredential)
+                        authenticationRepository.signInWithCredential(firebaseCredential)
                             .addOnCompleteListener(activity) { task ->
                                 if (task.isSuccessful) {
                                     _loginState.update {
                                         it.copy(
-                                            loggedIn = true,
-                                            loading = false,
+                                            isSignedIn = true,
+                                            isLoading = false,
                                             userMessage = R.string.logged_in
                                         )
                                     }
@@ -110,21 +119,21 @@ class LoginViewModel : ViewModel() {
 
                                     _loginState.update {
                                         it.copy(
-                                            userMessage = userMessage, loading = false
+                                            userMessage = userMessage, isLoading = false
                                         )
                                     }
                                 }
                             }
                     } catch (exception: GoogleIdTokenParsingException) {
                         _loginState.update {
-                            it.copy(userMessage = R.string.unknown_error, loading = false)
+                            it.copy(userMessage = R.string.unknown_error, isLoading = false)
                         }
 
                         Log.e(TAG, "Received an invalid Google id token response", exception)
                     }
                 } else {
                     _loginState.update {
-                        it.copy(userMessage = R.string.unknown_error, loading = false)
+                        it.copy(userMessage = R.string.unknown_error, isLoading = false)
                     }
 
                     Log.e(TAG, "Unexpected type of credential")
@@ -133,7 +142,7 @@ class LoginViewModel : ViewModel() {
 
             else -> {
                 _loginState.update {
-                    it.copy(userMessage = R.string.unknown_error, loading = false)
+                    it.copy(userMessage = R.string.unknown_error, isLoading = false)
                 }
 
                 Log.e(TAG, "Unexpected type of credential")
@@ -143,15 +152,17 @@ class LoginViewModel : ViewModel() {
 
     fun passwordSignIn(activity: Activity, email: String, password: String) {
         _loginState.update {
-            it.copy(loading = true)
+            it.copy(isLoading = true)
         }
 
-        auth.createUserWithEmailAndPassword(email, password)
+        authenticationRepository.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     _loginState.update {
                         it.copy(
-                            loggedIn = true, loading = false, userMessage = R.string.created_account
+                            isSignedIn = true,
+                            isLoading = false,
+                            userMessage = R.string.created_account
                         )
                     }
                 } else {
@@ -161,9 +172,24 @@ class LoginViewModel : ViewModel() {
                     }
 
                     _loginState.update {
-                        it.copy(userMessage = userMessage, loading = false)
+                        it.copy(userMessage = userMessage, isLoading = false)
                     }
                 }
             }
+    }
+
+    companion object {
+        private val TAG = AuthenticationViewModel::class.java.simpleName
+
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val authenticationRepository =
+                    (this[APPLICATION_KEY] as MainApplication).authenticationRepository
+
+                AuthenticationViewModel(
+                    authenticationRepository = authenticationRepository,
+                )
+            }
+        }
     }
 }

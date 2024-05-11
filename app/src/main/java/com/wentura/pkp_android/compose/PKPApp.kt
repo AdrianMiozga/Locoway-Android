@@ -15,9 +15,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.wentura.pkp_android.compose.authentication.AuthenticationScreen
 import com.wentura.pkp_android.compose.home.HomeScreen
+import com.wentura.pkp_android.compose.myaccount.MyAccountScreen
 import com.wentura.pkp_android.compose.search.SearchScreen
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.LoginViewModel
+import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -25,7 +26,7 @@ fun PKPApp() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val loginViewModel: LoginViewModel = viewModel()
+    val authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory)
 
     NavHost(navController = navController, startDestination = Screen.Home.route, enterTransition = {
         slideIntoContainer(
@@ -43,15 +44,23 @@ fun PKPApp() {
         composable(Screen.Home.route) {
             HomeScreen(drawerState = drawerState, onSearchClick = {
                 navController.navigate(Screen.Search.route)
+
                 scope.launch {
                     drawerState.close()
                 }
             }, onLoginClick = {
                 navController.navigate(Screen.Login.route)
+
                 scope.launch {
                     drawerState.close()
                 }
-            }, loginViewModel = loginViewModel
+            }, onMyAccountClick = {
+                navController.navigate(Screen.MyAccount.route)
+
+                scope.launch {
+                    drawerState.close()
+                }
+            }, authenticationViewModel = authenticationViewModel
             )
         }
 
@@ -63,8 +72,12 @@ fun PKPApp() {
             AuthenticationScreen(
                 onUpClick = { navController.navigateUp() },
                 onSignUp = { navController.navigateUp() },
-                loginViewModel = loginViewModel
+                authenticationViewModel = authenticationViewModel
             )
+        }
+
+        composable(Screen.MyAccount.route) {
+            MyAccountScreen(onUpClick = { navController.navigateUp() })
         }
     }
 }
