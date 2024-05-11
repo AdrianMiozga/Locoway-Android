@@ -62,9 +62,9 @@ fun AuthenticationScreen(
         SnackbarHost(hostState = snackbarHostState)
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            val loginState = authenticationViewModel.loginState.collectAsStateWithLifecycle()
+            val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
-            if (loginState.value.isLoading) {
+            if (uiState.value.isLoading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             } else {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -102,7 +102,7 @@ fun AuthenticationScreen(
                 }
             }
 
-            loginState.value.userMessage?.let { message ->
+            uiState.value.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
                     authenticationViewModel.snackbarMessageShown()

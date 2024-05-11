@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,12 +34,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun Register(
@@ -61,14 +60,10 @@ fun Register(
 
     val activity = LocalContext.current.findActivity()
 
-    val coroutineScope = rememberCoroutineScope()
+    val loginState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
-    coroutineScope.launch {
-        authenticationViewModel.loginState.collect { loginState ->
-            if (loginState.isSignedIn) {
-                onSignUp()
-            }
-        }
+    if (loginState.value.isSignedIn) {
+        onSignUp()
     }
 
     Column(

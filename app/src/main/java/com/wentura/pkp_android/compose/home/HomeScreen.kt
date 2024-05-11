@@ -89,7 +89,9 @@ fun HomeScreen(
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            if (authenticationViewModel.loginState.value.isSignedIn) {
+            val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+
+            if (uiState.value.isSignedIn) {
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.my_account)) },
                     icon = {
@@ -152,9 +154,9 @@ fun HomeScreen(
                 onSearchClick = onSearchClick,
             )
 
-            val loginState = authenticationViewModel.loginState.collectAsStateWithLifecycle()
+            val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
-            loginState.value.userMessage?.let { message ->
+            uiState.value.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
                     authenticationViewModel.snackbarMessageShown()

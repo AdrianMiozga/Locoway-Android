@@ -18,7 +18,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +29,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.viewmodels.MyAccountViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MyAccountScreen(
@@ -38,14 +36,11 @@ fun MyAccountScreen(
     myAccountViewModel: MyAccountViewModel = viewModel(factory = MyAccountViewModel.Factory),
 ) {
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
-    coroutineScope.launch {
-        myAccountViewModel.uiState.collect { uiState ->
-            if (uiState.signedOut) {
-                onUpClick()
-            }
-        }
+    val uiState = myAccountViewModel.uiState.collectAsStateWithLifecycle()
+
+    if (uiState.value.signedOut) {
+        onUpClick()
     }
 
     Scaffold(topBar = { MyAccountTopAppBar(onUpClick) }) { innerPadding ->

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class LoginState(
+data class UiState(
     val isSignedIn: Boolean = false,
     val isLoading: Boolean = false,
     @StringRes val userMessage: Int? = null,
@@ -38,14 +38,14 @@ data class LoginState(
 class AuthenticationViewModel(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
-    private val _loginState =
-        MutableStateFlow(LoginState(isSignedIn = authenticationRepository.isUserSignedIn()))
-    val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
+    private val _uiState =
+        MutableStateFlow(UiState(isSignedIn = authenticationRepository.isUserSignedIn()))
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             authenticationRepository.isSignedIn.collect { isSignedIn ->
-                _loginState.update {
+                _uiState.update {
                     it.copy(isSignedIn = isSignedIn)
                 }
             }
@@ -53,7 +53,7 @@ class AuthenticationViewModel(
     }
 
     fun snackbarMessageShown() {
-        _loginState.update {
+        _uiState.update {
             it.copy(userMessage = null)
         }
     }
@@ -77,7 +77,7 @@ class AuthenticationViewModel(
 
                 handleSignIn(result, activity)
             } catch (exception: GetCredentialException) {
-                _loginState.update {
+                _uiState.update {
                     it.copy(userMessage = R.string.unknown_error)
                 }
 
@@ -87,7 +87,7 @@ class AuthenticationViewModel(
     }
 
     private fun handleSignIn(result: GetCredentialResponse, activity: Activity) {
-        _loginState.update {
+        _uiState.update {
             it.copy(isLoading = true)
         }
 
@@ -104,7 +104,7 @@ class AuthenticationViewModel(
                         authenticationRepository.signInWithCredential(firebaseCredential)
                             .addOnCompleteListener(activity) { task ->
                                 if (task.isSuccessful) {
-                                    _loginState.update {
+                                    _uiState.update {
                                         it.copy(
                                             isSignedIn = true,
                                             isLoading = false,
@@ -117,7 +117,7 @@ class AuthenticationViewModel(
                                         else -> R.string.unknown_error
                                     }
 
-                                    _loginState.update {
+                                    _uiState.update {
                                         it.copy(
                                             userMessage = userMessage, isLoading = false
                                         )
@@ -125,14 +125,14 @@ class AuthenticationViewModel(
                                 }
                             }
                     } catch (exception: GoogleIdTokenParsingException) {
-                        _loginState.update {
+                        _uiState.update {
                             it.copy(userMessage = R.string.unknown_error, isLoading = false)
                         }
 
                         Log.e(TAG, "Received an invalid Google id token response", exception)
                     }
                 } else {
-                    _loginState.update {
+                    _uiState.update {
                         it.copy(userMessage = R.string.unknown_error, isLoading = false)
                     }
 
@@ -141,7 +141,7 @@ class AuthenticationViewModel(
             }
 
             else -> {
-                _loginState.update {
+                _uiState.update {
                     it.copy(userMessage = R.string.unknown_error, isLoading = false)
                 }
 
@@ -151,14 +151,14 @@ class AuthenticationViewModel(
     }
 
     fun passwordSignIn(activity: Activity, email: String, password: String) {
-        _loginState.update {
+        _uiState.update {
             it.copy(isLoading = true)
         }
 
         authenticationRepository.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
-                    _loginState.update {
+                    _uiState.update {
                         it.copy(
                             isSignedIn = true,
                             isLoading = false,
@@ -171,7 +171,7 @@ class AuthenticationViewModel(
                         else -> R.string.unknown_error
                     }
 
-                    _loginState.update {
+                    _uiState.update {
                         it.copy(userMessage = userMessage, isLoading = false)
                     }
                 }
