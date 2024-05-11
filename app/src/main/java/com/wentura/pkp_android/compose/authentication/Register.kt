@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.compose.login
+package com.wentura.pkp_android.compose.authentication
 
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column

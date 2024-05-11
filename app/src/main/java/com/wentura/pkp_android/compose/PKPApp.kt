@@ -13,8 +13,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wentura.pkp_android.compose.authentication.AuthenticationScreen
 import com.wentura.pkp_android.compose.home.HomeScreen
-import com.wentura.pkp_android.compose.login.PagerScreen
 import com.wentura.pkp_android.compose.search.SearchScreen
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.viewmodels.LoginViewModel
@@ -60,7 +60,7 @@ fun PKPApp() {
         }
 
         composable(Screen.Login.route) {
-            PagerScreen(
+            AuthenticationScreen(
                 onUpClick = { navController.navigateUp() },
                 onSignUp = { navController.navigateUp() },
                 loginViewModel = loginViewModel

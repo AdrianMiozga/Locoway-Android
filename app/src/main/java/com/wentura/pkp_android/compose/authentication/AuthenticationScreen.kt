@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.compose.login
+package com.wentura.pkp_android.compose.authentication
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -47,7 +47,7 @@ enum class LoginPage(@StringRes val titleResId: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun PagerScreen(
+fun AuthenticationScreen(
     onUpClick: () -> Unit = {},
     pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
@@ -58,7 +58,7 @@ fun PagerScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    Scaffold(topBar = { PagerTopAppBar(onUpClick = onUpClick) }, snackbarHost = {
+    Scaffold(topBar = { AuthenticationTopAppBar(onUpClick = onUpClick) }, snackbarHost = {
         SnackbarHost(hostState = snackbarHostState)
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -111,7 +111,7 @@ fun PagerScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun PagerTopAppBar(onUpClick: () -> Unit) {
+private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
     CenterAlignedTopAppBar(title = {
         Text(stringResource(R.string.app_name))
     }, navigationIcon = {
@@ -123,8 +123,8 @@ private fun PagerTopAppBar(onUpClick: () -> Unit) {
 
 @Composable
 @Preview(showBackground = true)
-private fun PagerPreview() {
+private fun AuthenticationPreview() {
     PKPAndroidTheme {
-        PagerScreen()
+        AuthenticationScreen()
     }
 }
