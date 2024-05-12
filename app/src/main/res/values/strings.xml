@@ -40,4 +40,5 @@
     <string name="specify_time">Określ czas</string>
     <string name="account_deleted">Konto usunięte</string>
     <string name="signed_out">Wylogowano</string>
+    <string name="continue_with_google">Kontynuuj z Google</string>
 </resources>
