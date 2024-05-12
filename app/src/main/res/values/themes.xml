@@ -4,6 +4,6 @@
 
     <style name="Theme.PKPAndroid" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/purple_200</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/nothing</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
     </style>
 </resources>
