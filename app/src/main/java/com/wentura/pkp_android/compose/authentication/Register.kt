@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -208,6 +209,7 @@ fun Register(
                     )
 
                     authenticationViewModel.handleSignIn(result)
+                } catch (_: GetCredentialCancellationException) {
                 } catch (exception: GetCredentialException) {
                     authenticationViewModel.loginFailed(exception)
                 }
