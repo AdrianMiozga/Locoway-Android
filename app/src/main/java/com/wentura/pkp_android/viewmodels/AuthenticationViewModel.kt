@@ -64,7 +64,7 @@ class AuthenticationViewModel(
         }
     }
 
-    fun handleSignUp(result: GetCredentialResponse) {
+    fun handleGoogleSignIn(result: GetCredentialResponse) {
         _uiState.update {
             it.copy(isLoading = true)
         }

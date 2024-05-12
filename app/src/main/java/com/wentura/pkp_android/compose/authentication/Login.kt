@@ -30,10 +30,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -48,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 
 @Composable
@@ -76,10 +79,15 @@ fun Login(
                 }
             })
     }
-
     if (uiState.value.isSignedIn) {
         onSignIn()
     }
+
+
+    val context = LocalContext.current
+    val activity = context.findActivity()
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -155,7 +163,9 @@ fun Login(
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
-        OutlinedButton(onClick = {}, modifier = Modifier.padding(10.dp)) {
+        OutlinedButton(onClick = {
+            signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
+        }, modifier = Modifier.padding(10.dp)) {
             Icon(
                 painter = painterResource(R.drawable.google_g_logo),
                 tint = Color.Unspecified,

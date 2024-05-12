@@ -34,18 +34,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.GetCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun Register(
@@ -191,30 +185,7 @@ fun Register(
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
         OutlinedButton(onClick = {
-            // TODO: Add nonce
-            //  https://developer.android.com/training/sign-in/credential-manager#set-nonce
-            val signInWithGoogle =
-                GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
-                    .build()
-
-            val request =
-                GetCredentialRequest.Builder().addCredentialOption(signInWithGoogle).build()
-
-            val credentialManager = CredentialManager.create(activity)
-
-            coroutineScope.launch {
-                try {
-                    val result = credentialManager.getCredential(
-                        context = activity,
-                        request = request,
-                    )
-
-                    authenticationViewModel.handleSignUp(result)
-                } catch (_: GetCredentialCancellationException) {
-                } catch (exception: GetCredentialException) {
-                    authenticationViewModel.signInFailed(exception)
-                }
-            }
+            signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
         }, modifier = Modifier.padding(10.dp)) {
             Icon(
                 painter = painterResource(R.drawable.google_g_logo),
@@ -224,7 +195,7 @@ fun Register(
 
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
 
-            Text(stringResource(R.string.sign_up_with_google))
+            Text(stringResource(R.string.continue_with_google))
         }
     }
 }
