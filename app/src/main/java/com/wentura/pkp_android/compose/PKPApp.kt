@@ -9,7 +9,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,7 +17,6 @@ import com.wentura.pkp_android.compose.home.HomeScreen
 import com.wentura.pkp_android.compose.myaccount.MyAccountScreen
 import com.wentura.pkp_android.compose.search.SearchScreen
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -26,7 +24,6 @@ fun PKPApp() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory)
 
     NavHost(navController = navController, startDestination = Screen.Home.route, enterTransition = {
         slideIntoContainer(
@@ -60,7 +57,7 @@ fun PKPApp() {
                 scope.launch {
                     drawerState.close()
                 }
-            }, authenticationViewModel = authenticationViewModel
+            }
             )
         }
 
@@ -72,7 +69,6 @@ fun PKPApp() {
             AuthenticationScreen(
                 onUpClick = { navController.navigateUp() },
                 onSignUp = { navController.navigateUp() },
-                authenticationViewModel = authenticationViewModel
             )
         }
 

@@ -2,6 +2,7 @@ package com.wentura.pkp_android.viewmodels
 
 import android.app.Activity
 import android.util.Log
+import android.util.Patterns
 import androidx.annotation.StringRes
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -29,33 +30,33 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class UiState(
+data class AuthenticationUiState(
     val isSignedIn: Boolean = false,
     val isLoading: Boolean = false,
+    val isEmailWrong: Boolean = false,
+    val isPasswordWrong: Boolean = false,
+    val isConfirmationPasswordWrong: Boolean = false,
     @StringRes val userMessage: Int? = null,
 )
 
 class AuthenticationViewModel(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
-    private val _uiState =
-        MutableStateFlow(UiState(isSignedIn = authenticationRepository.isUserSignedIn()))
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(AuthenticationUiState())
+    val uiState: StateFlow<AuthenticationUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            authenticationRepository.isSignedIn.collect { isSignedIn ->
+            authenticationRepository.authentication.collect { authentication ->
                 _uiState.update {
-                    it.copy(isSignedIn = isSignedIn)
+                    it.copy(isSignedIn = authentication.isSignedIn, isLoading = false)
                 }
             }
         }
     }
 
     fun snackbarMessageShown() {
-        _uiState.update {
-            it.copy(userMessage = null)
-        }
+        authenticationRepository.clearMessage()
     }
 
     fun googleSignIn(activity: Activity) {
@@ -104,13 +105,7 @@ class AuthenticationViewModel(
                         authenticationRepository.signInWithCredential(firebaseCredential)
                             .addOnCompleteListener(activity) { task ->
                                 if (task.isSuccessful) {
-                                    _uiState.update {
-                                        it.copy(
-                                            isSignedIn = true,
-                                            isLoading = false,
-                                            userMessage = R.string.logged_in
-                                        )
-                                    }
+                                    authenticationRepository.signedIn()
                                 } else {
                                     val userMessage = when (task.exception) {
                                         is FirebaseNetworkException -> R.string.network_error
@@ -150,7 +145,28 @@ class AuthenticationViewModel(
         }
     }
 
-    fun passwordSignIn(activity: Activity, email: String, password: String) {
+    fun passwordSignIn(
+        activity: Activity,
+        email: String,
+        password: String,
+        passwordConfirmation: String,
+    ) {
+        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val isPasswordWrong = password.length < 8
+        val isConfirmationPasswordWrong = password != passwordConfirmation
+
+        if (isEmailWrong || isPasswordWrong || isConfirmationPasswordWrong) {
+            _uiState.update {
+                it.copy(
+                    isEmailWrong = isEmailWrong,
+                    isPasswordWrong = isPasswordWrong,
+                    isConfirmationPasswordWrong = isConfirmationPasswordWrong,
+                )
+            }
+
+            return
+        }
+
         _uiState.update {
             it.copy(isLoading = true)
         }

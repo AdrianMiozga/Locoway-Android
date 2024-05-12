@@ -49,7 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
+import com.wentura.pkp_android.viewmodels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -61,7 +61,7 @@ fun HomeScreen(
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onMyAccountClick: () -> Unit = {},
-    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
+    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -90,7 +90,7 @@ fun HomeScreen(
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+            val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
 
             if (uiState.value.isSignedIn) {
                 NavigationDrawerItem(
@@ -155,12 +155,12 @@ fun HomeScreen(
                 onSearchClick = onSearchClick,
             )
 
-            val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+            val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
 
             uiState.value.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
-                    authenticationViewModel.snackbarMessageShown()
+                    homeViewModel.snackbarMessageShown()
                 }
             }
         }

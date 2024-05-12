@@ -25,7 +25,7 @@
     <string name="invalid_email">Niepoprawny adres email</string>
     <string name="password_too_short">Hasło musi zawierać przynajmniej 8 znaków</string>
     <string name="sign_up_with_google">Zarejestruj się przez Google</string>
-    <string name="logged_in">Zalogowano pomyślnie</string>
+    <string name="signed_in">Zalogowano pomyślnie</string>
     <string name="unknown_error">Nieznany błąd</string>
     <string name="network_error">Brak internetu</string>
     <string name="created_account">Utworzono konto</string>
@@ -38,4 +38,6 @@
     <string name="this_action_is_irreversible">Ta akcja jest nieodwracalna.</string>
     <string name="do_you_really_want_to_delete_account">Czy na pewno chcesz usunąć swoje konto?</string>
     <string name="specify_time">Określ czas</string>
+    <string name="account_deleted">Konto usunięte</string>
+    <string name="signed_out">Wylogowano</string>
 </resources>

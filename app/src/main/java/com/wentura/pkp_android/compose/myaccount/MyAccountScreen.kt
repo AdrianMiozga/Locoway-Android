@@ -39,7 +39,7 @@ fun MyAccountScreen(
 
     val uiState = myAccountViewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.value.signedOut) {
+    if (!uiState.value.isSignedIn) {
         onUpClick()
     }
 

@@ -1,6 +1,5 @@
 package com.wentura.pkp_android.compose.authentication
 
-import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -47,22 +46,22 @@ fun Register(
     onSignUp: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
 ) {
+    val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+
     val emailText = rememberSaveable { mutableStateOf("") }
-    val isEmailWrong = rememberSaveable { mutableStateOf(false) }
+    val isEmailWrong = uiState.value.isEmailWrong
 
     val passwordText = rememberSaveable { mutableStateOf("") }
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
-    val isPasswordWrong = rememberSaveable { mutableStateOf(false) }
+    val isPasswordWrong = uiState.value.isPasswordWrong
 
     val passwordConfirmationText = rememberSaveable { mutableStateOf("") }
     val passwordConfirmationVisible = rememberSaveable { mutableStateOf(false) }
-    val isConfirmationPasswordWrong = rememberSaveable { mutableStateOf(false) }
+    val isConfirmationPasswordWrong = uiState.value.isConfirmationPasswordWrong
 
     val activity = LocalContext.current.findActivity()
 
-    val loginState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
-
-    if (loginState.value.isSignedIn) {
+    if (uiState.value.isSignedIn) {
         onSignUp()
     }
 
@@ -76,10 +75,10 @@ fun Register(
                 emailText.value = it
             },
             supportingText = {
-                if (isEmailWrong.value) Text(stringResource(R.string.invalid_email)) else Text("")
+                if (isEmailWrong) Text(stringResource(R.string.invalid_email)) else Text("")
             },
             trailingIcon = {
-                if (isEmailWrong.value) {
+                if (isEmailWrong) {
                     Icon(
                         painter = painterResource(R.drawable.outline_error_24),
                         tint = MaterialTheme.colorScheme.error,
@@ -90,7 +89,7 @@ fun Register(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
             ),
-            isError = isEmailWrong.value,
+            isError = isEmailWrong,
             singleLine = true,
             label = { Text(stringResource(R.string.email)) },
             modifier = Modifier
@@ -105,9 +104,9 @@ fun Register(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
             ),
-            isError = isPasswordWrong.value,
+            isError = uiState.value.isPasswordWrong,
             supportingText = {
-                if (isPasswordWrong.value) Text(stringResource(R.string.password_too_short)) else Text(
+                if (isPasswordWrong) Text(stringResource(R.string.password_too_short)) else Text(
                     ""
                 )
             },
@@ -140,9 +139,9 @@ fun Register(
             value = passwordConfirmationText.value,
             visualTransformation = if (passwordConfirmationVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = isConfirmationPasswordWrong.value,
+            isError = isConfirmationPasswordWrong,
             supportingText = {
-                if (isConfirmationPasswordWrong.value) Text(stringResource(R.string.passwords_not_the_same)) else Text(
+                if (isConfirmationPasswordWrong) Text(stringResource(R.string.passwords_not_the_same)) else Text(
                     ""
                 )
             },
@@ -172,15 +171,9 @@ fun Register(
         )
 
         Button(onClick = {
-            isEmailWrong.value = !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches()
-            isPasswordWrong.value = passwordText.value.length < 8
-            isConfirmationPasswordWrong.value = passwordText.value != passwordConfirmationText.value
-
-            if (isEmailWrong.value || isPasswordWrong.value || isConfirmationPasswordWrong.value) {
-                return@Button
-            }
-
-            authenticationViewModel.passwordSignIn(activity, emailText.value, passwordText.value)
+            authenticationViewModel.passwordSignIn(
+                activity, emailText.value, passwordText.value, passwordConfirmationText.value
+            )
         }, modifier = Modifier.padding(bottom = 10.dp)) {
             Text(stringResource(R.string.register))
         }
