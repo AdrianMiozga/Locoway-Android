@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +34,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun Register(
@@ -59,7 +65,10 @@ fun Register(
     val passwordConfirmationVisible = rememberSaveable { mutableStateOf(false) }
     val isConfirmationPasswordWrong = uiState.value.isConfirmationPasswordWrong
 
-    val activity = LocalContext.current.findActivity()
+    val context = LocalContext.current
+    val activity = context.findActivity()
+
+    val coroutineScope = rememberCoroutineScope()
 
     if (uiState.value.isSignedIn) {
         onSignUp()
@@ -172,7 +181,7 @@ fun Register(
 
         Button(onClick = {
             authenticationViewModel.passwordSignIn(
-                activity, emailText.value, passwordText.value, passwordConfirmationText.value
+                emailText.value, passwordText.value, passwordConfirmationText.value
             )
         }, modifier = Modifier.padding(bottom = 10.dp)) {
             Text(stringResource(R.string.register))
@@ -181,7 +190,28 @@ fun Register(
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
         OutlinedButton(onClick = {
-            authenticationViewModel.googleSignIn(activity)
+            // TODO: Add nonce
+            val signInWithGoogle =
+                GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
+                    .build()
+
+            val request =
+                GetCredentialRequest.Builder().addCredentialOption(signInWithGoogle).build()
+
+            val credentialManager = CredentialManager.create(activity)
+
+            coroutineScope.launch {
+                try {
+                    val result = credentialManager.getCredential(
+                        context = activity,
+                        request = request,
+                    )
+
+                    authenticationViewModel.handleSignIn(result)
+                } catch (exception: GetCredentialException) {
+                    authenticationViewModel.loginFailed(exception)
+                }
+            }
         }, modifier = Modifier.padding(10.dp)) {
             Icon(
                 painter = painterResource(R.drawable.google_g_logo),

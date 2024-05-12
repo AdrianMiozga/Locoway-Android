@@ -1,8 +1,8 @@
 package com.wentura.pkp_android.data
 
-import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.wentura.pkp_android.R
@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.tasks.await
 
 class AuthenticationRepository {
     private val firebaseAuth = Firebase.auth
@@ -25,12 +26,42 @@ class AuthenticationRepository {
         }
     }
 
-    fun signInWithCredential(authCredential: AuthCredential): Task<AuthResult> {
-        return firebaseAuth.signInWithCredential(authCredential)
+    suspend fun signInWithCredential(authCredential: AuthCredential) {
+        try {
+            firebaseAuth.signInWithCredential(authCredential).await()
+
+            _authentication.update {
+                it.copy(isSignedIn = true, userMessage = R.string.signed_in)
+            }
+        } catch (exception: Exception) {
+            val userMessage = when (exception) {
+                is FirebaseNetworkException -> R.string.network_error
+                else -> R.string.unknown_error
+            }
+
+            _authentication.update {
+                it.copy(userMessage = userMessage)
+            }
+        }
     }
 
-    fun createUserWithEmailAndPassword(email: String, password: String): Task<AuthResult> {
-        return firebaseAuth.createUserWithEmailAndPassword(email, password)
+    suspend fun createUserWithEmailAndPassword(email: String, password: String) {
+        try {
+            firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+
+            _authentication.update {
+                it.copy(isSignedIn = true, userMessage = R.string.signed_in)
+            }
+        } catch (exception: Exception) {
+            val userMessage = when (exception) {
+                is FirebaseAuthUserCollisionException -> R.string.user_with_that_account_exists
+                else -> R.string.unknown_error
+            }
+
+            _authentication.update {
+                it.copy(userMessage = userMessage)
+            }
+        }
     }
 
     fun deleteAccount() {
@@ -48,12 +79,6 @@ class AuthenticationRepository {
 
     fun getEmail(): String {
         return firebaseAuth.currentUser?.email ?: ""
-    }
-
-    fun signedIn() {
-        _authentication.update {
-            it.copy(isSignedIn = true, userMessage = R.string.signed_in)
-        }
     }
 
     fun clearMessage() {

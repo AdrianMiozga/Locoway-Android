@@ -1,25 +1,18 @@
 package com.wentura.pkp_android.viewmodels
 
-import android.app.Activity
 import android.util.Log
 import android.util.Patterns
 import androidx.annotation.StringRes
-import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
-import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.wentura.pkp_android.MainApplication
 import com.wentura.pkp_android.R
@@ -49,7 +42,11 @@ class AuthenticationViewModel(
         viewModelScope.launch {
             authenticationRepository.authentication.collect { authentication ->
                 _uiState.update {
-                    it.copy(isSignedIn = authentication.isSignedIn, isLoading = false)
+                    it.copy(
+                        isSignedIn = authentication.isSignedIn,
+                        isLoading = false,
+                        userMessage = authentication.userMessage
+                    )
                 }
             }
         }
@@ -59,35 +56,15 @@ class AuthenticationViewModel(
         authenticationRepository.clearMessage()
     }
 
-    fun googleSignIn(activity: Activity) {
-        // TODO: Add nonce
-        val signInWithGoogle =
-            GetSignInWithGoogleOption.Builder(activity.getString(R.string.firebase_web_client_id))
-                .build()
+    fun loginFailed(exception: Exception) {
+        Log.e(TAG, "Failure", exception)
 
-        val request = GetCredentialRequest.Builder().addCredentialOption(signInWithGoogle).build()
-
-        val credentialManager = CredentialManager.create(activity)
-
-        viewModelScope.launch {
-            try {
-                val result = credentialManager.getCredential(
-                    context = activity,
-                    request = request,
-                )
-
-                handleSignIn(result, activity)
-            } catch (exception: GetCredentialException) {
-                _uiState.update {
-                    it.copy(userMessage = R.string.unknown_error)
-                }
-
-                Log.e(TAG, "Failure", exception)
-            }
+        _uiState.update {
+            it.copy(userMessage = R.string.unknown_error)
         }
     }
 
-    private fun handleSignIn(result: GetCredentialResponse, activity: Activity) {
+    fun handleSignIn(result: GetCredentialResponse) {
         _uiState.update {
             it.copy(isLoading = true)
         }
@@ -102,23 +79,13 @@ class AuthenticationViewModel(
                         val firebaseCredential =
                             GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
 
-                        authenticationRepository.signInWithCredential(firebaseCredential)
-                            .addOnCompleteListener(activity) { task ->
-                                if (task.isSuccessful) {
-                                    authenticationRepository.signedIn()
-                                } else {
-                                    val userMessage = when (task.exception) {
-                                        is FirebaseNetworkException -> R.string.network_error
-                                        else -> R.string.unknown_error
-                                    }
+                        viewModelScope.launch {
+                            authenticationRepository.signInWithCredential(firebaseCredential)
 
-                                    _uiState.update {
-                                        it.copy(
-                                            userMessage = userMessage, isLoading = false
-                                        )
-                                    }
-                                }
+                            _uiState.update {
+                                it.copy(isLoading = false)
                             }
+                        }
                     } catch (exception: GoogleIdTokenParsingException) {
                         _uiState.update {
                             it.copy(userMessage = R.string.unknown_error, isLoading = false)
@@ -146,7 +113,6 @@ class AuthenticationViewModel(
     }
 
     fun passwordSignIn(
-        activity: Activity,
         email: String,
         password: String,
         passwordConfirmation: String,
@@ -171,27 +137,13 @@ class AuthenticationViewModel(
             it.copy(isLoading = true)
         }
 
-        authenticationRepository.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(activity) { task ->
-                if (task.isSuccessful) {
-                    _uiState.update {
-                        it.copy(
-                            isSignedIn = true,
-                            isLoading = false,
-                            userMessage = R.string.created_account
-                        )
-                    }
-                } else {
-                    val userMessage = when (task.exception) {
-                        is FirebaseAuthUserCollisionException -> R.string.user_with_that_account_exists
-                        else -> R.string.unknown_error
-                    }
+        viewModelScope.launch {
+            authenticationRepository.createUserWithEmailAndPassword(email, password)
 
-                    _uiState.update {
-                        it.copy(userMessage = userMessage, isLoading = false)
-                    }
-                }
+            _uiState.update {
+                it.copy(isLoading = false)
             }
+        }
     }
 
     companion object {
