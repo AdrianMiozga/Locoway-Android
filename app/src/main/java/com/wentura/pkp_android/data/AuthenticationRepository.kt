@@ -2,6 +2,7 @@ package com.wentura.pkp_android.data
 
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -55,6 +56,25 @@ class AuthenticationRepository {
         } catch (exception: Exception) {
             val userMessage = when (exception) {
                 is FirebaseAuthUserCollisionException -> R.string.user_with_that_account_exists
+                else -> R.string.unknown_error
+            }
+
+            _authentication.update {
+                it.copy(userMessage = userMessage)
+            }
+        }
+    }
+
+    suspend fun signInWithEmailAndPassword(email: String, password: String) {
+        try {
+            firebaseAuth.signInWithEmailAndPassword(email, password).await()
+
+            _authentication.update {
+                it.copy(isSignedIn = true, userMessage = R.string.signed_in)
+            }
+        } catch (exception: Exception) {
+            val userMessage = when (exception) {
+                is FirebaseAuthInvalidCredentialsException -> R.string.invalid_credentials
                 else -> R.string.unknown_error
             }
 

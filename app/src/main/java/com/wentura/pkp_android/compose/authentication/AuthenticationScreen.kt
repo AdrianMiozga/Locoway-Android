@@ -51,6 +51,7 @@ fun AuthenticationScreen(
     onUpClick: () -> Unit = {},
     pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
+    onSignIn: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
@@ -90,7 +91,10 @@ fun AuthenticationScreen(
             ) { index ->
                 when (pages[index]) {
                     LoginPage.LOGIN -> {
-                        Login()
+                        Login(
+                            onSignIn = onSignIn,
+                            authenticationViewModel = authenticationViewModel
+                        )
                     }
 
                     LoginPage.REGISTER -> {

@@ -56,7 +56,7 @@ class AuthenticationViewModel(
         authenticationRepository.clearMessage()
     }
 
-    fun loginFailed(exception: Exception) {
+    fun signInFailed(exception: Exception) {
         Log.e(TAG, "Failure", exception)
 
         _uiState.update {
@@ -64,7 +64,7 @@ class AuthenticationViewModel(
         }
     }
 
-    fun handleSignIn(result: GetCredentialResponse) {
+    fun handleSignUp(result: GetCredentialResponse) {
         _uiState.update {
             it.copy(isLoading = true)
         }
@@ -112,7 +112,7 @@ class AuthenticationViewModel(
         }
     }
 
-    fun passwordSignIn(
+    fun passwordSignUp(
         email: String,
         password: String,
         passwordConfirmation: String,
@@ -139,6 +139,34 @@ class AuthenticationViewModel(
 
         viewModelScope.launch {
             authenticationRepository.createUserWithEmailAndPassword(email, password)
+
+            _uiState.update {
+                it.copy(isLoading = false)
+            }
+        }
+    }
+
+    fun passwordSignIn(email: String, password: String) {
+        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val isPasswordWrong = password.isBlank()
+
+        if (isEmailWrong || isPasswordWrong) {
+            _uiState.update {
+                it.copy(
+                    isEmailWrong = isEmailWrong,
+                    isPasswordWrong = isPasswordWrong,
+                )
+            }
+
+            return
+        }
+
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+
+        viewModelScope.launch {
+            authenticationRepository.signInWithEmailAndPassword(email, password)
 
             _uiState.update {
                 it.copy(isLoading = false)

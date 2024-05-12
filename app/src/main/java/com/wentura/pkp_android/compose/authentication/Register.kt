@@ -181,7 +181,7 @@ fun Register(
         )
 
         Button(onClick = {
-            authenticationViewModel.passwordSignIn(
+            authenticationViewModel.passwordSignUp(
                 emailText.value, passwordText.value, passwordConfirmationText.value
             )
         }, modifier = Modifier.padding(bottom = 10.dp)) {
@@ -208,10 +208,10 @@ fun Register(
                         request = request,
                     )
 
-                    authenticationViewModel.handleSignIn(result)
+                    authenticationViewModel.handleSignUp(result)
                 } catch (_: GetCredentialCancellationException) {
                 } catch (exception: GetCredentialException) {
-                    authenticationViewModel.loginFailed(exception)
+                    authenticationViewModel.signInFailed(exception)
                 }
             }
         }, modifier = Modifier.padding(10.dp)) {

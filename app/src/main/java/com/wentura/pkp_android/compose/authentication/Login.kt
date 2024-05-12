@@ -34,14 +34,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 
 @Composable
-fun Login(modifier: Modifier = Modifier) {
+fun Login(
+    modifier: Modifier = Modifier, onSignIn: () -> Unit = {},
+    authenticationViewModel: AuthenticationViewModel = viewModel(
+        factory = AuthenticationViewModel.Factory
+    ),
+) {
+    val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+
     val emailText = rememberSaveable { mutableStateOf("") }
+    val isEmailWrong = uiState.value.isEmailWrong
+
     val passwordText = rememberSaveable { mutableStateOf("") }
+    val isPasswordWrong = uiState.value.isPasswordWrong
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
+
+    if (uiState.value.isSignedIn) {
+        onSignIn()
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,12 +70,16 @@ fun Login(modifier: Modifier = Modifier) {
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
             ),
+            supportingText = {
+                if (isEmailWrong) Text(stringResource(R.string.invalid_email)) else Text("")
+            },
+            isError = isEmailWrong,
             singleLine = true,
             label = { Text(stringResource(R.string.email)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
-                .padding(top = 20.dp, bottom = 10.dp)
+                .padding(top = 20.dp)
         )
 
         OutlinedTextField(
@@ -82,12 +103,14 @@ fun Login(modifier: Modifier = Modifier) {
                     )
                 }
             },
+            isError = isPasswordWrong,
             onValueChange = { passwordText.value = it },
             singleLine = true,
             label = { Text(stringResource(R.string.password)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 10.dp)
         )
 
         Row(
@@ -100,7 +123,9 @@ fun Login(modifier: Modifier = Modifier) {
                 Text(stringResource(R.string.forgot_password))
             }
 
-            Button(onClick = {}, modifier = Modifier.padding(vertical = 10.dp)) {
+            Button(onClick = {
+                authenticationViewModel.passwordSignIn(emailText.value, passwordText.value)
+            }, modifier = Modifier.padding(vertical = 10.dp)) {
                 Text(stringResource(R.string.login))
             }
         }
@@ -126,7 +151,7 @@ fun Login(modifier: Modifier = Modifier) {
 private fun LoginPreview() {
     PKPAndroidTheme {
         Login(
-            Modifier
+            modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
         )

@@ -69,6 +69,7 @@ fun PKPApp() {
             AuthenticationScreen(
                 onUpClick = { navController.navigateUp() },
                 onSignUp = { navController.navigateUp() },
+                onSignIn = { navController.navigateUp() }
             )
         }
 
