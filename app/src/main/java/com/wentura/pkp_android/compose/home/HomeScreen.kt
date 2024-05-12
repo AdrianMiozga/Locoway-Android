@@ -221,7 +221,8 @@ fun Fields(
             value = departureStationText,
             singleLine = true,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(horizontal = 20.dp)
+                .padding(top = 20.dp, bottom = 10.dp)
                 .fillMaxWidth()
         )
 
@@ -231,7 +232,8 @@ fun Fields(
             value = arrivalStationText,
             singleLine = true,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(horizontal = 20.dp)
+                .padding(vertical = 10.dp)
                 .fillMaxWidth()
         )
 
@@ -243,7 +245,8 @@ fun Fields(
                 readOnly = true,
                 enabled = false,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(vertical = 10.dp)
+                    .padding(start = 20.dp, end = 10.dp)
                     .weight(1f)
                     .clickable {
                         showDatePicker.value = true
@@ -262,7 +265,8 @@ fun Fields(
                 readOnly = true,
                 enabled = false,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(vertical = 10.dp)
+                    .padding(start = 10.dp, end = 20.dp)
                     .weight(1f)
                     .clickable {
                         showTimePicker.value = true
