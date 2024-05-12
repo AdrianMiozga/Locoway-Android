@@ -11,9 +11,11 @@
 .DS_Store
 /build
 /captures
+release/
 .externalNativeBuild
 .cxx
 local.properties
+keystore.properties
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
