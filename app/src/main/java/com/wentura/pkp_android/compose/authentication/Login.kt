@@ -5,21 +5,29 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,8 +40,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
@@ -55,6 +65,17 @@ fun Login(
     val passwordText = rememberSaveable { mutableStateOf("") }
     val isPasswordWrong = uiState.value.isPasswordWrong
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
+
+    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
+
+    if (openAlertDialog.value) {
+        ResetPasswordDialog(onDismissRequest = { openAlertDialog.value = false },
+            onSendClick = { email ->
+                if (authenticationViewModel.resetPassword(email)) {
+                    openAlertDialog.value = false
+                }
+            })
+    }
 
     if (uiState.value.isSignedIn) {
         onSignIn()
@@ -119,7 +140,9 @@ fun Login(
                 .padding(horizontal = 20.dp)
                 .fillMaxWidth()
         ) {
-            TextButton(onClick = {}, modifier = Modifier.padding(vertical = 10.dp)) {
+            TextButton(onClick = {
+                openAlertDialog.value = true
+            }, modifier = Modifier.padding(vertical = 10.dp)) {
                 Text(stringResource(R.string.forgot_password))
             }
 
@@ -146,6 +169,66 @@ fun Login(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ResetPasswordDialog(onDismissRequest: () -> Unit = {}, onSendClick: (String) -> Unit = {}) {
+    val emailText = rememberSaveable { mutableStateOf("") }
+
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.fillMaxSize(),
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Scaffold(topBar = {
+            TopAppBar(title = { Text(stringResource(R.string.reset_password)) }, navigationIcon = {
+                IconButton(onClick = onDismissRequest) {
+                    Icon(
+                        imageVector = Icons.Outlined.Close, contentDescription = null
+                    )
+                }
+            })
+        }) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    stringResource(R.string.reset_email_description),
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 20.dp, bottom = 10.dp),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+
+                OutlinedTextField(
+                    value = emailText.value,
+                    onValueChange = { emailText.value = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.email)) },
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(vertical = 10.dp)
+                )
+
+                Button(
+                    onClick = { onSendClick(emailText.value) },
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp)
+                ) {
+                    Text(stringResource(R.string.send))
+                }
+            }
+        }
+    }
+}
+
 @Composable
 @Preview(showBackground = true)
 private fun LoginPreview() {
@@ -155,5 +238,13 @@ private fun LoginPreview() {
                 .fillMaxHeight()
                 .fillMaxWidth()
         )
+    }
+}
+
+@Composable
+@Preview
+private fun ResetPasswordDialogPreview() {
+    PKPAndroidTheme {
+        ResetPasswordDialog()
     }
 }

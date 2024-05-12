@@ -106,4 +106,12 @@ class AuthenticationRepository {
             it.copy(userMessage = null)
         }
     }
+
+    fun resetPassword(email: String) {
+        firebaseAuth.sendPasswordResetEmail(email)
+
+        _authentication.update {
+            it.copy(userMessage = R.string.reset_password_email_sent)
+        }
+    }
 }

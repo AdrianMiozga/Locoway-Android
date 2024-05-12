@@ -174,6 +174,16 @@ class AuthenticationViewModel(
         }
     }
 
+    fun resetPassword(email: String): Boolean {
+        // TODO: Add UX
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return false
+        }
+
+        authenticationRepository.resetPassword(email)
+        return true
+    }
+
     companion object {
         private val TAG = AuthenticationViewModel::class.java.simpleName
 
