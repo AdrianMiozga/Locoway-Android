@@ -192,6 +192,7 @@ fun Register(
 
         OutlinedButton(onClick = {
             // TODO: Add nonce
+            //  https://developer.android.com/training/sign-in/credential-manager#set-nonce
             val signInWithGoogle =
                 GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
                     .build()
