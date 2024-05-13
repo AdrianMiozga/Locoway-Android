@@ -40,8 +40,8 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
@@ -60,7 +60,7 @@ fun AuthenticationScreen(
     pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
     onSignIn: () -> Unit = {},
-    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
+    authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val coroutineScope = rememberCoroutineScope()

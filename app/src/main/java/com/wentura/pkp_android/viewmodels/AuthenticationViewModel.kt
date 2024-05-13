@@ -6,22 +6,19 @@ import androidx.annotation.StringRes
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialResponse
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.wentura.pkp_android.MainApplication
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.AuthenticationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class AuthenticationUiState(
     val isSignedIn: Boolean = false,
@@ -32,9 +29,14 @@ data class AuthenticationUiState(
     @StringRes val userMessage: Int? = null,
 )
 
-class AuthenticationViewModel(
+@HiltViewModel
+class AuthenticationViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
+    companion object {
+        private val TAG = AuthenticationViewModel::class.java.simpleName
+    }
+
     private val _uiState = MutableStateFlow(AuthenticationUiState())
     val uiState: StateFlow<AuthenticationUiState> = _uiState.asStateFlow()
 
@@ -182,20 +184,5 @@ class AuthenticationViewModel(
 
         authenticationRepository.resetPassword(email)
         return true
-    }
-
-    companion object {
-        private val TAG = AuthenticationViewModel::class.java.simpleName
-
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val authenticationRepository =
-                    (this[APPLICATION_KEY] as MainApplication).authenticationRepository
-
-                AuthenticationViewModel(
-                    authenticationRepository = authenticationRepository,
-                )
-            }
-        }
     }
 }

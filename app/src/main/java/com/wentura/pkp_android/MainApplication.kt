@@ -1,8 +1,7 @@
 package com.wentura.pkp_android
 
 import android.app.Application
-import com.wentura.pkp_android.data.AuthenticationRepository
+import dagger.hilt.android.HiltAndroidApp
 
-class MainApplication : Application() {
-    val authenticationRepository by lazy { AuthenticationRepository() }
-}
+@HiltAndroidApp
+class MainApplication : Application()

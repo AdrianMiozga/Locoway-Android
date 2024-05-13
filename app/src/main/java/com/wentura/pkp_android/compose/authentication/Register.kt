@@ -34,8 +34,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
@@ -45,7 +45,7 @@ import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 fun Register(
     modifier: Modifier = Modifier,
     onSignUp: () -> Unit = {},
-    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
+    authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
     val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
 

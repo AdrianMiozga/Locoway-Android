@@ -12,8 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthenticationRepository {
+@Singleton
+class AuthenticationRepository @Inject constructor() {
     private val firebaseAuth = Firebase.auth
 
     private val _authentication = MutableStateFlow(Authentication(isUserSignedIn()))

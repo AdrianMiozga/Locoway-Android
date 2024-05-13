@@ -2,26 +2,24 @@ package com.wentura.pkp_android.viewmodels
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.wentura.pkp_android.MainApplication
 import com.wentura.pkp_android.data.Authentication
 import com.wentura.pkp_android.data.AuthenticationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class HomeUiState(
     val isSignedIn: Boolean = false,
     @StringRes val userMessage: Int? = null,
 )
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     private val _uiState =
@@ -43,20 +41,5 @@ class HomeViewModel(
 
     fun snackbarMessageShown() {
         authenticationRepository.clearMessage()
-    }
-
-    companion object {
-        private val TAG = HomeViewModel::class.java.simpleName
-
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val authenticationRepository =
-                    (this[APPLICATION_KEY] as MainApplication).authenticationRepository
-
-                HomeViewModel(
-                    authenticationRepository = authenticationRepository,
-                )
-            }
-        }
     }
 }

@@ -24,8 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.viewmodels.MyAccountViewModel
@@ -33,7 +33,7 @@ import com.wentura.pkp_android.viewmodels.MyAccountViewModel
 @Composable
 fun MyAccountScreen(
     onUpClick: () -> Unit = {},
-    myAccountViewModel: MyAccountViewModel = viewModel(factory = MyAccountViewModel.Factory),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
 

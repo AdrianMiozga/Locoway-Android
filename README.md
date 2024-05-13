@@ -22,6 +22,10 @@
 
 - Single activity
 
+### Libraries
+
+- [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - dependency injection
+
 ### Static analysis tools
 
 - [Android Linter](https://developer.android.com/studio/write/lint)
