@@ -15,7 +15,7 @@
   - [Navigation](https://developer.android.com/guide/navigation) - navigation in application
   - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - state holder
 - [Material Design 3](https://m3.material.io/)
-- Gradle
+- [Gradle](https://gradle.org/)
   - [Version Catalog](https://docs.gradle.org/current/userguide/platforms.html)
 
 ### Architecture
@@ -26,6 +26,6 @@
 
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - dependency injection
 
-### Static analysis tools
+### Static Analysis Tools
 
 - [Android Linter](https://developer.android.com/studio/write/lint)
