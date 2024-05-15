@@ -49,19 +49,41 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.viewmodels.HomeUiState
 import com.wentura.pkp_android.viewmodels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Calendar
 
 @Composable
 fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel(),
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onMyAccountClick: () -> Unit = {},
-    homeViewModel: HomeViewModel = hiltViewModel(),
+) {
+    HomeScreen(
+        homeViewModel.uiState,
+        drawerState,
+        onSearchClick,
+        onLoginClick,
+        onMyAccountClick,
+        homeViewModel::snackbarMessageShown
+    )
+}
+
+@Composable
+fun HomeScreen(
+    uiState: StateFlow<HomeUiState>,
+    drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
+    onSearchClick: () -> Unit = {},
+    onLoginClick: () -> Unit = {},
+    onMyAccountClick: () -> Unit = {},
+    onSnackBarMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -90,9 +112,9 @@ fun HomeScreen(
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
-            val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
+            val state = uiState.collectAsStateWithLifecycle()
 
-            if (uiState.value.isSignedIn) {
+            if (state.value.isSignedIn) {
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.my_account)) },
                     icon = {
@@ -155,12 +177,12 @@ fun HomeScreen(
                 onSearchClick = onSearchClick,
             )
 
-            val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
+            val state = uiState.collectAsStateWithLifecycle()
 
-            uiState.value.userMessage?.let { message ->
+            state.value.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
-                    homeViewModel.snackbarMessageShown()
+                    onSnackBarMessageShown()
                 }
             }
         }
@@ -291,7 +313,9 @@ fun Fields(
 @Composable
 fun HomePreview() {
     PKPAndroidTheme {
-        HomeScreen()
+        HomeScreen(
+            uiState = MutableStateFlow(HomeUiState(isSignedIn = false))
+        )
     }
 }
 
@@ -299,6 +323,11 @@ fun HomePreview() {
 @Composable
 fun NavigationDrawerPreview() {
     PKPAndroidTheme {
-        HomeScreen()
+        HomeScreen(
+            uiState = MutableStateFlow(HomeUiState(isSignedIn = false)),
+            drawerState = rememberDrawerState(
+                initialValue = DrawerValue.Open
+            )
+        )
     }
 }

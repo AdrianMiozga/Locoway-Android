@@ -28,18 +28,36 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.viewmodels.MyAccountUiState
 import com.wentura.pkp_android.viewmodels.MyAccountViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun MyAccountScreen(
-    onUpClick: () -> Unit = {},
     myAccountViewModel: MyAccountViewModel = hiltViewModel(),
+    onUpClick: () -> Unit = {},
+) {
+    MyAccountScreen(
+        myAccountViewModel.uiState,
+        onUpClick,
+        myAccountViewModel::deleteAccount,
+        myAccountViewModel::signOut
+    )
+}
+
+@Composable
+fun MyAccountScreen(
+    uiState: StateFlow<MyAccountUiState>,
+    onUpClick: () -> Unit = {},
+    onAccountDelete: () -> Unit = {},
+    onSignOut: () -> Unit = {},
 ) {
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
 
-    val uiState = myAccountViewModel.uiState.collectAsStateWithLifecycle()
+    val state = uiState.collectAsStateWithLifecycle()
 
-    if (!uiState.value.isSignedIn) {
+    if (!state.value.isSignedIn) {
         onUpClick()
     }
 
@@ -52,7 +70,7 @@ fun MyAccountScreen(
                 AccountDeletionDialog(onDismissRequest = { openAlertDialog.value = false },
                     onConfirmation = {
                         openAlertDialog.value = false
-                        myAccountViewModel.deleteAccount()
+                        onAccountDelete()
                     })
             }
 
@@ -60,7 +78,7 @@ fun MyAccountScreen(
                 stringResource(R.string.email_address), style = MaterialTheme.typography.titleMedium
             )
 
-            val email = myAccountViewModel.uiState.collectAsStateWithLifecycle()
+            val email = uiState.collectAsStateWithLifecycle()
             Text(email.value.email)
 
             Row(
@@ -79,7 +97,7 @@ fun MyAccountScreen(
                 }
 
                 OutlinedButton(onClick = {
-                    myAccountViewModel.signOut()
+                    onSignOut()
                 }) {
                     Text(stringResource(R.string.logout))
                 }
@@ -102,6 +120,6 @@ fun MyAccountTopAppBar(onUpClick: () -> Unit) {
 @Composable
 fun MyAccountPreview() {
     PKPAndroidTheme {
-        MyAccountScreen()
+        MyAccountScreen(MutableStateFlow(MyAccountUiState(isSignedIn = true, email = "user@email.com")))
     }
 }

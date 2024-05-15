@@ -3,7 +3,6 @@ package com.wentura.pkp_android.viewmodels
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wentura.pkp_android.data.Authentication
 import com.wentura.pkp_android.data.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +22,8 @@ class HomeViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     private val _uiState =
-        MutableStateFlow(Authentication(isSignedIn = authenticationRepository.isUserSignedIn()))
-    val uiState: StateFlow<Authentication> = _uiState.asStateFlow()
+        MutableStateFlow(HomeUiState(isSignedIn = authenticationRepository.isUserSignedIn()))
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {

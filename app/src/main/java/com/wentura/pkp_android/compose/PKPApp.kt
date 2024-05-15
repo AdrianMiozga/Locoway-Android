@@ -8,7 +8,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,7 +15,6 @@ import com.wentura.pkp_android.compose.authentication.AuthenticationScreen
 import com.wentura.pkp_android.compose.home.HomeScreen
 import com.wentura.pkp_android.compose.myaccount.MyAccountScreen
 import com.wentura.pkp_android.compose.search.SearchScreen
-import com.wentura.pkp_android.ui.PKPAndroidTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,23 +64,13 @@ fun PKPApp() {
         }
 
         composable(Screen.Login.route) {
-            AuthenticationScreen(
-                onUpClick = { navController.navigateUp() },
+            AuthenticationScreen(onUpClick = { navController.navigateUp() },
                 onSignUp = { navController.navigateUp() },
-                onSignIn = { navController.navigateUp() }
-            )
+                onSignIn = { navController.navigateUp() })
         }
 
         composable(Screen.MyAccount.route) {
             MyAccountScreen(onUpClick = { navController.navigateUp() })
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PKPAppPreview() {
-    PKPAndroidTheme {
-        PKPApp()
     }
 }

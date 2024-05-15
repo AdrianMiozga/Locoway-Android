@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.wentura.pkp_android.compose.PKPApp
 import com.wentura.pkp_android.ui.PKPAndroidTheme
@@ -25,13 +23,5 @@ class MainActivity : ComponentActivity() {
                 PKPApp()
             }
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun HomePreview() {
-    PKPAndroidTheme {
-        PKPApp()
     }
 }

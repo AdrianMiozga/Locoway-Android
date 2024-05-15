@@ -56,5 +56,5 @@ fun DatePicker(
 @Preview
 @Composable
 private fun DatePickerPreview() {
-    DatePicker(mutableStateOf(true), mutableStateOf(""))
+    DatePicker(remember { mutableStateOf(true) }, remember { mutableStateOf("") })
 }
