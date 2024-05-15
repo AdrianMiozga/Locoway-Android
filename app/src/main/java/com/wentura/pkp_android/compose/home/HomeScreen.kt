@@ -65,6 +65,7 @@ fun HomeScreen(
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onMyAccountClick: () -> Unit = {},
+    onMyTicketsClick: () -> Unit = {},
 ) {
     HomeScreen(
         homeViewModel.uiState,
@@ -72,6 +73,7 @@ fun HomeScreen(
         onSearchClick,
         onLoginClick,
         onMyAccountClick,
+        onMyTicketsClick,
         homeViewModel::snackbarMessageShown
     )
 }
@@ -83,6 +85,7 @@ fun HomeScreen(
     onSearchClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
     onMyAccountClick: () -> Unit = {},
+    onMyTicketsClick: () -> Unit = {},
     onSnackBarMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -136,7 +139,7 @@ fun HomeScreen(
                         )
                     },
                     selected = false,
-                    onClick = {},
+                    onClick = onMyTicketsClick,
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
 

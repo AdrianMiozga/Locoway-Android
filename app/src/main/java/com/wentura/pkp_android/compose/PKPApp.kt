@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.wentura.pkp_android.compose.authentication.AuthenticationScreen
 import com.wentura.pkp_android.compose.home.HomeScreen
 import com.wentura.pkp_android.compose.myaccount.MyAccountScreen
+import com.wentura.pkp_android.compose.mytickets.MyTicketsScreen
 import com.wentura.pkp_android.compose.search.SearchScreen
 import kotlinx.coroutines.launch
 
@@ -55,8 +56,13 @@ fun PKPApp() {
                 scope.launch {
                     drawerState.close()
                 }
-            }
-            )
+            }, onMyTicketsClick = {
+                navController.navigate(Screen.MyTickets.route)
+
+                scope.launch {
+                    drawerState.close()
+                }
+            })
         }
 
         composable(Screen.Search.route) {
@@ -71,6 +77,10 @@ fun PKPApp() {
 
         composable(Screen.MyAccount.route) {
             MyAccountScreen(onUpClick = { navController.navigateUp() })
+        }
+
+        composable(Screen.MyTickets.route) {
+            MyTicketsScreen(onUpClick = { navController.navigateUp() })
         }
     }
 }

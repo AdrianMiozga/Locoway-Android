@@ -45,4 +45,5 @@
     <string name="send">Wyślij</string>
     <string name="reset_email_description"><![CDATA[Wpisz adres e-mail użyty przy rejestracji, a wyślemy Ci instrukcję do zresetowania hasła.]]></string>
     <string name="reset_password_email_sent">Wysłano e-mail</string>
+    <string name="no_tickets">Brak biletów</string>
 </resources>
