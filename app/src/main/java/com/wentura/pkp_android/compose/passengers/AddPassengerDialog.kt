@@ -34,20 +34,44 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.viewmodels.AddPassengerUiState
 import com.wentura.pkp_android.viewmodels.AddPassengerViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+@Composable
+fun AddPassengerDialog(
+    onDismissRequest: () -> Unit = {},
+    onSaveClicked: () -> Unit = {},
+    addPassengerViewModel: AddPassengerViewModel = hiltViewModel(),
+) {
+    AddPassengerDialog(uiState = addPassengerViewModel.uiState,
+        onDismissRequest = onDismissRequest,
+        onSaveClick = addPassengerViewModel::addPassenger,
+        onSaveClicked = onSaveClicked,
+        onPassengerSaved = addPassengerViewModel::passengerSaved,
+        updateName = { addPassengerViewModel.updateName(it) },
+        changeDiscount = { addPassengerViewModel.changeDiscount(it) },
+        toggleREGIOCard = { addPassengerViewModel.toggleREGIOCard() })
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPassengerDialog(
+    uiState: StateFlow<AddPassengerUiState>,
     onDismissRequest: () -> Unit = {},
     onSaveClick: () -> Unit = {},
-    addPassengerViewModel: AddPassengerViewModel = hiltViewModel(),
+    onSaveClicked: () -> Unit = {},
+    onPassengerSaved: () -> Unit = {},
+    updateName: (String) -> Unit = {},
+    changeDiscount: (Int) -> Unit = {},
+    toggleREGIOCard: () -> Unit = {},
 ) {
-    val uiState = addPassengerViewModel.uiState.collectAsStateWithLifecycle()
+    val state = uiState.collectAsStateWithLifecycle()
 
-    if (uiState.value.savedPassenger) {
-        onSaveClick()
-        addPassengerViewModel.passengerSaved()
+    if (state.value.savedPassenger) {
+        onSaveClicked()
+        onPassengerSaved()
     }
 
     BasicAlertDialog(
@@ -63,15 +87,14 @@ fun AddPassengerDialog(
                     )
                 }
             }, actions = {
-                TextButton(onClick = { addPassengerViewModel.addPassenger() }) {
+                TextButton(onClick = { onSaveClick() }) {
                     Text(stringResource(R.string.save))
                 }
             })
         }) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                OutlinedTextField(
-                    value = uiState.value.name,
-                    onValueChange = { addPassengerViewModel.updateName(it) },
+                OutlinedTextField(value = state.value.name,
+                    onValueChange = { updateName(it) },
                     label = { Text(stringResource(R.string.full_name)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
@@ -99,8 +122,8 @@ fun AddPassengerDialog(
                                 .padding(horizontal = 20.dp)
                         ) {
                             Text(discounts[discount])
-                            RadioButton(selected = uiState.value.selectedDiscount == discount,
-                                onClick = { addPassengerViewModel.changeDiscount(discount) })
+                            RadioButton(selected = state.value.selectedDiscount == discount,
+                                onClick = { changeDiscount(discount) })
                         }
                     }
                 }
@@ -119,8 +142,9 @@ fun AddPassengerDialog(
                         .padding(horizontal = 20.dp)
                 ) {
                     Text(stringResource(R.string.regio_card))
-                    Checkbox(checked = uiState.value.hasREGIOCard,
-                        onCheckedChange = { addPassengerViewModel.toggleREGIOCard() })
+                    Checkbox(
+                        checked = state.value.hasREGIOCard,
+                        onCheckedChange = { toggleREGIOCard() })
                 }
             }
         }
@@ -130,5 +154,5 @@ fun AddPassengerDialog(
 @Preview(showBackground = true)
 @Composable
 fun AddPassengerDialogPreview() {
-    AddPassengerDialog()
+    AddPassengerDialog(uiState = MutableStateFlow(AddPassengerUiState()))
 }

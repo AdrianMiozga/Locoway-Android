@@ -66,7 +66,7 @@ fun PassengersScreen(
 
     if (openAddPassengerDialog.value) {
         AddPassengerDialog(onDismissRequest = { openAddPassengerDialog.value = false },
-            onSaveClick = {
+            onSaveClicked = {
                 openAddPassengerDialog.value = false
                 refreshPassengers()
             })
