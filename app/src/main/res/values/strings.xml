@@ -46,4 +46,20 @@
     <string name="reset_email_description"><![CDATA[Wpisz adres e-mail użyty przy rejestracji, a wyślemy Ci instrukcję do zresetowania hasła.]]></string>
     <string name="reset_password_email_sent">Wysłano e-mail</string>
     <string name="no_tickets">Brak biletów</string>
+    <string name="add_new_passenger">Add new passenger</string>
+    <string name="add_passenger">Dodaj pasażera</string>
+    <string name="save">Zapisz</string>
+    <string name="full_name">Imię i nazwisko</string>
+    <string name="choose_discount">Wybierz taryfę</string>
+    <string name="optionals">Opcje dodatkowe</string>
+    <string name="regio_card">REGIOkarta</string>
+    <string name="no_passengers">Brak pasażerów</string>
+    <string name="edit_passenger">Edytuj pasażera</string>
+    <string name="passenger_with_regio_card">%s z REGIOkartą</string>
+
+    <string-array name="discounts">
+        <item>Normalny</item>
+        <item>Student/doktorant (51%)</item>
+        <item>Dzieci i młodzież (37%)</item>
+    </string-array>
 </resources>

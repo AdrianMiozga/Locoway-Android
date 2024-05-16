@@ -55,6 +55,8 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -82,6 +84,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.core.splashscreen)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -103,6 +106,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     // Hilt
     implementation(libs.hilt.android)
