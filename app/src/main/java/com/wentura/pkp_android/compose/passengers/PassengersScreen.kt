@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -37,7 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.Passenger
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.PassengerUiState
+import com.wentura.pkp_android.viewmodels.PassengersUiState
 import com.wentura.pkp_android.viewmodels.PassengersViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,26 +51,29 @@ fun PassengersScreen(
     PassengersScreen(
         uiState = passengersViewModel.uiState,
         onUpClick = onUpClick,
-        refreshPassengers = passengersViewModel::getPassengers
+        onEditPassenger = { passengersViewModel.setCurrentPassenger(it) },
     )
 }
 
 @Composable
 fun PassengersScreen(
-    uiState: StateFlow<PassengerUiState>,
+    uiState: StateFlow<PassengersUiState>,
     onUpClick: () -> Unit = {},
-    refreshPassengers: () -> Unit = {},
+    onEditPassenger: (Int) -> Unit = {},
 ) {
     val openAddPassengerDialog = rememberSaveable { mutableStateOf(false) }
+    val openEditPassengerDialog = rememberSaveable { mutableStateOf(false) }
 
-    val state = uiState.collectAsStateWithLifecycle()
+    val state by uiState.collectAsStateWithLifecycle()
 
     if (openAddPassengerDialog.value) {
-        AddPassengerDialog(onDismissRequest = { openAddPassengerDialog.value = false },
-            onSaveClicked = {
-                openAddPassengerDialog.value = false
-                refreshPassengers()
-            })
+        AddPassengerDialog(onDismissRequest = { openAddPassengerDialog.value = false })
+    }
+
+    if (openEditPassengerDialog.value) {
+        EditPassengerDialog(onDismissRequest = {
+            openEditPassengerDialog.value = false
+        })
     }
 
     Scaffold(topBar = { PassengersTopAppBar(onUpClick) }, floatingActionButton = {
@@ -82,31 +86,36 @@ fun PassengersScreen(
         }
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            if (state.value.isLoading) {
+            if (state.isLoading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             } else {
                 Spacer(modifier = Modifier.height(4.dp))
+            }
 
-                LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
-                    if (state.value.passengers.isNotEmpty()) {
-                        items(state.value.passengers.size) { passenger ->
-                            PassengerListItem(passenger = state.value.passengers[passenger])
+            LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
+                if (state.passengers.isNotEmpty() || state.isLoading) {
+                    items(state.passengers.size) { passenger ->
+                        PassengerListItem(
+                            passenger = state.passengers[passenger],
+                            onEditPassenger = {
+                                openEditPassengerDialog.value = true
+                                onEditPassenger(passenger)
+                            })
 
-                            if (passenger != state.value.passengers.size - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(horizontal = 8.dp)
-                                )
-                            }
+                        if (passenger != state.passengers.size - 1) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
                         }
-                    } else {
-                        item {
-                            Column(
-                                modifier = Modifier.fillParentMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(stringResource(R.string.no_passengers))
-                            }
+                    }
+                } else {
+                    item {
+                        Column(
+                            modifier = Modifier.fillParentMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(stringResource(R.string.no_passengers))
                         }
                     }
                 }
@@ -116,7 +125,7 @@ fun PassengersScreen(
 }
 
 @Composable
-fun PassengerListItem(passenger: Passenger) {
+fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -142,7 +151,7 @@ fun PassengerListItem(passenger: Passenger) {
             }
         }
 
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onEditPassenger) {
             Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit_passenger))
         }
     }
@@ -168,8 +177,8 @@ fun PassengersScreenPreview() {
     PKPAndroidTheme {
         PassengersScreen(
             uiState = MutableStateFlow(
-                PassengerUiState(
-                    listOf(
+                PassengersUiState(
+                    passengers = listOf(
                         Passenger("Adam Majewski", true, 0),
                         Passenger("Marzena Nowakowska", false, 1),
                         Passenger("Roman Zawadzki", false, 2)

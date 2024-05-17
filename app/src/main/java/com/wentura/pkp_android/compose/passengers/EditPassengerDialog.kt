@@ -1,28 +1,38 @@
 package com.wentura.pkp_android.compose.passengers
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -40,36 +50,53 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun AddPassengerDialog(
+fun EditPassengerDialog(
     onDismissRequest: () -> Unit = {},
     passengerViewModel: PassengersViewModel = hiltViewModel(),
 ) {
-    AddPassengerDialog(uiState = passengerViewModel.uiState,
+    EditPassengerDialog(
+        uiState = passengerViewModel.uiState,
         onDismissRequest = {
             onDismissRequest()
             passengerViewModel.resetCurrentPassenger()
         },
         onSaveClick = {
             onDismissRequest()
-            passengerViewModel.addPassenger()
+            passengerViewModel.updatePassenger()
+            passengerViewModel.resetCurrentPassenger()
+        },
+        onDeletePassenger = {
+            onDismissRequest()
+            passengerViewModel.deletePassenger()
             passengerViewModel.resetCurrentPassenger()
         },
         updateName = { passengerViewModel.updateName(it) },
         changeDiscount = { passengerViewModel.changeDiscount(it) },
-        toggleREGIOCard = { passengerViewModel.toggleREGIOCard() })
+        toggleREGIOCard = { passengerViewModel.toggleREGIOCard() },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPassengerDialog(
+fun EditPassengerDialog(
     uiState: StateFlow<PassengersUiState>,
     onDismissRequest: () -> Unit = {},
     onSaveClick: () -> Unit = {},
+    onDeletePassenger: () -> Unit = {},
     updateName: (String) -> Unit = {},
     changeDiscount: (Int) -> Unit = {},
     toggleREGIOCard: () -> Unit = {},
 ) {
     val state by uiState.collectAsStateWithLifecycle()
+
+    val openConfirmationDialog = rememberSaveable { mutableStateOf(false) }
+
+    if (openConfirmationDialog.value) {
+        ConfirmationDialog(state.currentPassenger.name, onDismissRequest = {
+            openConfirmationDialog.value = false
+
+        }, onConfirmationRequest = onDeletePassenger)
+    }
 
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
@@ -77,7 +104,7 @@ fun AddPassengerDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.add_passenger)) }, navigationIcon = {
+            TopAppBar(title = { Text(stringResource(R.string.edit_passenger)) }, navigationIcon = {
                 IconButton(onClick = onDismissRequest) {
                     Icon(
                         imageVector = Icons.Outlined.Close, contentDescription = null
@@ -143,6 +170,63 @@ fun AddPassengerDialog(
                         Checkbox(checked = state.currentPassenger.hasREGIOCard,
                             onCheckedChange = { toggleREGIOCard() })
                     }
+
+                    OutlinedButton(
+                        onClick = { openConfirmationDialog.value = true },
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp, vertical = 10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            stringResource(R.string.delete), color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConfirmationDialog(
+    name: String,
+    onDismissRequest: () -> Unit = {},
+    onConfirmationRequest: () -> Unit = {},
+) {
+    BasicAlertDialog(onDismissRequest = {}) {
+        Surface(
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight(),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = AlertDialogDefaults.TonalElevation
+        ) {
+            Column(modifier = Modifier.padding(24.dp)) {
+                Text(
+                    stringResource(R.string.passenger_deletion),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    stringResource(R.string.are_you_sure_you_want_to_delete_passenger, name),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(onClick = onDismissRequest) {
+                        Text(stringResource(R.string.cancel))
+                    }
+
+                    TextButton(
+                        onClick = onConfirmationRequest
+                    ) {
+                        Text(stringResource(R.string.ok))
+                    }
                 }
             }
         }
@@ -151,6 +235,12 @@ fun AddPassengerDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun AddPassengerDialogPreview() {
-    AddPassengerDialog(uiState = MutableStateFlow(PassengersUiState()))
+fun EditPassengerDialogPreview() {
+    EditPassengerDialog(uiState = MutableStateFlow(PassengersUiState()))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConfirmationDialogPreview() {
+    ConfirmationDialog("Adam Majewski")
 }

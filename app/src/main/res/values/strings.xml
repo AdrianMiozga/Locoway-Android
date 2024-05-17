@@ -46,7 +46,7 @@
     <string name="reset_email_description"><![CDATA[Wpisz adres e-mail użyty przy rejestracji, a wyślemy Ci instrukcję do zresetowania hasła.]]></string>
     <string name="reset_password_email_sent">Wysłano e-mail</string>
     <string name="no_tickets">Brak biletów</string>
-    <string name="add_new_passenger">Add new passenger</string>
+    <string name="add_new_passenger">Dodaj nowego pasażera</string>
     <string name="add_passenger">Dodaj pasażera</string>
     <string name="save">Zapisz</string>
     <string name="full_name">Imię i nazwisko</string>
@@ -56,6 +56,8 @@
     <string name="no_passengers">Brak pasażerów</string>
     <string name="edit_passenger">Edytuj pasażera</string>
     <string name="passenger_with_regio_card">%s z REGIOkartą</string>
+    <string name="are_you_sure_you_want_to_delete_passenger">Czy na pewno chcesz usunąć pasażera %s?</string>
+    <string name="passenger_deletion">Usuwanie pasażera</string>
 
     <string-array name="discounts">
         <item>Normalny</item>
