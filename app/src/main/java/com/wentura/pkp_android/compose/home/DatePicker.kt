@@ -15,14 +15,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.wentura.pkp_android.R
-import java.text.DateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
-import java.util.Date
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun DatePicker(
-    showDatePicker: MutableState<Boolean>, departureDate: MutableState<String>,
+    showDatePicker: MutableState<Boolean>, departureDate: MutableState<LocalDate>,
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
@@ -41,8 +42,8 @@ fun DatePicker(
     DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
         TextButton(onClick = {
             showDatePicker.value = false
-            departureDate.value =
-                DateFormat.getDateInstance().format(Date(datePickerState.selectedDateMillis!!))
+            departureDate.value = Instant.ofEpochMilli(datePickerState.selectedDateMillis!!)
+                .atZone(ZoneId.systemDefault()).toLocalDate()
         }, enabled = confirmEnabled) { Text(stringResource(R.string.ok)) }
     }, dismissButton = {
         TextButton(onClick = { showDatePicker.value = false }) {
@@ -53,8 +54,8 @@ fun DatePicker(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun DatePickerPreview() {
-    DatePicker(remember { mutableStateOf(true) }, remember { mutableStateOf("") })
+    DatePicker(remember { mutableStateOf(true) }, remember { mutableStateOf(LocalDate.now()) })
 }

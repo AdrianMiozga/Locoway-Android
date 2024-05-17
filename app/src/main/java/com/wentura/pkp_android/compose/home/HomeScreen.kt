@@ -47,8 +47,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.util.Calendar
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun HomeScreen(
@@ -104,17 +106,8 @@ fun HomeScreen(
             var departureStationText by rememberSaveable { mutableStateOf("") }
             var arrivalStationText by rememberSaveable { mutableStateOf("") }
 
-            val departureDate = rememberSaveable {
-                mutableStateOf(
-                    DateFormat.getDateInstance().format(Calendar.getInstance().time)
-                )
-            }
-
-            val departureTime = rememberSaveable {
-                mutableStateOf(
-                    DateFormat.getTimeInstance(DateFormat.SHORT).format(Calendar.getInstance().time)
-                )
-            }
+            val departureDate = rememberSaveable { mutableStateOf(LocalDate.now()) }
+            val departureTime = rememberSaveable { mutableStateOf(LocalTime.now()) }
 
             val showDatePicker = rememberSaveable { mutableStateOf(false) }
 
@@ -132,8 +125,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedTextField(
-                    label = { Text(stringResource(R.string.departure_station)) },
+                OutlinedTextField(label = { Text(stringResource(R.string.departure_station)) },
                     onValueChange = { departureStationText = it },
                     value = departureStationText,
                     singleLine = true,
@@ -143,8 +135,7 @@ fun HomeScreen(
                         .fillMaxWidth()
                 )
 
-                OutlinedTextField(
-                    label = { Text(stringResource(R.string.arrival_station)) },
+                OutlinedTextField(label = { Text(stringResource(R.string.arrival_station)) },
                     onValueChange = { arrivalStationText = it },
                     value = arrivalStationText,
                     singleLine = true,
@@ -157,7 +148,11 @@ fun HomeScreen(
                 Row {
                     OutlinedTextField(
                         label = { Text(stringResource(R.string.departure_date)) },
-                        value = departureDate.value,
+                        value = departureDate.value.format(
+                            DateTimeFormatter.ofLocalizedDate(
+                                FormatStyle.LONG
+                            )
+                        ),
                         onValueChange = {},
                         readOnly = true,
                         enabled = false,
@@ -177,7 +172,11 @@ fun HomeScreen(
 
                     OutlinedTextField(
                         label = { Text(stringResource(R.string.departure_time)) },
-                        value = departureTime.value,
+                        value = departureTime.value.format(
+                            DateTimeFormatter.ofLocalizedTime(
+                                FormatStyle.SHORT
+                            )
+                        ),
                         onValueChange = {},
                         readOnly = true,
                         enabled = false,

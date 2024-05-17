@@ -70,7 +70,7 @@ fun TimePickerDialog(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun TimePickerDialogPreview() {
     TimePickerDialog(onDismissRequest = {}, confirmButton = {
