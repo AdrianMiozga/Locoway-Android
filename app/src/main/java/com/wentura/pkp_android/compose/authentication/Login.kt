@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -58,13 +59,13 @@ fun Login(
     modifier: Modifier = Modifier, onSignIn: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
-    val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
     val emailText = rememberSaveable { mutableStateOf("") }
-    val isEmailWrong = uiState.value.isEmailWrong
+    val isEmailWrong = uiState.isEmailWrong
 
     val passwordText = rememberSaveable { mutableStateOf("") }
-    val isPasswordWrong = uiState.value.isPasswordWrong
+    val isPasswordWrong = uiState.isPasswordWrong
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
 
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
@@ -77,7 +78,7 @@ fun Login(
                 }
             })
     }
-    if (uiState.value.isSignedIn) {
+    if (uiState.isSignedIn) {
         onSignIn()
     }
 

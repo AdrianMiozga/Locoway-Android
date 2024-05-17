@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -55,9 +56,9 @@ fun MyAccountScreen(
 ) {
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
 
-    val state = uiState.collectAsStateWithLifecycle()
+    val state by uiState.collectAsStateWithLifecycle()
 
-    if (!state.value.isSignedIn) {
+    if (!state.isSignedIn) {
         onUpClick()
     }
 
@@ -78,8 +79,7 @@ fun MyAccountScreen(
                 stringResource(R.string.email_address), style = MaterialTheme.typography.titleMedium
             )
 
-            val email = uiState.collectAsStateWithLifecycle()
-            Text(email.value.email)
+            Text(state.email)
 
             Row(
                 modifier = Modifier
@@ -120,6 +120,13 @@ fun MyAccountTopAppBar(onUpClick: () -> Unit) {
 @Composable
 fun MyAccountPreview() {
     PKPAndroidTheme {
-        MyAccountScreen(MutableStateFlow(MyAccountUiState(isSignedIn = true, email = "user@email.com")))
+        MyAccountScreen(
+            MutableStateFlow(
+                MyAccountUiState(
+                    isSignedIn = true,
+                    email = "user@email.com"
+                )
+            )
+        )
     }
 }

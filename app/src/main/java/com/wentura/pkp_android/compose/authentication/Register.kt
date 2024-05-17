@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -47,25 +48,25 @@ fun Register(
     onSignUp: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
-    val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
     val emailText = rememberSaveable { mutableStateOf("") }
-    val isEmailWrong = uiState.value.isEmailWrong
+    val isEmailWrong = uiState.isEmailWrong
 
     val passwordText = rememberSaveable { mutableStateOf("") }
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
-    val isPasswordWrong = uiState.value.isPasswordWrong
+    val isPasswordWrong = uiState.isPasswordWrong
 
     val passwordConfirmationText = rememberSaveable { mutableStateOf("") }
     val passwordConfirmationVisible = rememberSaveable { mutableStateOf(false) }
-    val isConfirmationPasswordWrong = uiState.value.isConfirmationPasswordWrong
+    val isConfirmationPasswordWrong = uiState.isConfirmationPasswordWrong
 
     val context = LocalContext.current
     val activity = context.findActivity()
 
     val coroutineScope = rememberCoroutineScope()
 
-    if (uiState.value.isSignedIn) {
+    if (uiState.isSignedIn) {
         onSignUp()
     }
 
@@ -108,7 +109,7 @@ fun Register(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
             ),
-            isError = uiState.value.isPasswordWrong,
+            isError = uiState.isPasswordWrong,
             supportingText = {
                 if (isPasswordWrong) Text(stringResource(R.string.password_too_short)) else Text(
                     ""

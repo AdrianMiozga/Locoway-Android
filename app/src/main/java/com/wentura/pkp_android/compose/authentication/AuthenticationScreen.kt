@@ -28,6 +28,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -71,9 +72,9 @@ fun AuthenticationScreen(
         SnackbarHost(hostState = snackbarHostState)
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            val uiState = authenticationViewModel.uiState.collectAsStateWithLifecycle()
+            val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
-            if (uiState.value.isLoading) {
+            if (uiState.isLoading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             } else {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -114,7 +115,7 @@ fun AuthenticationScreen(
                 }
             }
 
-            uiState.value.userMessage?.let { message ->
+            uiState.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
                     authenticationViewModel.snackbarMessageShown()
