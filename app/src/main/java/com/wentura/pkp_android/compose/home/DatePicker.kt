@@ -15,10 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.wentura.pkp_android.R
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.Year
 import java.time.ZoneId
-import java.util.Calendar
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,11 +28,13 @@ fun DatePicker(
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return utcTimeMillis >= (Calendar.getInstance().timeInMillis - (24 * 60 * 60 * 1000))
+            val time = Instant.now().minus(Duration.ofDays(1)).toEpochMilli()
+
+            return utcTimeMillis >= time
         }
 
         override fun isSelectableYear(year: Int): Boolean {
-            return year >= Calendar.getInstance().get(Calendar.YEAR)
+            return year >= Year.now().value
         }
     })
 
