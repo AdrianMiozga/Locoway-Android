@@ -20,6 +20,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.Year
 import java.time.ZoneId
+import androidx.compose.material3.DatePicker as AndroidDatePicker
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +54,7 @@ fun DatePicker(
             Text(stringResource(R.string.cancel))
         }
     }) {
-        androidx.compose.material3.DatePicker(state = datePickerState)
+        AndroidDatePicker(state = datePickerState)
     }
 }
 
