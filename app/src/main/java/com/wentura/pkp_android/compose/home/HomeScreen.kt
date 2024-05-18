@@ -30,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -71,8 +70,13 @@ fun HomeScreen(
         onMyAccountClick = onMyAccountClick,
         onMyTicketsClick = onMyTicketsClick,
         onPassengersClick = onPassengersClick,
-        searchStations = homeViewModel::searchStations,
-        onStationClick = homeViewModel::clearStations,
+        onDepartureStationClick = homeViewModel::updateDepartureStation,
+        onArrivalStationClick = homeViewModel::updateArrivalStation,
+        toggleDepartureStationDialog = homeViewModel::toggleDepartureStationDialog,
+        toggleArrivalStationDialog = homeViewModel::toggleArrivalStationDialog,
+        onDepartureQueryUpdate = homeViewModel::departureQueryUpdate,
+        onArrivalQueryUpdate = homeViewModel::arrivalQueryUpdate,
+        onSwapStationsClick = homeViewModel::swapStations,
         onSnackBarMessageShown = homeViewModel::snackbarMessageShown
     )
 }
@@ -86,8 +90,13 @@ fun HomeScreen(
     onMyAccountClick: () -> Unit = {},
     onMyTicketsClick: () -> Unit = {},
     onPassengersClick: () -> Unit = {},
-    searchStations: (String) -> Unit = {},
-    onStationClick: () -> Unit = {},
+    onDepartureStationClick: (String) -> Unit = {},
+    onArrivalStationClick: (String) -> Unit = {},
+    toggleDepartureStationDialog: () -> Unit = {},
+    toggleArrivalStationDialog: () -> Unit = {},
+    onDepartureQueryUpdate: (String) -> Unit = {},
+    onArrivalQueryUpdate: (String) -> Unit = {},
+    onSwapStationsClick: () -> Unit = {},
     onSnackBarMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -110,16 +119,11 @@ fun HomeScreen(
             }) { innerPadding ->
             val state by uiState.collectAsStateWithLifecycle()
 
-            var departureStationText by rememberSaveable { mutableStateOf("") }
-            var arrivalStationText by rememberSaveable { mutableStateOf("") }
-
             val departureDate = rememberSaveable { mutableStateOf(LocalDate.now()) }
             val departureTime = rememberSaveable { mutableStateOf(LocalTime.now()) }
 
             val showDatePicker = rememberSaveable { mutableStateOf(false) }
             val showTimePicker = rememberSaveable { mutableStateOf(false) }
-            val showDepartureStationDialog = rememberSaveable { mutableStateOf(false) }
-            val showArrivalStationDialog = rememberSaveable { mutableStateOf(false) }
 
             if (showDatePicker.value) {
                 DatePicker(showDatePicker, departureDate)
@@ -129,37 +133,27 @@ fun HomeScreen(
                 TimePicker(showTimePicker, departureTime)
             }
 
-            if (showDepartureStationDialog.value) {
+            if (state.showDepartureStationDialog) {
                 StationSearchDialog(
                     dialogTitle = R.string.departure_station,
-                    stationText = departureStationText,
-                    stations = state.stations,
-                    onDismissRequest = { showDepartureStationDialog.value = false },
-                    onType = {
-                        searchStations(it)
-                    },
-                    onStationClick = { station ->
-                        onStationClick()
-                        showDepartureStationDialog.value = false
-                        departureStationText = station.name
-                    },
+                    query = state.departureQuery,
+                    stations = state.departureStations,
+                    recentStations = state.recentDepartureStations,
+                    onQueryUpdate = onDepartureQueryUpdate,
+                    onDismissRequest = toggleDepartureStationDialog,
+                    onStationClick = onDepartureStationClick,
                 )
             }
 
-            if (showArrivalStationDialog.value) {
+            if (state.showArrivalStationDialog) {
                 StationSearchDialog(
                     dialogTitle = R.string.arrival_station,
-                    stationText = arrivalStationText,
-                    stations = state.stations,
-                    onDismissRequest = { showArrivalStationDialog.value = false },
-                    onType = {
-                        searchStations(it)
-                    },
-                    onStationClick = {
-                        onStationClick()
-                        showArrivalStationDialog.value = false
-                        arrivalStationText = it.name
-                    },
+                    query = state.arrivalQuery,
+                    stations = state.arrivalStations,
+                    recentStations = state.recentArrivalStations,
+                    onQueryUpdate = onArrivalQueryUpdate,
+                    onDismissRequest = toggleArrivalStationDialog,
+                    onStationClick = onArrivalStationClick,
                 )
             }
 
@@ -169,8 +163,8 @@ fun HomeScreen(
             ) {
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.departure_station)) },
-                    onValueChange = { departureStationText = it },
-                    value = departureStationText,
+                    onValueChange = {},
+                    value = state.departureStation,
                     readOnly = true,
                     enabled = false,
                     modifier = Modifier
@@ -178,7 +172,7 @@ fun HomeScreen(
                         .padding(top = 20.dp, bottom = 10.dp)
                         .fillMaxWidth()
                         .clickable {
-                            showDepartureStationDialog.value = true
+                            toggleDepartureStationDialog()
                         },
                     colors = OutlinedTextFieldDefaults.colors(
                         disabledTextColor = MaterialTheme.colorScheme.onSurface,
@@ -189,17 +183,13 @@ fun HomeScreen(
 
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.arrival_station)) },
-                    onValueChange = { arrivalStationText = it },
-                    value = arrivalStationText,
+                    onValueChange = {},
+                    value = state.arrivalStation,
                     readOnly = true,
                     enabled = false,
                     trailingIcon = {
-                        if (arrivalStationText.isNotEmpty() || departureStationText.isNotEmpty()) {
-                            IconButton(onClick = {
-                                val temp = departureStationText
-                                departureStationText = arrivalStationText
-                                arrivalStationText = temp
-                            }) {
+                        if (state.arrivalStation.isNotEmpty() || state.departureStation.isNotEmpty()) {
+                            IconButton(onClick = onSwapStationsClick) {
                                 Icon(
                                     painter = painterResource(R.drawable.outline_swap_vert_24),
                                     contentDescription = stringResource(R.string.swap_stations)
@@ -212,7 +202,7 @@ fun HomeScreen(
                         .padding(vertical = 10.dp)
                         .fillMaxWidth()
                         .clickable {
-                            showArrivalStationDialog.value = true
+                            toggleArrivalStationDialog()
                         },
                     colors = OutlinedTextFieldDefaults.colors(
                         disabledTextColor = MaterialTheme.colorScheme.onSurface,
