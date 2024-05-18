@@ -19,8 +19,7 @@ import com.wentura.pkp_android.ui.PKPAndroidTheme
 @Composable
 fun SearchScreen(onUpClick: () -> Unit = {}) {
     Scaffold(topBar = { SearchTopAppBar(onUpClick) }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-        }
+        Column(modifier = Modifier.padding(innerPadding)) {}
     }
 }
 

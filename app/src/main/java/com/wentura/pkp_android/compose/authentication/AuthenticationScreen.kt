@@ -101,15 +101,13 @@ fun AuthenticationScreen(
                 when (pages[index]) {
                     LoginPage.LOGIN -> {
                         Login(
-                            onSignIn = onSignIn,
-                            authenticationViewModel = authenticationViewModel
+                            onSignIn = onSignIn, authenticationViewModel = authenticationViewModel
                         )
                     }
 
                     LoginPage.REGISTER -> {
                         Register(
-                            onSignUp = onSignUp,
-                            authenticationViewModel = authenticationViewModel
+                            onSignUp = onSignUp, authenticationViewModel = authenticationViewModel
                         )
                     }
                 }
@@ -137,8 +135,9 @@ fun signInWithGoogle(
         GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
             .build()
 
-    val request =
-        GetCredentialRequest.Builder().addCredentialOption(signInWithGoogle).build()
+    val request = GetCredentialRequest.Builder()
+        .addCredentialOption(signInWithGoogle)
+        .build()
 
     val credentialManager = CredentialManager.create(activity)
 

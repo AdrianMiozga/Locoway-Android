@@ -32,7 +32,8 @@ class AuthenticationRepository @Inject constructor() {
 
     suspend fun signInWithCredential(authCredential: AuthCredential) {
         try {
-            firebaseAuth.signInWithCredential(authCredential).await()
+            firebaseAuth.signInWithCredential(authCredential)
+                .await()
 
             _authentication.update {
                 it.copy(isSignedIn = true, userMessage = R.string.signed_in)
@@ -51,7 +52,8 @@ class AuthenticationRepository @Inject constructor() {
 
     suspend fun createUserWithEmailAndPassword(email: String, password: String) {
         try {
-            firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .await()
 
             _authentication.update {
                 it.copy(isSignedIn = true, userMessage = R.string.signed_in)
@@ -70,7 +72,8 @@ class AuthenticationRepository @Inject constructor() {
 
     suspend fun signInWithEmailAndPassword(email: String, password: String) {
         try {
-            firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                .await()
 
             _authentication.update {
                 it.copy(isSignedIn = true, userMessage = R.string.signed_in)

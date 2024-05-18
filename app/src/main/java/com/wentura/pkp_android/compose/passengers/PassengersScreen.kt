@@ -95,8 +95,7 @@ fun PassengersScreen(
             LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
                 if (state.passengers.isNotEmpty() || state.isLoading) {
                     items(state.passengers.size) { passenger ->
-                        PassengerListItem(
-                            passenger = state.passengers[passenger],
+                        PassengerListItem(passenger = state.passengers[passenger],
                             onEditPassenger = {
                                 openEditPassengerDialog.value = true
                                 onEditPassenger(passenger)

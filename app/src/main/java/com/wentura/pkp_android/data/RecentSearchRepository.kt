@@ -25,8 +25,7 @@ class RecentSearchRepository @Inject constructor() {
             .whereEqualTo("type", recentSearchStation.type)
             .limit(1)
             .get()
-            .await()
-            .documents
+            .await().documents
 
         if (document.isNotEmpty()) {
             val id = document.first().id

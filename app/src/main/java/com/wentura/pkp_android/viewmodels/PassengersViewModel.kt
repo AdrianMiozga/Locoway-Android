@@ -104,8 +104,7 @@ class PassengersViewModel @Inject constructor(
     }
 
     fun changeDiscount(id: Int) {
-        val passenger =
-            _uiState.value.currentPassenger.copy(discount = id)
+        val passenger = _uiState.value.currentPassenger.copy(discount = id)
 
         _uiState.update {
             it.copy(currentPassenger = passenger)

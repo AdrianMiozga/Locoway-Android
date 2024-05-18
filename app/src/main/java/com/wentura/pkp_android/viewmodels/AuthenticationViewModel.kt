@@ -119,7 +119,8 @@ class AuthenticationViewModel @Inject constructor(
         password: String,
         passwordConfirmation: String,
     ) {
-        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email)
+            .matches()
         val isPasswordWrong = password.length < 8
         val isConfirmationPasswordWrong = password != passwordConfirmation
 
@@ -149,7 +150,8 @@ class AuthenticationViewModel @Inject constructor(
     }
 
     fun passwordSignIn(email: String, password: String) {
-        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email)
+            .matches()
         val isPasswordWrong = password.isBlank()
 
         if (isEmailWrong || isPasswordWrong) {
@@ -178,7 +180,9 @@ class AuthenticationViewModel @Inject constructor(
 
     fun resetPassword(email: String): Boolean {
         // TODO: Add UX
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches()
+        ) {
             return false
         }
 

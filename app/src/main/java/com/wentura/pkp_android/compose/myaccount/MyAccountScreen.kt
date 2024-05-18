@@ -123,8 +123,7 @@ fun MyAccountPreview() {
         MyAccountScreen(
             MutableStateFlow(
                 MyAccountUiState(
-                    isSignedIn = true,
-                    email = "user@email.com"
+                    isSignedIn = true, email = "user@email.com"
                 )
             )
         )

@@ -29,7 +29,9 @@ fun DatePicker(
 ) {
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
         override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            val time = Instant.now().minus(Duration.ofDays(1)).toEpochMilli()
+            val time = Instant.now()
+                .minus(Duration.ofDays(1))
+                .toEpochMilli()
 
             return utcTimeMillis >= time
         }
@@ -47,7 +49,8 @@ fun DatePicker(
         TextButton(onClick = {
             showDatePicker.value = false
             departureDate.value = Instant.ofEpochMilli(datePickerState.selectedDateMillis!!)
-                .atZone(ZoneId.systemDefault()).toLocalDate()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
         }, enabled = confirmEnabled) { Text(stringResource(R.string.ok)) }
     }, dismissButton = {
         TextButton(onClick = { showDatePicker.value = false }) {
