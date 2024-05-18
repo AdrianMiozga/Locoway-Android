@@ -54,28 +54,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRecentDepartureStations() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(recentDepartureStations = recentSearchRepository.getRecentDepartureStations()
-                    .map { recentSearchStation ->
-                        Station(recentSearchStation.name)
-                    })
-            }
-        }
-    }
-
-    private fun getRecentArrivalStations() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(recentArrivalStations = recentSearchRepository.getRecentArrivalStations()
-                    .map { recentSearchStation ->
-                        Station(recentSearchStation.name)
-                    })
-            }
-        }
-    }
-
     fun snackbarMessageShown() {
         authenticationRepository.clearMessage()
     }
@@ -146,8 +124,6 @@ class HomeViewModel @Inject constructor(
                 )
             )
         }
-
-        getRecentDepartureStations()
     }
 
     fun updateArrivalStation(station: String) {
@@ -166,8 +142,6 @@ class HomeViewModel @Inject constructor(
                 )
             )
         }
-
-        getRecentArrivalStations()
     }
 
     fun swapStations() {
@@ -186,7 +160,14 @@ class HomeViewModel @Inject constructor(
         }
 
         if (_uiState.value.showDepartureStationDialog) {
-            getRecentDepartureStations()
+            viewModelScope.launch {
+                _uiState.update {
+                    it.copy(recentDepartureStations = recentSearchRepository.getRecentDepartureStations()
+                        .map { recentSearchStation ->
+                            Station(recentSearchStation.name)
+                        })
+                }
+            }
         }
     }
 
@@ -196,7 +177,14 @@ class HomeViewModel @Inject constructor(
         }
 
         if (_uiState.value.showArrivalStationDialog) {
-            getRecentArrivalStations()
+            viewModelScope.launch {
+                _uiState.update {
+                    it.copy(recentArrivalStations = recentSearchRepository.getRecentArrivalStations()
+                        .map { recentSearchStation ->
+                            Station(recentSearchStation.name)
+                        })
+                }
+            }
         }
     }
 
