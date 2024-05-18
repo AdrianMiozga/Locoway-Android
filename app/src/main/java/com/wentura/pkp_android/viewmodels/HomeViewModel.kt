@@ -85,7 +85,7 @@ class HomeViewModel @Inject constructor(
             it.copy(departureQuery = query)
         }
 
-        if (query.length < 3) {
+        if (query.length < MIN_QUERY_LENGTH) {
             viewModelScope.launch {
                 _uiState.update {
                     it.copy(departureStations = emptyList())
@@ -111,7 +111,7 @@ class HomeViewModel @Inject constructor(
             it.copy(arrivalQuery = query)
         }
 
-        if (query.length < 3) {
+        if (query.length < MIN_QUERY_LENGTH) {
             _uiState.update {
                 it.copy(arrivalStations = emptyList())
             }
@@ -198,5 +198,9 @@ class HomeViewModel @Inject constructor(
         if (_uiState.value.showArrivalStationDialog) {
             getRecentArrivalStations()
         }
+    }
+
+    companion object {
+        private const val MIN_QUERY_LENGTH = 3
     }
 }
