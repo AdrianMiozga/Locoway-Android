@@ -37,8 +37,7 @@ class HomeViewModel @Inject constructor(
     private val stationRepository: StationRepository,
     private val recentSearchRepository: RecentSearchRepository,
 ) : ViewModel() {
-    private val _uiState =
-        MutableStateFlow(HomeUiState(isSignedIn = authenticationRepository.isUserSignedIn()))
+    private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
