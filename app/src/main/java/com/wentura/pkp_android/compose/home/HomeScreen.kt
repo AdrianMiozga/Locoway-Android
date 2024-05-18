@@ -76,6 +76,8 @@ fun HomeScreen(
         toggleArrivalStationDialog = homeViewModel::toggleArrivalStationDialog,
         onDepartureQueryUpdate = homeViewModel::departureQueryUpdate,
         onArrivalQueryUpdate = homeViewModel::arrivalQueryUpdate,
+        onClearDepartureQuery = homeViewModel::clearDepartureQuery,
+        onClearArrivalQuery = homeViewModel::clearArrivalQuery,
         onSwapStationsClick = homeViewModel::swapStations,
         onSnackBarMessageShown = homeViewModel::snackbarMessageShown
     )
@@ -96,6 +98,8 @@ fun HomeScreen(
     toggleArrivalStationDialog: () -> Unit = {},
     onDepartureQueryUpdate: (String) -> Unit = {},
     onArrivalQueryUpdate: (String) -> Unit = {},
+    onClearDepartureQuery: () -> Unit = {},
+    onClearArrivalQuery: () -> Unit = {},
     onSwapStationsClick: () -> Unit = {},
     onSnackBarMessageShown: () -> Unit = {},
 ) {
@@ -140,6 +144,7 @@ fun HomeScreen(
                     stations = state.departureStations,
                     recentStations = state.recentDepartureStations,
                     onQueryUpdate = onDepartureQueryUpdate,
+                    onQueryClear = onClearDepartureQuery,
                     onDismissRequest = toggleDepartureStationDialog,
                     onStationClick = onDepartureStationClick,
                 )
@@ -152,6 +157,7 @@ fun HomeScreen(
                     stations = state.arrivalStations,
                     recentStations = state.recentArrivalStations,
                     onQueryUpdate = onArrivalQueryUpdate,
+                    onQueryClear = onClearArrivalQuery,
                     onDismissRequest = toggleArrivalStationDialog,
                     onStationClick = onArrivalStationClick,
                 )

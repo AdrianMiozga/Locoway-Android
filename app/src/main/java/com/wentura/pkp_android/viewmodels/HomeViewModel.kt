@@ -100,6 +100,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun clearDepartureQuery() {
+        _uiState.update {
+            it.copy(departureQuery = "", departureStation = "", departureStations = emptyList())
+        }
+    }
+
     fun arrivalQueryUpdate(query: String) {
         _uiState.update {
             it.copy(arrivalQuery = query)
@@ -115,6 +121,12 @@ class HomeViewModel @Inject constructor(
                     it.copy(arrivalStations = stationRepository.searchStations(query))
                 }
             }
+        }
+    }
+
+    fun clearArrivalQuery() {
+        _uiState.update {
+            it.copy(arrivalQuery = "", arrivalStation = "", arrivalStations = emptyList())
         }
     }
 

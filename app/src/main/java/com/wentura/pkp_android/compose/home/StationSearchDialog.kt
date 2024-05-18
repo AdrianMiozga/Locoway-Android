@@ -37,6 +37,7 @@ fun StationSearchDialog(
     stations: List<Station>,
     recentStations: List<Station>,
     onQueryUpdate: (String) -> Unit = {},
+    onQueryClear: () -> Unit = {},
     onDismissRequest: () -> Unit = {},
     onStationClick: (String) -> Unit = {},
 ) {
@@ -61,6 +62,16 @@ fun StationSearchDialog(
                         onValueChange = onQueryUpdate,
                         singleLine = true,
                         label = { Text(stringResource(dialogTitle)) },
+                        trailingIcon = {
+                            if (query.isNotEmpty()) {
+                                IconButton(onClick = onQueryClear) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Close,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        },
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                         modifier = Modifier
                             .padding(20.dp)
