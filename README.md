@@ -29,6 +29,7 @@
 ### Libraries
 
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - dependency injection
+- [Retrofit](https://github.com/square/retrofit) - HTTP client
 
 ### Static Analysis Tools
 

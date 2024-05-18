@@ -63,14 +63,16 @@ fun HomeScreen(
     onPassengersClick: () -> Unit = {},
 ) {
     HomeScreen(
-        homeViewModel.uiState,
-        drawerState,
-        onSearchClick,
-        onLoginClick,
-        onMyAccountClick,
-        onMyTicketsClick,
-        onPassengersClick,
-        homeViewModel::snackbarMessageShown
+        uiState = homeViewModel.uiState,
+        drawerState = drawerState,
+        onSearchClick = onSearchClick,
+        onLoginClick = onLoginClick,
+        onMyAccountClick = onMyAccountClick,
+        onMyTicketsClick = onMyTicketsClick,
+        onPassengersClick = onPassengersClick,
+        searchStations = homeViewModel::searchStations,
+        onStationClick = homeViewModel::clearStations,
+        onSnackBarMessageShown = homeViewModel::snackbarMessageShown
     )
 }
 
@@ -83,6 +85,8 @@ fun HomeScreen(
     onMyAccountClick: () -> Unit = {},
     onMyTicketsClick: () -> Unit = {},
     onPassengersClick: () -> Unit = {},
+    searchStations: (String) -> Unit = {},
+    onStationClick: () -> Unit = {},
     onSnackBarMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -103,6 +107,8 @@ fun HomeScreen(
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             }) { innerPadding ->
+            val state by uiState.collectAsStateWithLifecycle()
+
             var departureStationText by rememberSaveable { mutableStateOf("") }
             var arrivalStationText by rememberSaveable { mutableStateOf("") }
 
@@ -110,39 +116,94 @@ fun HomeScreen(
             val departureTime = rememberSaveable { mutableStateOf(LocalTime.now()) }
 
             val showDatePicker = rememberSaveable { mutableStateOf(false) }
+            val showTimePicker = rememberSaveable { mutableStateOf(false) }
+            val showDepartureStationDialog = rememberSaveable { mutableStateOf(false) }
+            val showArrivalStationDialog = rememberSaveable { mutableStateOf(false) }
 
             if (showDatePicker.value) {
                 DatePicker(showDatePicker, departureDate)
             }
 
-            val showTimePicker = rememberSaveable { mutableStateOf(false) }
-
             if (showTimePicker.value) {
                 TimePicker(showTimePicker, departureTime)
+            }
+
+            if (showDepartureStationDialog.value) {
+                StationSearchDialog(
+                    dialogTitle = R.string.departure_station,
+                    stationText = departureStationText,
+                    stations = state.stations,
+                    onDismissRequest = { showDepartureStationDialog.value = false },
+                    onType = {
+                        searchStations(it)
+                    },
+                    onStationClick = { station ->
+                        onStationClick()
+                        showDepartureStationDialog.value = false
+                        departureStationText = station.name
+                    },
+                )
+            }
+
+            if (showArrivalStationDialog.value) {
+                StationSearchDialog(
+                    dialogTitle = R.string.arrival_station,
+                    stationText = arrivalStationText,
+                    stations = state.stations,
+                    onDismissRequest = { showArrivalStationDialog.value = false },
+                    onType = {
+                        searchStations(it)
+                    },
+                    onStationClick = {
+                        onStationClick()
+                        showArrivalStationDialog.value = false
+                        arrivalStationText = it.name
+                    },
+                )
             }
 
             Column(
                 modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedTextField(label = { Text(stringResource(R.string.departure_station)) },
+                OutlinedTextField(
+                    label = { Text(stringResource(R.string.departure_station)) },
                     onValueChange = { departureStationText = it },
                     value = departureStationText,
-                    singleLine = true,
+                    readOnly = true,
+                    enabled = false,
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .padding(top = 20.dp, bottom = 10.dp)
                         .fillMaxWidth()
+                        .clickable {
+                            showDepartureStationDialog.value = true
+                        },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 )
 
-                OutlinedTextField(label = { Text(stringResource(R.string.arrival_station)) },
+                OutlinedTextField(
+                    label = { Text(stringResource(R.string.arrival_station)) },
                     onValueChange = { arrivalStationText = it },
                     value = arrivalStationText,
-                    singleLine = true,
+                    readOnly = true,
+                    enabled = false,
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .padding(vertical = 10.dp)
                         .fillMaxWidth()
+                        .clickable {
+                            showArrivalStationDialog.value = true
+                        },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 )
 
                 Row {
@@ -201,8 +262,6 @@ fun HomeScreen(
                     Text(stringResource(R.string.search))
                 }
             }
-
-            val state by uiState.collectAsStateWithLifecycle()
 
             state.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
