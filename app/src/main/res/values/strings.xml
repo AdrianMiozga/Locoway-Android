@@ -59,6 +59,7 @@
     <string name="are_you_sure_you_want_to_delete_passenger">Czy na pewno chcesz usunąć pasażera %s?</string>
     <string name="passenger_deletion">Usuwanie pasażera</string>
     <string name="search_with_ellipsis">Szukaj…</string>
+    <string name="swap_stations">Zamień stacje</string>
 
     <string-array name="discounts">
         <item>Normalny</item>

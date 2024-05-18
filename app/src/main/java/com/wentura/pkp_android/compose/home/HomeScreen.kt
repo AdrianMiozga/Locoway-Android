@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -192,6 +193,20 @@ fun HomeScreen(
                     value = arrivalStationText,
                     readOnly = true,
                     enabled = false,
+                    trailingIcon = {
+                        if (arrivalStationText.isNotEmpty() || departureStationText.isNotEmpty()) {
+                            IconButton(onClick = {
+                                val temp = departureStationText
+                                departureStationText = arrivalStationText
+                                arrivalStationText = temp
+                            }) {
+                                Icon(
+                                    painter = painterResource(R.drawable.outline_swap_vert_24),
+                                    contentDescription = stringResource(R.string.swap_stations)
+                                )
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .padding(vertical = 10.dp)
@@ -203,6 +218,7 @@ fun HomeScreen(
                         disabledTextColor = MaterialTheme.colorScheme.onSurface,
                         disabledBorderColor = MaterialTheme.colorScheme.outline,
                         disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
                     )
                 )
 
