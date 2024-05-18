@@ -54,7 +54,7 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun snackbarMessageShown() {
+    fun onMessageShown() {
         authenticationRepository.clearMessage()
     }
 

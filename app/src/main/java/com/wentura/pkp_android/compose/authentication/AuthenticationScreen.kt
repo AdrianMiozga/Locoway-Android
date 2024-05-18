@@ -118,7 +118,7 @@ fun AuthenticationScreen(
             uiState.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
-                    authenticationViewModel.snackbarMessageShown()
+                    authenticationViewModel.onMessageShown()
                 }
             }
         }

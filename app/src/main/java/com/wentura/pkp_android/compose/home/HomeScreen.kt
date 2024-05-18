@@ -79,7 +79,7 @@ fun HomeScreen(
         onClearDepartureQuery = homeViewModel::clearDepartureQuery,
         onClearArrivalQuery = homeViewModel::clearArrivalQuery,
         onSwapStationsClick = homeViewModel::swapStations,
-        onSnackBarMessageShown = homeViewModel::snackbarMessageShown
+        onMessageShown = homeViewModel::onMessageShown
     )
 }
 
@@ -101,7 +101,7 @@ fun HomeScreen(
     onClearDepartureQuery: () -> Unit = {},
     onClearArrivalQuery: () -> Unit = {},
     onSwapStationsClick: () -> Unit = {},
-    onSnackBarMessageShown: () -> Unit = {},
+    onMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -278,7 +278,7 @@ fun HomeScreen(
             state.userMessage?.let { message ->
                 LaunchedEffect(snackbarHostState) {
                     snackbarHostState.showSnackbar(context.getString(message))
-                    onSnackBarMessageShown()
+                    onMessageShown()
                 }
             }
         }

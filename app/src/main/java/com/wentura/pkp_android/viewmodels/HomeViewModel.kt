@@ -53,7 +53,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun snackbarMessageShown() {
+    fun onMessageShown() {
         authenticationRepository.clearMessage()
     }
 
