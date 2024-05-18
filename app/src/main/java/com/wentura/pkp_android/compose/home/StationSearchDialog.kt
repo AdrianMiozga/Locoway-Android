@@ -83,6 +83,7 @@ fun StationSearchDialog(
                             textFieldValue.value = it
                             onType(it.text)
                         },
+                        singleLine = true,
                         label = { Text(stringResource(dialogTitle)) },
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                         modifier = Modifier
