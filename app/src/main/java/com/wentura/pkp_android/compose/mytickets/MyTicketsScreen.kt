@@ -42,9 +42,9 @@ fun MyTicketsScreen(onUpClick: () -> Unit = {}, onPullToRefresh: () -> Unit = {}
         }
 
         Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
+            modifier =
+                Modifier.padding(innerPadding)
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
@@ -70,21 +70,22 @@ fun MyTicketsScreen(onUpClick: () -> Unit = {}, onPullToRefresh: () -> Unit = {}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MyTicketsTopAppBar(onUpClick: () -> Unit) {
-    TopAppBar(title = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(stringResource(R.string.my_tickets))
+    TopAppBar(
+        title = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource(R.string.my_tickets))
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onUpClick) {
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+            }
         }
-    }, navigationIcon = {
-        IconButton(onClick = onUpClick) {
-            Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
-        }
-    })
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun MyTicketsPreview() {
-    PKPAndroidTheme {
-        MyTicketsScreen()
-    }
+    PKPAndroidTheme { MyTicketsScreen() }
 }

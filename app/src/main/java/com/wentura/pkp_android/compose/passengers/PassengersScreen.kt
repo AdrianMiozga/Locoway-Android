@@ -71,20 +71,19 @@ fun PassengersScreen(
     }
 
     if (openEditPassengerDialog.value) {
-        EditPassengerDialog(onDismissRequest = {
-            openEditPassengerDialog.value = false
-        })
+        EditPassengerDialog(onDismissRequest = { openEditPassengerDialog.value = false })
     }
 
-    Scaffold(topBar = { PassengersTopAppBar(onUpClick) }, floatingActionButton = {
-        FloatingActionButton(
-            onClick = {
-                openAddPassengerDialog.value = true
-            },
-        ) {
-            Icon(Icons.Filled.Add, stringResource(R.string.add_new_passenger))
+    Scaffold(
+        topBar = { PassengersTopAppBar(onUpClick) },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { openAddPassengerDialog.value = true },
+            ) {
+                Icon(Icons.Filled.Add, stringResource(R.string.add_new_passenger))
+            }
         }
-    }) { innerPadding ->
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             if (state.isLoading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -95,16 +94,16 @@ fun PassengersScreen(
             LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
                 if (state.passengers.isNotEmpty() || state.isLoading) {
                     items(state.passengers.size) { passenger ->
-                        PassengerListItem(passenger = state.passengers[passenger],
+                        PassengerListItem(
+                            passenger = state.passengers[passenger],
                             onEditPassenger = {
                                 openEditPassengerDialog.value = true
                                 onEditPassenger(passenger)
-                            })
+                            }
+                        )
 
                         if (passenger != state.passengers.size - 1) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 8.dp)
-                            )
+                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
                         }
                     }
                 } else {
@@ -128,10 +127,8 @@ fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 16.dp)
-            .padding(vertical = 8.dp)
+        modifier =
+            Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp).padding(vertical = 8.dp)
     ) {
         Column {
             Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
@@ -144,9 +141,7 @@ fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
                     style = MaterialTheme.typography.bodyMedium
                 )
             } else {
-                Text(
-                    discount, style = MaterialTheme.typography.bodyMedium
-                )
+                Text(discount, style = MaterialTheme.typography.bodyMedium)
             }
         }
 
@@ -159,15 +154,18 @@ fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PassengersTopAppBar(onUpClick: () -> Unit) {
-    TopAppBar(title = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(stringResource(R.string.passengers))
+    TopAppBar(
+        title = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource(R.string.passengers))
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onUpClick) {
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+            }
         }
-    }, navigationIcon = {
-        IconButton(onClick = onUpClick) {
-            Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
-        }
-    })
+    )
 }
 
 @Preview(showBackground = true)
@@ -175,15 +173,17 @@ fun PassengersTopAppBar(onUpClick: () -> Unit) {
 fun PassengersScreenPreview() {
     PKPAndroidTheme {
         PassengersScreen(
-            uiState = MutableStateFlow(
-                PassengersUiState(
-                    passengers = listOf(
-                        Passenger("Adam Majewski", true, 0),
-                        Passenger("Marzena Nowakowska", false, 1),
-                        Passenger("Roman Zawadzki", false, 2)
+            uiState =
+                MutableStateFlow(
+                    PassengersUiState(
+                        passengers =
+                            listOf(
+                                Passenger("Adam Majewski", true, 0),
+                                Passenger("Marzena Nowakowska", false, 1),
+                                Passenger("Roman Zawadzki", false, 2)
+                            )
                     )
                 )
-            )
         )
     }
 }

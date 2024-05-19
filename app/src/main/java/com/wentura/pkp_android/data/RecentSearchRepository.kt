@@ -18,14 +18,16 @@ class RecentSearchRepository @Inject constructor() {
             return
         }
 
-        val document = db.collection("users")
-            .document(firebaseAuth.uid!!)
-            .collection("recentSearch")
-            .whereEqualTo("name", recentSearchStation.name)
-            .whereEqualTo("type", recentSearchStation.type)
-            .limit(1)
-            .get()
-            .await().documents
+        val document =
+            db.collection("users")
+                .document(firebaseAuth.uid!!)
+                .collection("recentSearch")
+                .whereEqualTo("name", recentSearchStation.name)
+                .whereEqualTo("type", recentSearchStation.type)
+                .limit(1)
+                .get()
+                .await()
+                .documents
 
         if (document.isNotEmpty()) {
             val id = document.first().id

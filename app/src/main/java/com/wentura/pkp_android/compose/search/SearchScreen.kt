@@ -26,22 +26,23 @@ fun SearchScreen(onUpClick: () -> Unit = {}) {
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun SearchTopAppBar(onUpClick: () -> Unit) {
-    CenterAlignedTopAppBar(title = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Strzelce Opolskie")
-            Text("Gliwice")
+    CenterAlignedTopAppBar(
+        title = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Strzelce Opolskie")
+                Text("Gliwice")
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onUpClick) {
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+            }
         }
-    }, navigationIcon = {
-        IconButton(onClick = onUpClick) {
-            Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
-        }
-    })
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SearchPreview() {
-    PKPAndroidTheme {
-        SearchScreen()
-    }
+    PKPAndroidTheme { SearchScreen() }
 }

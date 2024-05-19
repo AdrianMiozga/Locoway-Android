@@ -46,15 +46,18 @@ fun StationSearchDialog(
         modifier = Modifier.fillMaxSize(),
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(dialogTitle)) }, navigationIcon = {
-                IconButton(onClick = onDismissRequest) {
-                    Icon(
-                        imageVector = Icons.Outlined.Close, contentDescription = null
-                    )
-                }
-            })
-        }) { paddingValues ->
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(dialogTitle)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
+                        }
+                    }
+                )
+            }
+        ) { paddingValues ->
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
                     OutlinedTextField(
@@ -72,26 +75,24 @@ fun StationSearchDialog(
                                 }
                             }
                         },
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .fillMaxWidth()
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                        modifier = Modifier.padding(20.dp).fillMaxWidth()
                     )
                 }
 
                 item {
-                    val label = if (stations.isNotEmpty()) {
-                        R.string.results
-                    } else {
-                        R.string.recent_searches
-                    }
+                    val label =
+                        if (stations.isNotEmpty()) {
+                            R.string.results
+                        } else {
+                            R.string.recent_searches
+                        }
 
                     Text(
                         stringResource(label),
                         style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .padding(bottom = 4.dp)
+                        modifier = Modifier.padding(horizontal = 10.dp).padding(bottom = 4.dp)
                     )
                 }
 
@@ -111,12 +112,12 @@ fun StationSearchDialog(
 
 @Composable
 fun StationListItem(station: Station, onStationClick: (String) -> Unit = {}) {
-    Column(modifier = Modifier
-        .clickable {
-            onStationClick(station.name)
-        }
-        .padding(horizontal = 20.dp, vertical = 16.dp)
-        .fillMaxWidth()) {
+    Column(
+        modifier =
+            Modifier.clickable { onStationClick(station.name) }
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .fillMaxWidth()
+    ) {
         Text(station.name)
     }
 }
@@ -127,16 +128,17 @@ fun StationSearchDialogPreview() {
     StationSearchDialog(
         dialogTitle = R.string.departure_station,
         query = "Opo",
-        stations = listOf(
-            Station("Opole Główne"),
-            Station("Opoczno"),
-            Station("Opole Zachodnie"),
-            Station("Opole Groszowice"),
-            Station("Opole Borki"),
-            Station("Opoczno Południe"),
-            Station("Opole Grotowice"),
-            Station("Opole Wschodnie"),
-        ),
+        stations =
+            listOf(
+                Station("Opole Główne"),
+                Station("Opoczno"),
+                Station("Opole Zachodnie"),
+                Station("Opole Groszowice"),
+                Station("Opole Borki"),
+                Station("Opoczno Południe"),
+                Station("Opole Grotowice"),
+                Station("Opole Wschodnie"),
+            ),
         recentStations = emptyList(),
     )
 }
@@ -148,10 +150,11 @@ fun EmptyStationSearchDialogPreview() {
         dialogTitle = R.string.departure_station,
         query = "",
         stations = emptyList(),
-        recentStations = listOf(
-            Station("Wrocław Główny"),
-            Station("Opole Główne"),
-            Station("Katowice"),
-        ),
+        recentStations =
+            listOf(
+                Station("Wrocław Główny"),
+                Station("Opole Główne"),
+                Station("Katowice"),
+            ),
     )
 }

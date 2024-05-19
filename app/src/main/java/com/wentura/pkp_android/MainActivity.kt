@@ -18,10 +18,6 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        setContent {
-            PKPAndroidTheme {
-                PKPApp()
-            }
-        }
+        setContent { PKPAndroidTheme { PKPApp() } }
     }
 }

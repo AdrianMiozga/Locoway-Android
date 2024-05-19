@@ -32,9 +32,7 @@ fun LocationRationaleDialog(
 ) {
     BasicAlertDialog(onDismissRequest = onDismissRequest) {
         Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
+            modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
@@ -51,9 +49,7 @@ fun LocationRationaleDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onPermissionRequest) {
-                        Text(stringResource(R.string.ok))
-                    }
+                    TextButton(onClick = onPermissionRequest) { Text(stringResource(R.string.ok)) }
                 }
             }
         }

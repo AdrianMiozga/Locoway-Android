@@ -92,10 +92,11 @@ fun EditPassengerDialog(
     val openConfirmationDialog = rememberSaveable { mutableStateOf(false) }
 
     if (openConfirmationDialog.value) {
-        ConfirmationDialog(state.currentPassenger.name, onDismissRequest = {
-            openConfirmationDialog.value = false
-
-        }, onConfirmationRequest = onDeletePassenger)
+        ConfirmationDialog(
+            state.currentPassenger.name,
+            onDismissRequest = { openConfirmationDialog.value = false },
+            onConfirmationRequest = onDeletePassenger
+        )
     }
 
     BasicAlertDialog(
@@ -103,32 +104,38 @@ fun EditPassengerDialog(
         modifier = Modifier.fillMaxSize(),
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.edit_passenger)) }, navigationIcon = {
-                IconButton(onClick = onDismissRequest) {
-                    Icon(
-                        imageVector = Icons.Outlined.Close, contentDescription = null
-                    )
-                }
-            }, actions = {
-                TextButton(onClick = { onSaveClick() }) {
-                    Text(stringResource(R.string.save))
-                }
-            })
-        }) { paddingValues ->
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.edit_passenger)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
+                        }
+                    },
+                    actions = {
+                        TextButton(onClick = { onSaveClick() }) {
+                            Text(stringResource(R.string.save))
+                        }
+                    }
+                )
+            }
+        ) { paddingValues ->
             val discounts = stringArrayResource(R.array.discounts)
 
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
-                    OutlinedTextField(value = state.currentPassenger.name,
+                    OutlinedTextField(
+                        value = state.currentPassenger.name,
                         onValueChange = { updateName(it) },
                         label = { Text(stringResource(R.string.full_name)) },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
-                            .padding(top = 20.dp, bottom = 10.dp)
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .padding(top = 20.dp, bottom = 10.dp)
                     )
 
                     Text(
@@ -142,13 +149,13 @@ fun EditPassengerDialog(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
                     ) {
                         Text(discounts[discount])
-                        RadioButton(selected = state.currentPassenger.discount == discount,
-                            onClick = { changeDiscount(discount) })
+                        RadioButton(
+                            selected = state.currentPassenger.discount == discount,
+                            onClick = { changeDiscount(discount) }
+                        )
                     }
                 }
 
@@ -162,23 +169,23 @@ fun EditPassengerDialog(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
                     ) {
                         Text(stringResource(R.string.regio_card))
-                        Checkbox(checked = state.currentPassenger.hasREGIOCard,
-                            onCheckedChange = { toggleREGIOCard() })
+                        Checkbox(
+                            checked = state.currentPassenger.hasREGIOCard,
+                            onCheckedChange = { toggleREGIOCard() }
+                        )
                     }
 
                     OutlinedButton(
                         onClick = { openConfirmationDialog.value = true },
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp, vertical = 10.dp)
-                            .fillMaxWidth()
+                        modifier =
+                            Modifier.padding(horizontal = 20.dp, vertical = 10.dp).fillMaxWidth()
                     ) {
                         Text(
-                            stringResource(R.string.delete), color = MaterialTheme.colorScheme.error
+                            stringResource(R.string.delete),
+                            color = MaterialTheme.colorScheme.error
                         )
                     }
                 }
@@ -196,9 +203,7 @@ fun ConfirmationDialog(
 ) {
     BasicAlertDialog(onDismissRequest = {}) {
         Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
+            modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
@@ -218,13 +223,9 @@ fun ConfirmationDialog(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismissRequest) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                    TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) }
 
-                    TextButton(
-                        onClick = onConfirmationRequest
-                    ) {
+                    TextButton(onClick = onConfirmationRequest) {
                         Text(stringResource(R.string.ok))
                     }
                 }

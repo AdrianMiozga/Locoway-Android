@@ -25,38 +25,49 @@ import androidx.compose.material3.DatePicker as AndroidDatePicker
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun DatePicker(
-    showDatePicker: MutableState<Boolean>, departureDate: MutableState<LocalDate>,
+    showDatePicker: MutableState<Boolean>,
+    departureDate: MutableState<LocalDate>,
 ) {
-    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            val time = Instant.now()
-                .minus(Duration.ofDays(1))
-                .toEpochMilli()
+    val datePickerState =
+        rememberDatePickerState(
+            selectableDates =
+                object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        val time = Instant.now().minus(Duration.ofDays(1)).toEpochMilli()
 
-            return utcTimeMillis >= time
+                        return utcTimeMillis >= time
+                    }
+
+                    override fun isSelectableYear(year: Int): Boolean {
+                        return year >= Year.now().value
+                    }
+                }
+        )
+
+    val confirmEnabled by remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
+
+    DatePickerDialog(
+        onDismissRequest = { showDatePicker.value = false },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    showDatePicker.value = false
+                    departureDate.value =
+                        Instant.ofEpochMilli(datePickerState.selectedDateMillis!!)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                },
+                enabled = confirmEnabled
+            ) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { showDatePicker.value = false }) {
+                Text(stringResource(R.string.cancel))
+            }
         }
-
-        override fun isSelectableYear(year: Int): Boolean {
-            return year >= Year.now().value
-        }
-    })
-
-    val confirmEnabled by remember {
-        derivedStateOf { datePickerState.selectedDateMillis != null }
-    }
-
-    DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
-        TextButton(onClick = {
-            showDatePicker.value = false
-            departureDate.value = Instant.ofEpochMilli(datePickerState.selectedDateMillis!!)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        }, enabled = confirmEnabled) { Text(stringResource(R.string.ok)) }
-    }, dismissButton = {
-        TextButton(onClick = { showDatePicker.value = false }) {
-            Text(stringResource(R.string.cancel))
-        }
-    }) {
+    ) {
         AndroidDatePicker(state = datePickerState)
     }
 }

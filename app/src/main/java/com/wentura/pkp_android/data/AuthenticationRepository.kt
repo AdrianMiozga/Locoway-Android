@@ -25,68 +25,54 @@ class AuthenticationRepository @Inject constructor() {
     fun signOut() {
         firebaseAuth.signOut()
 
-        _authentication.update {
-            it.copy(isSignedIn = false, userMessage = R.string.signed_out)
-        }
+        _authentication.update { it.copy(isSignedIn = false, userMessage = R.string.signed_out) }
     }
 
     suspend fun signInWithCredential(authCredential: AuthCredential) {
         try {
-            firebaseAuth.signInWithCredential(authCredential)
-                .await()
+            firebaseAuth.signInWithCredential(authCredential).await()
 
-            _authentication.update {
-                it.copy(isSignedIn = true, userMessage = R.string.signed_in)
-            }
+            _authentication.update { it.copy(isSignedIn = true, userMessage = R.string.signed_in) }
         } catch (exception: Exception) {
-            val userMessage = when (exception) {
-                is FirebaseNetworkException -> R.string.network_error
-                else -> R.string.unknown_error
-            }
+            val userMessage =
+                when (exception) {
+                    is FirebaseNetworkException -> R.string.network_error
+                    else -> R.string.unknown_error
+                }
 
-            _authentication.update {
-                it.copy(userMessage = userMessage)
-            }
+            _authentication.update { it.copy(userMessage = userMessage) }
         }
     }
 
     suspend fun createUserWithEmailAndPassword(email: String, password: String) {
         try {
-            firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .await()
+            firebaseAuth.createUserWithEmailAndPassword(email, password).await()
 
-            _authentication.update {
-                it.copy(isSignedIn = true, userMessage = R.string.signed_in)
-            }
+            _authentication.update { it.copy(isSignedIn = true, userMessage = R.string.signed_in) }
         } catch (exception: Exception) {
-            val userMessage = when (exception) {
-                is FirebaseAuthUserCollisionException -> R.string.user_with_that_account_exists
-                else -> R.string.unknown_error
-            }
+            val userMessage =
+                when (exception) {
+                    is FirebaseAuthUserCollisionException -> R.string.user_with_that_account_exists
+                    else -> R.string.unknown_error
+                }
 
-            _authentication.update {
-                it.copy(userMessage = userMessage)
-            }
+            _authentication.update { it.copy(userMessage = userMessage) }
         }
     }
 
     suspend fun signInWithEmailAndPassword(email: String, password: String) {
         try {
-            firebaseAuth.signInWithEmailAndPassword(email, password)
-                .await()
+            firebaseAuth.signInWithEmailAndPassword(email, password).await()
 
-            _authentication.update {
-                it.copy(isSignedIn = true, userMessage = R.string.signed_in)
-            }
+            _authentication.update { it.copy(isSignedIn = true, userMessage = R.string.signed_in) }
         } catch (exception: Exception) {
-            val userMessage = when (exception) {
-                is FirebaseAuthInvalidCredentialsException -> R.string.invalid_credentials
-                else -> R.string.unknown_error
-            }
+            val userMessage =
+                when (exception) {
+                    is FirebaseAuthInvalidCredentialsException -> R.string.invalid_credentials
+                    else -> R.string.unknown_error
+                }
 
-            _authentication.update {
-                it.copy(userMessage = userMessage)
-            }
+            _authentication.update { it.copy(userMessage = userMessage) }
         }
     }
 
@@ -108,16 +94,12 @@ class AuthenticationRepository @Inject constructor() {
     }
 
     fun clearMessage() {
-        _authentication.update {
-            it.copy(userMessage = null)
-        }
+        _authentication.update { it.copy(userMessage = null) }
     }
 
     fun resetPassword(email: String) {
         firebaseAuth.sendPasswordResetEmail(email)
 
-        _authentication.update {
-            it.copy(userMessage = R.string.reset_password_email_sent)
-        }
+        _authentication.update { it.copy(userMessage = R.string.reset_password_email_sent) }
     }
 }

@@ -39,9 +39,7 @@ fun TimePickerDialog(
 ) {
     BasicAlertDialog(onDismissRequest = onDismissRequest, modifier = modifier) {
         Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
+            modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
@@ -73,19 +71,23 @@ fun TimePickerDialog(
 @Preview(showBackground = true)
 @Composable
 private fun TimePickerDialogPreview() {
-    TimePickerDialog(onDismissRequest = {}, confirmButton = {
-        TextButton(
-            onClick = {},
-        ) {
-            Text(stringResource(R.string.ok))
+    TimePickerDialog(
+        onDismissRequest = {},
+        confirmButton = {
+            TextButton(
+                onClick = {},
+            ) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {},
+            ) {
+                Text(stringResource(R.string.cancel))
+            }
         }
-    }, dismissButton = {
-        TextButton(
-            onClick = {},
-        ) {
-            Text(stringResource(R.string.cancel))
-        }
-    }) {
+    ) {
         TimePicker(state = rememberTimePickerState(initialHour = 12, is24Hour = true))
     }
 }

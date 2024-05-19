@@ -23,4 +23,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PKP-Android"
+
 include(":app")

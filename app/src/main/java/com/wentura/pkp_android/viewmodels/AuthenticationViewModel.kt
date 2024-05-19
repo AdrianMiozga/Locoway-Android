@@ -30,7 +30,9 @@ data class AuthenticationUiState(
 )
 
 @HiltViewModel
-class AuthenticationViewModel @Inject constructor(
+class AuthenticationViewModel
+@Inject
+constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     companion object {
@@ -61,15 +63,11 @@ class AuthenticationViewModel @Inject constructor(
     fun signInFailed(exception: Exception) {
         Log.e(TAG, "Failure", exception)
 
-        _uiState.update {
-            it.copy(userMessage = R.string.unknown_error)
-        }
+        _uiState.update { it.copy(userMessage = R.string.unknown_error) }
     }
 
     fun handleGoogleSignIn(result: GetCredentialResponse) {
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
+        _uiState.update { it.copy(isLoading = true) }
 
         when (val credential = result.credential) {
             is CustomCredential -> {
@@ -84,9 +82,7 @@ class AuthenticationViewModel @Inject constructor(
                         viewModelScope.launch {
                             authenticationRepository.signInWithCredential(firebaseCredential)
 
-                            _uiState.update {
-                                it.copy(isLoading = false)
-                            }
+                            _uiState.update { it.copy(isLoading = false) }
                         }
                     } catch (exception: GoogleIdTokenParsingException) {
                         _uiState.update {
@@ -103,11 +99,8 @@ class AuthenticationViewModel @Inject constructor(
                     Log.e(TAG, "Unexpected type of credential")
                 }
             }
-
             else -> {
-                _uiState.update {
-                    it.copy(userMessage = R.string.unknown_error, isLoading = false)
-                }
+                _uiState.update { it.copy(userMessage = R.string.unknown_error, isLoading = false) }
 
                 Log.e(TAG, "Unexpected type of credential")
             }
@@ -119,8 +112,7 @@ class AuthenticationViewModel @Inject constructor(
         password: String,
         passwordConfirmation: String,
     ) {
-        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email)
-            .matches()
+        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
         val isPasswordWrong = password.length < 8
         val isConfirmationPasswordWrong = password != passwordConfirmation
 
@@ -136,22 +128,17 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
 
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
+        _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             authenticationRepository.createUserWithEmailAndPassword(email, password)
 
-            _uiState.update {
-                it.copy(isLoading = false)
-            }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     fun passwordSignIn(email: String, password: String) {
-        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email)
-            .matches()
+        val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
         val isPasswordWrong = password.isBlank()
 
         if (isEmailWrong || isPasswordWrong) {
@@ -165,24 +152,18 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
 
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
+        _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             authenticationRepository.signInWithEmailAndPassword(email, password)
 
-            _uiState.update {
-                it.copy(isLoading = false)
-            }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     fun resetPassword(email: String): Boolean {
         // TODO: Add UX
-        if (!Patterns.EMAIL_ADDRESS.matcher(email)
-                .matches()
-        ) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return false
         }
 

@@ -17,7 +17,9 @@ data class MyAccountUiState(
 )
 
 @HiltViewModel
-class MyAccountViewModel @Inject constructor(
+class MyAccountViewModel
+@Inject
+constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MyAccountUiState(authenticationRepository.getEmail()))
@@ -26,9 +28,7 @@ class MyAccountViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             authenticationRepository.authentication.collect { authentication ->
-                _uiState.update {
-                    it.copy(isSignedIn = authentication.isSignedIn)
-                }
+                _uiState.update { it.copy(isSignedIn = authentication.isSignedIn) }
             }
         }
     }

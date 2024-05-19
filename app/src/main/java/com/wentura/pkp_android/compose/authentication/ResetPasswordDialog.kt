@@ -43,28 +43,30 @@ fun ResetPasswordDialog(onDismissRequest: () -> Unit = {}, onSendClick: (String)
         modifier = Modifier.fillMaxSize(),
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.reset_password)) }, navigationIcon = {
-                IconButton(onClick = onDismissRequest) {
-                    Icon(
-                        imageVector = Icons.Outlined.Close, contentDescription = null
-                    )
-                }
-            })
-        }) { paddingValues ->
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.reset_password)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
+                        }
+                    }
+                )
+            }
+        ) { paddingValues ->
             Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                modifier =
+                    Modifier.padding(paddingValues)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     stringResource(R.string.reset_email_description),
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 20.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier.padding(horizontal = 20.dp).padding(top = 20.dp, bottom = 10.dp),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center
                 )
@@ -75,16 +77,12 @@ fun ResetPasswordDialog(onDismissRequest: () -> Unit = {}, onSendClick: (String)
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     singleLine = true,
                     label = { Text(stringResource(R.string.email)) },
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(vertical = 10.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp).padding(vertical = 10.dp)
                 )
 
                 Button(
                     onClick = { onSendClick(emailText.value) },
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 10.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 10.dp)
                 ) {
                     Text(stringResource(R.string.send))
                 }
@@ -96,7 +94,5 @@ fun ResetPasswordDialog(onDismissRequest: () -> Unit = {}, onSendClick: (String)
 @Composable
 @Preview
 private fun ResetPasswordDialogPreview() {
-    PKPAndroidTheme {
-        ResetPasswordDialog()
-    }
+    PKPAndroidTheme { ResetPasswordDialog() }
 }

@@ -11,6 +11,7 @@ plugins {
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
+
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
@@ -24,9 +25,7 @@ android {
         versionCode = 3
         versionName = "0.1.2"
 
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        vectorDrawables { useSupportLibrary = true }
     }
 
     signingConfigs {
@@ -43,15 +42,14 @@ android {
             isMinifyEnabled = true
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
 
             signingConfig = signingConfigs.getByName("release")
         }
 
-        debug {
-            applicationIdSuffix = ".debug"
-        }
+        debug { applicationIdSuffix = ".debug" }
     }
 
     compileOptions {
@@ -61,23 +59,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
+    kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
-    buildFeatures {
-        compose = true
-    }
+    buildFeatures { compose = true }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+    composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get() }
 
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
 dependencies {

@@ -16,22 +16,26 @@ fun TimePicker(showTimePicker: MutableState<Boolean>, departureTime: MutableStat
     val timePickerState =
         rememberTimePickerState(departureTime.value.hour, departureTime.value.minute)
 
-    TimePickerDialog(onDismissRequest = { showTimePicker.value = false }, confirmButton = {
-        TextButton(
-            onClick = {
-                showTimePicker.value = false
-                departureTime.value = LocalTime.of(timePickerState.hour, timePickerState.minute)
-            },
-        ) {
-            Text(stringResource(R.string.ok))
+    TimePickerDialog(
+        onDismissRequest = { showTimePicker.value = false },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    showTimePicker.value = false
+                    departureTime.value = LocalTime.of(timePickerState.hour, timePickerState.minute)
+                },
+            ) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { showTimePicker.value = false },
+            ) {
+                Text(stringResource(R.string.cancel))
+            }
         }
-    }, dismissButton = {
-        TextButton(
-            onClick = { showTimePicker.value = false },
-        ) {
-            Text(stringResource(R.string.cancel))
-        }
-    }) {
+    ) {
         androidx.compose.material3.TimePicker(state = timePickerState)
     }
 }

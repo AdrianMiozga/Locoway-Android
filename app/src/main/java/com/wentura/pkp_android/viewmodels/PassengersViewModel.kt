@@ -19,7 +19,9 @@ data class PassengersUiState(
 )
 
 @HiltViewModel
-class PassengersViewModel @Inject constructor(
+class PassengersViewModel
+@Inject
+constructor(
     private val passengerRepository: PassengerRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PassengersUiState())
@@ -40,9 +42,7 @@ class PassengersViewModel @Inject constructor(
     }
 
     private fun getPassengers() {
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
+        _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             _uiState.update {
@@ -56,7 +56,8 @@ class PassengersViewModel @Inject constructor(
 
         viewModelScope.launch {
             passengerRepository.updatePassenger(
-                state.currentPassenger.documentPath, state.currentPassenger
+                state.currentPassenger.documentPath,
+                state.currentPassenger
             )
 
             getPassengers()
@@ -75,39 +76,31 @@ class PassengersViewModel @Inject constructor(
     fun setCurrentPassenger(position: Int) {
         val state = _uiState.value
 
-        _uiState.update {
-            it.copy(currentPassenger = state.passengers[position])
-        }
+        _uiState.update { it.copy(currentPassenger = state.passengers[position]) }
     }
 
     fun resetCurrentPassenger() {
-        _uiState.update {
-            it.copy(currentPassenger = Passenger())
-        }
+        _uiState.update { it.copy(currentPassenger = Passenger()) }
     }
 
     fun updateName(name: String) {
         val passenger = _uiState.value.currentPassenger.copy(name = name)
 
-        _uiState.update {
-            it.copy(currentPassenger = passenger)
-        }
+        _uiState.update { it.copy(currentPassenger = passenger) }
     }
 
     fun toggleREGIOCard() {
         val passenger =
-            _uiState.value.currentPassenger.copy(hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard)
+            _uiState.value.currentPassenger.copy(
+                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard
+            )
 
-        _uiState.update {
-            it.copy(currentPassenger = passenger)
-        }
+        _uiState.update { it.copy(currentPassenger = passenger) }
     }
 
     fun changeDiscount(id: Int) {
         val passenger = _uiState.value.currentPassenger.copy(discount = id)
 
-        _uiState.update {
-            it.copy(currentPassenger = passenger)
-        }
+        _uiState.update { it.copy(currentPassenger = passenger) }
     }
 }

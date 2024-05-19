@@ -51,7 +51,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 enum class LoginPage(@StringRes val titleResId: Int) {
-    LOGIN(R.string.login), REGISTER(R.string.register)
+    LOGIN(R.string.login),
+    REGISTER(R.string.register)
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -68,9 +69,10 @@ fun AuthenticationScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    Scaffold(topBar = { AuthenticationTopAppBar(onUpClick = onUpClick) }, snackbarHost = {
-        SnackbarHost(hostState = snackbarHostState)
-    }) { innerPadding ->
+    Scaffold(
+        topBar = { AuthenticationTopAppBar(onUpClick = onUpClick) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -84,7 +86,9 @@ fun AuthenticationScreen(
                 pages.forEachIndexed { index, page ->
                     Tab(
                         selected = pagerState.currentPage == index,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
+                        onClick = {
+                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                        },
                         unselectedContentColor = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.height(49.dp)
                     ) {
@@ -101,13 +105,14 @@ fun AuthenticationScreen(
                 when (pages[index]) {
                     LoginPage.LOGIN -> {
                         Login(
-                            onSignIn = onSignIn, authenticationViewModel = authenticationViewModel
+                            onSignIn = onSignIn,
+                            authenticationViewModel = authenticationViewModel
                         )
                     }
-
                     LoginPage.REGISTER -> {
                         Register(
-                            onSignUp = onSignUp, authenticationViewModel = authenticationViewModel
+                            onSignUp = onSignUp,
+                            authenticationViewModel = authenticationViewModel
                         )
                     }
                 }
@@ -135,22 +140,21 @@ fun signInWithGoogle(
         GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
             .build()
 
-    val request = GetCredentialRequest.Builder()
-        .addCredentialOption(signInWithGoogle)
-        .build()
+    val request = GetCredentialRequest.Builder().addCredentialOption(signInWithGoogle).build()
 
     val credentialManager = CredentialManager.create(activity)
 
     coroutineScope.launch {
         try {
-            val result = credentialManager.getCredential(
-                context = activity,
-                request = request,
-            )
+            val result =
+                credentialManager.getCredential(
+                    context = activity,
+                    request = request,
+                )
 
             authenticationViewModel.handleGoogleSignIn(result)
-        } catch (_: GetCredentialCancellationException) {
-        } catch (exception: GetCredentialException) {
+        } catch (_: GetCredentialCancellationException) {} catch (
+            exception: GetCredentialException) {
             authenticationViewModel.signInFailed(exception)
         }
     }
@@ -159,19 +163,18 @@ fun signInWithGoogle(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
-    CenterAlignedTopAppBar(title = {
-        Text(stringResource(R.string.app_name))
-    }, navigationIcon = {
-        IconButton(onClick = onUpClick) {
-            Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+    CenterAlignedTopAppBar(
+        title = { Text(stringResource(R.string.app_name)) },
+        navigationIcon = {
+            IconButton(onClick = onUpClick) {
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+            }
         }
-    })
+    )
 }
 
 @Composable
 @Preview(showBackground = true)
 private fun AuthenticationPreview() {
-    PKPAndroidTheme {
-        AuthenticationScreen()
-    }
+    PKPAndroidTheme { AuthenticationScreen() }
 }

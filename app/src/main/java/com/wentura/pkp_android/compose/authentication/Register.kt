@@ -76,9 +76,7 @@ fun Register(
     ) {
         OutlinedTextField(
             value = emailText.value,
-            onValueChange = {
-                emailText.value = it
-            },
+            onValueChange = { emailText.value = it },
             supportingText = {
                 if (isEmailWrong) Text(stringResource(R.string.invalid_email)) else Text("")
             },
@@ -91,103 +89,100 @@ fun Register(
                     )
                 }
             },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
-            ),
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
             isError = isEmailWrong,
             singleLine = true,
             label = { Text(stringResource(R.string.email)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 20.dp)
         )
 
         OutlinedTextField(
             value = passwordText.value,
-            visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
-            ),
+            visualTransformation =
+                if (passwordVisible.value) VisualTransformation.None
+                else PasswordVisualTransformation(),
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
             isError = uiState.isPasswordWrong,
             supportingText = {
-                if (isPasswordWrong) Text(stringResource(R.string.password_too_short)) else Text(
-                    ""
-                )
+                if (isPasswordWrong) Text(stringResource(R.string.password_too_short)) else Text("")
             },
             trailingIcon = {
-                IconButton(onClick = {
-                    passwordVisible.value = !passwordVisible.value
-                }) {
+                IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                     val resource =
-                        if (passwordVisible.value) R.drawable.outline_visibility_off_24 else R.drawable.outline_visibility_24
+                        if (passwordVisible.value) R.drawable.outline_visibility_off_24
+                        else R.drawable.outline_visibility_24
 
                     val description =
-                        if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
-                            R.string.show_password
-                        )
+                        if (passwordVisible.value) stringResource(R.string.hide_password)
+                        else stringResource(R.string.show_password)
 
-                    Icon(
-                        painter = painterResource(resource), contentDescription = description
-                    )
+                    Icon(painter = painterResource(resource), contentDescription = description)
                 }
             },
             onValueChange = { passwordText.value = it },
             singleLine = true,
             label = { Text(stringResource(R.string.password)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
         )
 
         OutlinedTextField(
             value = passwordConfirmationText.value,
-            visualTransformation = if (passwordConfirmationVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation =
+                if (passwordConfirmationVisible.value) VisualTransformation.None
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isError = isConfirmationPasswordWrong,
             supportingText = {
-                if (isConfirmationPasswordWrong) Text(stringResource(R.string.passwords_not_the_same)) else Text(
-                    ""
-                )
+                if (isConfirmationPasswordWrong)
+                    Text(stringResource(R.string.passwords_not_the_same))
+                else Text("")
             },
             trailingIcon = {
-                IconButton(onClick = {
-                    passwordConfirmationVisible.value = !passwordConfirmationVisible.value
-                }) {
+                IconButton(
+                    onClick = {
+                        passwordConfirmationVisible.value = !passwordConfirmationVisible.value
+                    }
+                ) {
                     val resource =
-                        if (passwordConfirmationVisible.value) R.drawable.outline_visibility_off_24 else R.drawable.outline_visibility_24
+                        if (passwordConfirmationVisible.value) R.drawable.outline_visibility_off_24
+                        else R.drawable.outline_visibility_24
 
                     val description =
-                        if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
-                            R.string.show_password
-                        )
+                        if (passwordVisible.value) stringResource(R.string.hide_password)
+                        else stringResource(R.string.show_password)
 
-                    Icon(
-                        painter = painterResource(resource), contentDescription = description
-                    )
+                    Icon(painter = painterResource(resource), contentDescription = description)
                 }
             },
             onValueChange = { passwordConfirmationText.value = it },
             singleLine = true,
             label = { Text(stringResource(R.string.confirm_password)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
         )
 
-        Button(onClick = {
-            authenticationViewModel.passwordSignUp(
-                emailText.value, passwordText.value, passwordConfirmationText.value
-            )
-        }, modifier = Modifier.padding(bottom = 10.dp)) {
+        Button(
+            onClick = {
+                authenticationViewModel.passwordSignUp(
+                    emailText.value,
+                    passwordText.value,
+                    passwordConfirmationText.value
+                )
+            },
+            modifier = Modifier.padding(bottom = 10.dp)
+        ) {
             Text(stringResource(R.string.register))
         }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
-        OutlinedButton(onClick = {
-            signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
-        }, modifier = Modifier.padding(10.dp)) {
+        OutlinedButton(
+            onClick = {
+                signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
+            },
+            modifier = Modifier.padding(10.dp)
+        ) {
             Icon(
                 painter = painterResource(R.drawable.google_g_logo),
                 tint = Color.Unspecified,
@@ -204,11 +199,5 @@ fun Register(
 @Composable
 @Preview(showBackground = true)
 private fun RegisterPreview() {
-    PKPAndroidTheme {
-        Register(
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        )
-    }
+    PKPAndroidTheme { Register(Modifier.fillMaxHeight().fillMaxWidth()) }
 }

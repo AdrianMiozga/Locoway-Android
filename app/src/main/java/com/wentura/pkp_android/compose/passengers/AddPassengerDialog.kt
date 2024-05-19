@@ -44,7 +44,8 @@ fun AddPassengerDialog(
     onDismissRequest: () -> Unit = {},
     passengerViewModel: PassengersViewModel = hiltViewModel(),
 ) {
-    AddPassengerDialog(uiState = passengerViewModel.uiState,
+    AddPassengerDialog(
+        uiState = passengerViewModel.uiState,
         onDismissRequest = {
             onDismissRequest()
             passengerViewModel.resetCurrentPassenger()
@@ -56,7 +57,8 @@ fun AddPassengerDialog(
         },
         updateName = { passengerViewModel.updateName(it) },
         changeDiscount = { passengerViewModel.changeDiscount(it) },
-        toggleREGIOCard = { passengerViewModel.toggleREGIOCard() })
+        toggleREGIOCard = { passengerViewModel.toggleREGIOCard() }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,32 +78,38 @@ fun AddPassengerDialog(
         modifier = Modifier.fillMaxSize(),
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.add_passenger)) }, navigationIcon = {
-                IconButton(onClick = onDismissRequest) {
-                    Icon(
-                        imageVector = Icons.Outlined.Close, contentDescription = null
-                    )
-                }
-            }, actions = {
-                TextButton(onClick = { onSaveClick() }) {
-                    Text(stringResource(R.string.save))
-                }
-            })
-        }) { paddingValues ->
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.add_passenger)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
+                        }
+                    },
+                    actions = {
+                        TextButton(onClick = { onSaveClick() }) {
+                            Text(stringResource(R.string.save))
+                        }
+                    }
+                )
+            }
+        ) { paddingValues ->
             val discounts = stringArrayResource(R.array.discounts)
 
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
-                    OutlinedTextField(value = state.currentPassenger.name,
+                    OutlinedTextField(
+                        value = state.currentPassenger.name,
                         onValueChange = { updateName(it) },
                         label = { Text(stringResource(R.string.full_name)) },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
-                            .padding(top = 20.dp, bottom = 10.dp)
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .padding(top = 20.dp, bottom = 10.dp)
                     )
 
                     Text(
@@ -115,13 +123,13 @@ fun AddPassengerDialog(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
                     ) {
                         Text(discounts[discount])
-                        RadioButton(selected = state.currentPassenger.discount == discount,
-                            onClick = { changeDiscount(discount) })
+                        RadioButton(
+                            selected = state.currentPassenger.discount == discount,
+                            onClick = { changeDiscount(discount) }
+                        )
                     }
                 }
 
@@ -135,13 +143,13 @@ fun AddPassengerDialog(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
                     ) {
                         Text(stringResource(R.string.regio_card))
-                        Checkbox(checked = state.currentPassenger.hasREGIOCard,
-                            onCheckedChange = { toggleREGIOCard() })
+                        Checkbox(
+                            checked = state.currentPassenger.hasREGIOCard,
+                            onCheckedChange = { toggleREGIOCard() }
+                        )
                     }
                 }
             }

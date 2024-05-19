@@ -29,9 +29,7 @@ import com.wentura.pkp_android.R
 fun NoLocationServiceDialog(onDismissRequest: () -> Unit = {}, onConfirmRequest: () -> Unit = {}) {
     BasicAlertDialog(onDismissRequest = onDismissRequest) {
         Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
+            modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
@@ -48,9 +46,7 @@ fun NoLocationServiceDialog(onDismissRequest: () -> Unit = {}, onConfirmRequest:
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismissRequest) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                    TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) }
 
                     TextButton(onClick = onConfirmRequest) {
                         Text(stringResource(R.string.settings))

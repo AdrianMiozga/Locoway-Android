@@ -34,7 +34,9 @@ data class HomeUiState(
 )
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel
+@Inject
+constructor(
     private val authenticationRepository: AuthenticationRepository,
     private val stationRepository: StationRepository,
     private val recentSearchRepository: RecentSearchRepository,
@@ -58,22 +60,14 @@ class HomeViewModel @Inject constructor(
     fun onMessageShown() {
         authenticationRepository.clearMessage()
 
-        _uiState.update {
-            it.copy(userMessage = null)
-        }
+        _uiState.update { it.copy(userMessage = null) }
     }
 
     fun departureQueryUpdate(query: String) {
-        _uiState.update {
-            it.copy(departureQuery = query)
-        }
+        _uiState.update { it.copy(departureQuery = query) }
 
         if (query.length < MIN_QUERY_LENGTH) {
-            viewModelScope.launch {
-                _uiState.update {
-                    it.copy(departureStations = emptyList())
-                }
-            }
+            viewModelScope.launch { _uiState.update { it.copy(departureStations = emptyList()) } }
         } else {
             viewModelScope.launch {
                 _uiState.update {
@@ -90,14 +84,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun arrivalQueryUpdate(query: String) {
-        _uiState.update {
-            it.copy(arrivalQuery = query)
-        }
+        _uiState.update { it.copy(arrivalQuery = query) }
 
         if (query.length < MIN_QUERY_LENGTH) {
-            _uiState.update {
-                it.copy(arrivalStations = emptyList())
-            }
+            _uiState.update { it.copy(arrivalStations = emptyList()) }
         } else {
             viewModelScope.launch {
                 _uiState.update {
@@ -124,9 +114,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             recentSearchRepository.addRecentStation(
-                RecentSearchStation(
-                    type = "departure", name = station
-                )
+                RecentSearchStation(type = "departure", name = station)
             )
         }
     }
@@ -142,9 +130,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             recentSearchRepository.addRecentStation(
-                RecentSearchStation(
-                    type = "arrival", name = station
-                )
+                RecentSearchStation(type = "arrival", name = station)
             )
         }
     }
@@ -152,42 +138,47 @@ class HomeViewModel @Inject constructor(
     fun swapStations() {
         _uiState.update {
             it.copy(
-                departureStation = it.arrivalStation, arrivalStation = it.departureStation,
-                departureQuery = it.arrivalStation, arrivalQuery = it.departureStation,
-                departureStations = it.arrivalStations, arrivalStations = it.departureStations,
+                departureStation = it.arrivalStation,
+                arrivalStation = it.departureStation,
+                departureQuery = it.arrivalStation,
+                arrivalQuery = it.departureStation,
+                departureStations = it.arrivalStations,
+                arrivalStations = it.departureStations,
             )
         }
     }
 
     fun toggleDepartureStationDialog() {
-        _uiState.update {
-            it.copy(showDepartureStationDialog = !it.showDepartureStationDialog)
-        }
+        _uiState.update { it.copy(showDepartureStationDialog = !it.showDepartureStationDialog) }
 
         if (_uiState.value.showDepartureStationDialog) {
             viewModelScope.launch {
                 _uiState.update {
-                    it.copy(recentDepartureStations = recentSearchRepository.getRecentDepartureStations()
-                        .map { recentSearchStation ->
-                            Station(recentSearchStation.name)
-                        })
+                    it.copy(
+                        recentDepartureStations =
+                            recentSearchRepository.getRecentDepartureStations().map {
+                                recentSearchStation ->
+                                Station(recentSearchStation.name)
+                            }
+                    )
                 }
             }
         }
     }
 
     fun toggleArrivalStationDialog() {
-        _uiState.update {
-            it.copy(showArrivalStationDialog = !it.showArrivalStationDialog)
-        }
+        _uiState.update { it.copy(showArrivalStationDialog = !it.showArrivalStationDialog) }
 
         if (_uiState.value.showArrivalStationDialog) {
             viewModelScope.launch {
                 _uiState.update {
-                    it.copy(recentArrivalStations = recentSearchRepository.getRecentArrivalStations()
-                        .map { recentSearchStation ->
-                            Station(recentSearchStation.name)
-                        })
+                    it.copy(
+                        recentArrivalStations =
+                            recentSearchRepository.getRecentArrivalStations().map {
+                                recentSearchStation ->
+                                Station(recentSearchStation.name)
+                            }
+                    )
                 }
             }
         }
@@ -211,9 +202,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onGeocoderFail() {
-        _uiState.update {
-            it.copy(userMessage = R.string.could_not_find_station)
-        }
+        _uiState.update { it.copy(userMessage = R.string.could_not_find_station) }
     }
 
     fun toggleOnNoLocationDialog() {

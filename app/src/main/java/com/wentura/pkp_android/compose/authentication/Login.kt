@@ -46,7 +46,8 @@ import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 
 @Composable
 fun Login(
-    modifier: Modifier = Modifier, onSignIn: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    onSignIn: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
     val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
@@ -61,17 +62,19 @@ fun Login(
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
 
     if (openAlertDialog.value) {
-        ResetPasswordDialog(onDismissRequest = { openAlertDialog.value = false },
+        ResetPasswordDialog(
+            onDismissRequest = { openAlertDialog.value = false },
             onSendClick = { email ->
                 if (authenticationViewModel.resetPassword(email)) {
                     openAlertDialog.value = false
                 }
-            })
+            }
+        )
     }
+
     if (uiState.isSignedIn) {
         onSignIn()
     }
-
 
     val context = LocalContext.current
     val activity = context.findActivity()
@@ -85,76 +88,72 @@ fun Login(
         OutlinedTextField(
             value = emailText.value,
             onValueChange = { emailText.value = it },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
-            ),
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
             supportingText = {
                 if (isEmailWrong) Text(stringResource(R.string.invalid_email)) else Text("")
             },
             isError = isEmailWrong,
             singleLine = true,
             label = { Text(stringResource(R.string.email)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 20.dp)
         )
 
         OutlinedTextField(
             value = passwordText.value,
-            visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation =
+                if (passwordVisible.value) VisualTransformation.None
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-                IconButton(onClick = {
-                    passwordVisible.value = !passwordVisible.value
-                }) {
+                IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                     val resource =
-                        if (passwordVisible.value) R.drawable.outline_visibility_off_24 else R.drawable.outline_visibility_24
+                        if (passwordVisible.value) R.drawable.outline_visibility_off_24
+                        else R.drawable.outline_visibility_24
 
                     val description =
-                        if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
-                            R.string.show_password
-                        )
+                        if (passwordVisible.value) stringResource(R.string.hide_password)
+                        else stringResource(R.string.show_password)
 
-                    Icon(
-                        painter = painterResource(resource), contentDescription = description
-                    )
+                    Icon(painter = painterResource(resource), contentDescription = description)
                 }
             },
             isError = isPasswordWrong,
             onValueChange = { passwordText.value = it },
             singleLine = true,
             label = { Text(stringResource(R.string.password)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 10.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 10.dp)
         )
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .fillMaxWidth()
+            modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth()
         ) {
-            TextButton(onClick = {
-                openAlertDialog.value = true
-            }, modifier = Modifier.padding(vertical = 10.dp)) {
+            TextButton(
+                onClick = { openAlertDialog.value = true },
+                modifier = Modifier.padding(vertical = 10.dp)
+            ) {
                 Text(stringResource(R.string.forgot_password))
             }
 
-            Button(onClick = {
-                authenticationViewModel.passwordSignIn(emailText.value, passwordText.value)
-            }, modifier = Modifier.padding(vertical = 10.dp)) {
+            Button(
+                onClick = {
+                    authenticationViewModel.passwordSignIn(emailText.value, passwordText.value)
+                },
+                modifier = Modifier.padding(vertical = 10.dp)
+            ) {
                 Text(stringResource(R.string.login))
             }
         }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
 
-        OutlinedButton(onClick = {
-            signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
-        }, modifier = Modifier.padding(10.dp)) {
+        OutlinedButton(
+            onClick = {
+                signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
+            },
+            modifier = Modifier.padding(10.dp)
+        ) {
             Icon(
                 painter = painterResource(R.drawable.google_g_logo),
                 tint = Color.Unspecified,
@@ -171,11 +170,5 @@ fun Login(
 @Composable
 @Preview(showBackground = true)
 private fun LoginPreview() {
-    PKPAndroidTheme {
-        Login(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        )
-    }
+    PKPAndroidTheme { Login(modifier = Modifier.fillMaxHeight().fillMaxWidth()) }
 }

@@ -34,3 +34,4 @@
 ### Static Analysis Tools
 
 - [Android Linter](https://developer.android.com/studio/write/lint)
+- [ktfmt](https://facebook.github.io/ktfmt/) - formatting Kotlin code
