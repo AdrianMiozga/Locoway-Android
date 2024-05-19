@@ -62,6 +62,11 @@
     <string name="swap_stations">Zamień stacje</string>
     <string name="results">Wyniki</string>
     <string name="recent_searches">Ostatnio wyszukane</string>
+    <string name="location_rationale_explanation">W celu automatycznego wyszukania stacji, aplikacja potrzebuje dostępu do Twojej lokalizacji.</string>
+    <string name="no_location">Brak lokalizacji</string>
+    <string name="settings">Ustawienia</string>
+    <string name="enable_location_services">Aby wyszukać stację włącz lokalizację urządzenia.</string>
+    <string name="could_not_find_station">Nie udało się wyszukać stacji</string>
 
     <string-array name="discounts">
         <item>Normalny</item>

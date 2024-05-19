@@ -3,6 +3,7 @@ package com.wentura.pkp_android.viewmodels
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.AuthenticationRepository
 import com.wentura.pkp_android.data.RecentSearchRepository
 import com.wentura.pkp_android.data.RecentSearchStation
@@ -28,6 +29,7 @@ data class HomeUiState(
     val arrivalStations: List<Station> = emptyList(),
     val recentDepartureStations: List<Station> = emptyList(),
     val recentArrivalStations: List<Station> = emptyList(),
+    val showNoLocationServiceDialog: Boolean = false,
     @StringRes val userMessage: Int? = null,
 )
 
@@ -55,6 +57,10 @@ class HomeViewModel @Inject constructor(
 
     fun onMessageShown() {
         authenticationRepository.clearMessage()
+
+        _uiState.update {
+            it.copy(userMessage = null)
+        }
     }
 
     fun departureQueryUpdate(query: String) {
@@ -184,6 +190,35 @@ class HomeViewModel @Inject constructor(
                         })
                 }
             }
+        }
+    }
+
+    fun onGotLocality(locality: String) {
+        viewModelScope.launch {
+            val stations = stationRepository.searchStations(locality)
+
+            if (stations.first().name == locality) {
+                _uiState.update {
+                    it.copy(
+                        departureStation = locality,
+                        departureQuery = locality,
+                    )
+                }
+            } else {
+                onGeocoderFail()
+            }
+        }
+    }
+
+    fun onGeocoderFail() {
+        _uiState.update {
+            it.copy(userMessage = R.string.could_not_find_station)
+        }
+    }
+
+    fun toggleOnNoLocationDialog() {
+        _uiState.update {
+            it.copy(showNoLocationServiceDialog = !_uiState.value.showNoLocationServiceDialog)
         }
     }
 

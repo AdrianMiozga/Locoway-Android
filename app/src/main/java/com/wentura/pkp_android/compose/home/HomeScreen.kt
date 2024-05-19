@@ -1,5 +1,14 @@
 package com.wentura.pkp_android.compose.home
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,10 +46,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.HomeUiState
 import com.wentura.pkp_android.viewmodels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -79,6 +92,9 @@ fun HomeScreen(
         onClearDepartureQuery = homeViewModel::clearDepartureQuery,
         onClearArrivalQuery = homeViewModel::clearArrivalQuery,
         onSwapStationsClick = homeViewModel::swapStations,
+        onGotLocality = homeViewModel::onGotLocality,
+        onGeocoderFail = homeViewModel::onGeocoderFail,
+        toggleOnNoLocationDialog = homeViewModel::toggleOnNoLocationDialog,
         onMessageShown = homeViewModel::onMessageShown
     )
 }
@@ -101,6 +117,9 @@ fun HomeScreen(
     onClearDepartureQuery: () -> Unit = {},
     onClearArrivalQuery: () -> Unit = {},
     onSwapStationsClick: () -> Unit = {},
+    onGotLocality: (String) -> Unit = {},
+    onGeocoderFail: () -> Unit = {},
+    toggleOnNoLocationDialog: () -> Unit = {},
     onMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -128,6 +147,17 @@ fun HomeScreen(
 
             val showDatePicker = rememberSaveable { mutableStateOf(false) }
             val showTimePicker = rememberSaveable { mutableStateOf(false) }
+
+            val showLocationRationale = rememberSaveable { mutableStateOf(false) }
+
+            val locationPermissionRequest =
+                rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                    if (isGranted) {
+                        getCurrentLocation(
+                            context.findActivity(), onGotLocality, toggleOnNoLocationDialog, onGeocoderFail
+                        )
+                    }
+                }
 
             if (showDatePicker.value) {
                 DatePicker(showDatePicker, departureDate)
@@ -163,6 +193,25 @@ fun HomeScreen(
                 )
             }
 
+            if (showLocationRationale.value) {
+                LocationRationaleDialog(onDismissRequest = { showLocationRationale.value = false },
+                    onPermissionRequest = {
+                        showLocationRationale.value = false
+                        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    })
+            }
+
+            if (state.showNoLocationServiceDialog) {
+                NoLocationServiceDialog(onDismissRequest = toggleOnNoLocationDialog,
+                    onConfirmRequest = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                        )
+
+                        toggleOnNoLocationDialog()
+                    })
+            }
+
             Column(
                 modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -173,6 +222,28 @@ fun HomeScreen(
                     value = state.departureStation,
                     readOnly = true,
                     enabled = false,
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                getCurrentLocation(
+                                    context.findActivity(), onGotLocality, toggleOnNoLocationDialog, onGeocoderFail
+                                )
+                            } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                                    context.findActivity(),
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            ) {
+                                showLocationRationale.value = true
+                            } else {
+                                locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                            }
+                        }) {
+                            Icon(
+                                painter = painterResource(R.drawable.my_location_24),
+                                contentDescription = stringResource(R.string.swap_stations)
+                            )
+                        }
+                    },
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .padding(top = 20.dp, bottom = 10.dp)
@@ -184,6 +255,7 @@ fun HomeScreen(
                         disabledTextColor = MaterialTheme.colorScheme.onSurface,
                         disabledBorderColor = MaterialTheme.colorScheme.outline,
                         disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
                     )
                 )
 
@@ -282,6 +354,36 @@ fun HomeScreen(
                 }
             }
         }
+    }
+}
+
+private fun getCurrentLocation(
+    activity: Activity,
+    onGotLocality: (String) -> Unit,
+    onNoLocationService: () -> Unit,
+    onGeocoderFail: () -> Unit,
+) {
+    if (activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            .addOnSuccessListener { location: Location? ->
+                if (location == null) {
+                    onNoLocationService()
+                    return@addOnSuccessListener
+                }
+
+                val result = Geocoder(activity).getFromLocation(
+                    location.latitude, location.longitude, 1
+                )
+                    ?.first()
+
+                if (result == null) {
+                    onGeocoderFail()
+                } else {
+                    onGotLocality(result.locality)
+                }
+            }
     }
 }
 
