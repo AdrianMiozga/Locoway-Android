@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val isSignedIn: Boolean = false,
+    val isLoading: Boolean = false,
     val departureStation: String = "",
     val arrivalStation: String = "",
     val showDepartureStationDialog: Boolean = false,
@@ -184,6 +185,10 @@ constructor(
         }
     }
 
+    fun onGetCurrentLocation() {
+        _uiState.update { it.copy(isLoading = true) }
+    }
+
     fun onGotLocality(locality: String) {
         viewModelScope.launch {
             val stations = stationRepository.searchStations(locality)
@@ -193,6 +198,7 @@ constructor(
                     it.copy(
                         departureStation = locality,
                         departureQuery = locality,
+                        isLoading = false,
                     )
                 }
             } else {
@@ -202,7 +208,9 @@ constructor(
     }
 
     fun onGeocoderFail() {
-        _uiState.update { it.copy(userMessage = R.string.could_not_find_station) }
+        _uiState.update {
+            it.copy(userMessage = R.string.could_not_find_station, isLoading = false)
+        }
     }
 
     fun toggleOnNoLocationDialog() {

@@ -12,8 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -24,6 +26,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -92,6 +95,7 @@ fun HomeScreen(
         onClearDepartureQuery = homeViewModel::clearDepartureQuery,
         onClearArrivalQuery = homeViewModel::clearArrivalQuery,
         onSwapStationsClick = homeViewModel::swapStations,
+        onGetCurrentLocation = homeViewModel::onGetCurrentLocation,
         onGotLocality = homeViewModel::onGotLocality,
         onGeocoderFail = homeViewModel::onGeocoderFail,
         toggleOnNoLocationDialog = homeViewModel::toggleOnNoLocationDialog,
@@ -117,6 +121,7 @@ fun HomeScreen(
     onClearDepartureQuery: () -> Unit = {},
     onClearArrivalQuery: () -> Unit = {},
     onSwapStationsClick: () -> Unit = {},
+    onGetCurrentLocation: () -> Unit = {},
     onGotLocality: (String) -> Unit = {},
     onGeocoderFail: () -> Unit = {},
     toggleOnNoLocationDialog: () -> Unit = {},
@@ -156,6 +161,7 @@ fun HomeScreen(
                     if (isGranted) {
                         getCurrentLocation(
                             context.findActivity(),
+                            onGetCurrentLocation,
                             onGotLocality,
                             toggleOnNoLocationDialog,
                             onGeocoderFail
@@ -222,6 +228,12 @@ fun HomeScreen(
                 modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                if (state.isLoading) {
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                } else {
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.departure_station)) },
                     onValueChange = {},
@@ -238,6 +250,7 @@ fun HomeScreen(
                                 ) {
                                     getCurrentLocation(
                                         context.findActivity(),
+                                        onGetCurrentLocation,
                                         onGotLocality,
                                         toggleOnNoLocationDialog,
                                         onGeocoderFail
@@ -371,6 +384,7 @@ fun HomeScreen(
 
 private fun getCurrentLocation(
     activity: Activity,
+    onGetCurrentLocation: () -> Unit,
     onGotLocality: (String) -> Unit,
     onNoLocationService: () -> Unit,
     onGeocoderFail: () -> Unit,
@@ -379,6 +393,8 @@ private fun getCurrentLocation(
         activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
     ) {
+        onGetCurrentLocation()
+
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
 
         fusedLocationClient
