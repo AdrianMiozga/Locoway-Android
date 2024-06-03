@@ -57,13 +57,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.data.LocationServiceBroadcastMonitor
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.HomeUiState
 import com.wentura.pkp_android.viewmodels.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -130,6 +135,7 @@ fun HomeScreen(
     onMessageShown: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
+    var locationServiceJob: Job? = null
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
@@ -217,11 +223,41 @@ fun HomeScreen(
 
             if (state.showNoLocationServiceDialog) {
                 NoLocationServiceDialog(
-                    onDismissRequest = toggleOnNoLocationDialog,
+                    onDismissRequest = {
+                        toggleOnNoLocationDialog()
+                        locationServiceJob?.cancel()
+                    },
                     onConfirmRequest = {
                         context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
 
-                        toggleOnNoLocationDialog()
+                        // TODO: Use DI
+                        val locationServiceBroadcastMonitor =
+                            LocationServiceBroadcastMonitor(context, scope)
+
+                        val areLocationServicesEnabled =
+                            locationServiceBroadcastMonitor.isEnabled.stateIn(
+                                scope,
+                                SharingStarted.WhileSubscribed(),
+                                false
+                            )
+
+                        locationServiceJob =
+                            scope.launch {
+                                areLocationServicesEnabled.collect { enabled ->
+                                    if (enabled) {
+                                        getCurrentLocation(
+                                            context.findActivity(),
+                                            onGetCurrentLocation,
+                                            onGotLocality,
+                                            toggleOnNoLocationDialog,
+                                            onGeocoderFail
+                                        )
+
+                                        toggleOnNoLocationDialog()
+                                        cancel()
+                                    }
+                                }
+                            }
                     }
                 )
             }
