@@ -367,7 +367,7 @@ fun HomeScreen(
                         label = { Text(stringResource(R.string.departure_date)) },
                         value =
                             departureDate.value.format(
-                                DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+                                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
                             ),
                         onValueChange = {},
                         readOnly = true,
