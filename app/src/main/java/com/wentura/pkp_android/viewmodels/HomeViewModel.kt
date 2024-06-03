@@ -189,6 +189,10 @@ constructor(
         _uiState.update { it.copy(isLoading = true) }
     }
 
+    fun onCancelLocation() {
+        _uiState.update { it.copy(isLoading = false) }
+    }
+
     fun onGotLocality(locality: String) {
         viewModelScope.launch {
             val stations = stationRepository.searchStations(locality)

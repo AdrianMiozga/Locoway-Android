@@ -105,6 +105,7 @@ fun HomeScreen(
         onGetCurrentLocation = homeViewModel::onGetCurrentLocation,
         onGotLocality = homeViewModel::onGotLocality,
         onGeocoderFail = homeViewModel::onGeocoderFail,
+        onCancelLocation = homeViewModel::onCancelLocation,
         toggleOnNoLocationDialog = homeViewModel::toggleOnNoLocationDialog,
         onMessageShown = homeViewModel::onMessageShown
     )
@@ -131,6 +132,7 @@ fun HomeScreen(
     onGetCurrentLocation: () -> Unit = {},
     onGotLocality: (String) -> Unit = {},
     onGeocoderFail: () -> Unit = {},
+    onCancelLocation: () -> Unit = {},
     toggleOnNoLocationDialog: () -> Unit = {},
     onMessageShown: () -> Unit = {},
 ) {
@@ -225,6 +227,7 @@ fun HomeScreen(
                 NoLocationServiceDialog(
                     onDismissRequest = {
                         toggleOnNoLocationDialog()
+                        onCancelLocation()
                         locationServiceJob?.cancel()
                     },
                     onConfirmRequest = {
