@@ -24,7 +24,9 @@
 
 ### Architecture
 
-- Single activity
+- Single-activity application
+- Single-module application
+- Unidirectional Data Flow
 
 ### Libraries
 
