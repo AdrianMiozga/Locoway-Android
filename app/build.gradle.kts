@@ -16,12 +16,12 @@ keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "com.wentura.pkp_android"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.wentura.pkp_android"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 4
         versionName = "0.1.3"
 
@@ -50,6 +50,12 @@ android {
         }
 
         debug { applicationIdSuffix = ".debug" }
+
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            applicationIdSuffix = ".benchmark"
+            signingConfig = getByName("debug").signingConfig
+        }
     }
 
     compileOptions {

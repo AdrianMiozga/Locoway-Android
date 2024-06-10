@@ -33,6 +33,10 @@
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - dependency injection
 - [Retrofit](https://github.com/square/retrofit) - HTTP client
 
+### Testing
+
+- [Macrobenchmark](https://developer.android.com/topic/performance/benchmarking/macrobenchmark-overview) - testing performance
+
 ### Static Analysis Tools
 
 - [Android Linter](https://developer.android.com/studio/write/lint)

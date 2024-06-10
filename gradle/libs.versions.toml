@@ -3,6 +3,9 @@ agp = "8.4.1"
 desugar_jdk_libs = "2.0.4"
 kotlin = "1.9.23"
 ksp = "1.9.23-1.0.20"
+minSdk = "23"
+targetSdk = "34"
+compileSdk = "34"
 coreKtx = "1.13.1"
 composeBom = "2024.05.00"
 activityCompose = "1.9.0"
@@ -18,6 +21,10 @@ googleServices = "4.4.1"
 googleid = "1.1.0"
 retrofit = "2.11.0"
 playServicesLocation = "21.2.0"
+junit = "1.1.5"
+espressoCore = "3.5.1"
+uiautomator = "2.3.0"
+benchmarkMacroJunit4 = "1.2.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +53,10 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -53,3 +64,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-test = { id = "com.android.test", version.ref = "agp" }
