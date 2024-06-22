@@ -326,7 +326,7 @@ fun HomeScreen(
                             disabledTextColor = MaterialTheme.colorScheme.onSurface,
                             disabledBorderColor = MaterialTheme.colorScheme.outline,
                             disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                 )
 
@@ -358,7 +358,7 @@ fun HomeScreen(
                             disabledTextColor = MaterialTheme.colorScheme.onSurface,
                             disabledBorderColor = MaterialTheme.colorScheme.outline,
                             disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                 )
 
