@@ -79,7 +79,7 @@ import java.time.format.FormatStyle
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    onSearchClick: () -> Unit = {},
+    onSearchClick: (String, String, String, String) -> Unit = { _, _, _, _ -> },
     onLoginClick: () -> Unit = {},
     onMyAccountClick: () -> Unit = {},
     onMyTicketsClick: () -> Unit = {},
@@ -107,15 +107,14 @@ fun HomeScreen(
         onGeocoderFail = homeViewModel::onGeocoderFail,
         onCancelLocation = homeViewModel::onCancelLocation,
         toggleOnNoLocationDialog = homeViewModel::toggleOnNoLocationDialog,
-        onMessageShown = homeViewModel::onMessageShown
-    )
+        onMessageShown = homeViewModel::onMessageShown)
 }
 
 @Composable
 fun HomeScreen(
     uiState: StateFlow<HomeUiState>,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    onSearchClick: () -> Unit = {},
+    onSearchClick: (String, String, String, String) -> Unit = { _, _, _, _ -> },
     onLoginClick: () -> Unit = {},
     onMyAccountClick: () -> Unit = {},
     onMyTicketsClick: () -> Unit = {},
@@ -148,279 +147,275 @@ fun HomeScreen(
         onLoginClick = onLoginClick,
         onMyAccountClick = onMyAccountClick,
         onMyTicketsClick = onMyTicketsClick,
-        onPassengersClick = onPassengersClick
-    ) {
-        Scaffold(
-            topBar = { TopAppBar(scope, drawerState) },
-            modifier = Modifier.fillMaxSize(),
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-        ) { innerPadding ->
-            val state by uiState.collectAsStateWithLifecycle()
+        onPassengersClick = onPassengersClick) {
+            Scaffold(
+                topBar = { TopAppBar(scope, drawerState) },
+                modifier = Modifier.fillMaxSize(),
+                snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { innerPadding ->
+                    val state by uiState.collectAsStateWithLifecycle()
 
-            val departureDate = rememberSaveable { mutableStateOf(LocalDate.now()) }
-            val departureTime = rememberSaveable { mutableStateOf(LocalTime.now()) }
+                    val departureDate = rememberSaveable { mutableStateOf(LocalDate.now()) }
+                    val departureTime = rememberSaveable { mutableStateOf(LocalTime.now()) }
 
-            val showDatePicker = rememberSaveable { mutableStateOf(false) }
-            val showTimePicker = rememberSaveable { mutableStateOf(false) }
+                    val showDatePicker = rememberSaveable { mutableStateOf(false) }
+                    val showTimePicker = rememberSaveable { mutableStateOf(false) }
 
-            val showLocationRationale = rememberSaveable { mutableStateOf(false) }
+                    val showLocationRationale = rememberSaveable { mutableStateOf(false) }
 
-            val locationPermissionRequest =
-                rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-                    isGranted ->
-                    if (isGranted) {
-                        getCurrentLocation(
-                            context.findActivity(),
-                            onGetCurrentLocation,
-                            onGotLocality,
-                            toggleOnNoLocationDialog,
-                            onGeocoderFail
-                        )
-                    }
-                }
-
-            if (showDatePicker.value) {
-                DatePicker(showDatePicker, departureDate)
-            }
-
-            if (showTimePicker.value) {
-                TimePicker(showTimePicker, departureTime)
-            }
-
-            if (state.showDepartureStationDialog) {
-                StationSearchDialog(
-                    dialogTitle = R.string.departure_station,
-                    query = state.departureQuery,
-                    stations = state.departureStations,
-                    recentStations = state.recentDepartureStations,
-                    onQueryUpdate = onDepartureQueryUpdate,
-                    onQueryClear = onClearDepartureQuery,
-                    onDismissRequest = toggleDepartureStationDialog,
-                    onStationClick = onDepartureStationClick,
-                )
-            }
-
-            if (state.showArrivalStationDialog) {
-                StationSearchDialog(
-                    dialogTitle = R.string.arrival_station,
-                    query = state.arrivalQuery,
-                    stations = state.arrivalStations,
-                    recentStations = state.recentArrivalStations,
-                    onQueryUpdate = onArrivalQueryUpdate,
-                    onQueryClear = onClearArrivalQuery,
-                    onDismissRequest = toggleArrivalStationDialog,
-                    onStationClick = onArrivalStationClick,
-                )
-            }
-
-            if (showLocationRationale.value) {
-                LocationRationaleDialog(
-                    onDismissRequest = { showLocationRationale.value = false },
-                    onPermissionRequest = {
-                        showLocationRationale.value = false
-                        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                    }
-                )
-            }
-
-            if (state.showNoLocationServiceDialog) {
-                NoLocationServiceDialog(
-                    onDismissRequest = {
-                        toggleOnNoLocationDialog()
-                        onCancelLocation()
-                        locationServiceJob?.cancel()
-                    },
-                    onConfirmRequest = {
-                        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-
-                        // TODO: Use DI
-                        val locationServiceBroadcastMonitor =
-                            LocationServiceBroadcastMonitor(context, scope)
-
-                        val areLocationServicesEnabled =
-                            locationServiceBroadcastMonitor.isEnabled.stateIn(
-                                scope,
-                                SharingStarted.WhileSubscribed(),
-                                false
-                            )
-
-                        locationServiceJob =
-                            scope.launch {
-                                areLocationServicesEnabled.collect { enabled ->
-                                    if (enabled) {
-                                        getCurrentLocation(
-                                            context.findActivity(),
-                                            onGetCurrentLocation,
-                                            onGotLocality,
-                                            toggleOnNoLocationDialog,
-                                            onGeocoderFail
-                                        )
-
-                                        toggleOnNoLocationDialog()
-                                        cancel()
-                                    }
-                                }
-                            }
-                    }
-                )
-            }
-
-            Column(
-                modifier = Modifier.padding(innerPadding).verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (state.isLoading) {
-                    LinearProgressIndicator(Modifier.fillMaxWidth())
-                } else {
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-
-                OutlinedTextField(
-                    label = { Text(stringResource(R.string.departure_station)) },
-                    onValueChange = {},
-                    value = state.departureStation,
-                    readOnly = true,
-                    enabled = false,
-                    trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                if (
-                                    context.checkSelfPermission(
-                                        Manifest.permission.ACCESS_COARSE_LOCATION
-                                    ) == PackageManager.PERMISSION_GRANTED
-                                ) {
+                    val locationPermissionRequest =
+                        rememberLauncherForActivityResult(
+                            ActivityResultContracts.RequestPermission()) { isGranted ->
+                                if (isGranted) {
                                     getCurrentLocation(
                                         context.findActivity(),
                                         onGetCurrentLocation,
                                         onGotLocality,
                                         toggleOnNoLocationDialog,
-                                        onGeocoderFail
-                                    )
-                                } else if (
-                                    ActivityCompat.shouldShowRequestPermissionRationale(
-                                        context.findActivity(),
-                                        Manifest.permission.ACCESS_COARSE_LOCATION
-                                    )
-                                ) {
-                                    showLocationRationale.value = true
-                                } else {
-                                    locationPermissionRequest.launch(
-                                        Manifest.permission.ACCESS_COARSE_LOCATION
-                                    )
+                                        onGeocoderFail)
                                 }
                             }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.my_location_24),
-                                contentDescription = stringResource(R.string.swap_stations)
-                            )
-                        }
-                    },
-                    modifier =
-                        Modifier.padding(horizontal = 20.dp)
-                            .padding(top = 20.dp, bottom = 10.dp)
-                            .fillMaxWidth()
-                            .clickable { toggleDepartureStationDialog() },
-                    colors =
-                        OutlinedTextFieldDefaults.colors(
-                            disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-                            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                )
 
-                OutlinedTextField(
-                    label = { Text(stringResource(R.string.arrival_station)) },
-                    onValueChange = {},
-                    value = state.arrivalStation,
-                    readOnly = true,
-                    enabled = false,
-                    trailingIcon = {
-                        if (
-                            state.arrivalStation.isNotEmpty() || state.departureStation.isNotEmpty()
-                        ) {
-                            IconButton(onClick = onSwapStationsClick) {
-                                Icon(
-                                    painter = painterResource(R.drawable.outline_swap_vert_24),
-                                    contentDescription = stringResource(R.string.swap_stations)
-                                )
+                    if (showDatePicker.value) {
+                        DatePicker(showDatePicker, departureDate)
+                    }
+
+                    if (showTimePicker.value) {
+                        TimePicker(showTimePicker, departureTime)
+                    }
+
+                    if (state.showDepartureStationDialog) {
+                        StationSearchDialog(
+                            dialogTitle = R.string.departure_station,
+                            query = state.departureQuery,
+                            stations = state.departureStations,
+                            recentStations = state.recentDepartureStations,
+                            onQueryUpdate = onDepartureQueryUpdate,
+                            onQueryClear = onClearDepartureQuery,
+                            onDismissRequest = toggleDepartureStationDialog,
+                            onStationClick = onDepartureStationClick,
+                        )
+                    }
+
+                    if (state.showArrivalStationDialog) {
+                        StationSearchDialog(
+                            dialogTitle = R.string.arrival_station,
+                            query = state.arrivalQuery,
+                            stations = state.arrivalStations,
+                            recentStations = state.recentArrivalStations,
+                            onQueryUpdate = onArrivalQueryUpdate,
+                            onQueryClear = onClearArrivalQuery,
+                            onDismissRequest = toggleArrivalStationDialog,
+                            onStationClick = onArrivalStationClick,
+                        )
+                    }
+
+                    if (showLocationRationale.value) {
+                        LocationRationaleDialog(
+                            onDismissRequest = { showLocationRationale.value = false },
+                            onPermissionRequest = {
+                                showLocationRationale.value = false
+                                locationPermissionRequest.launch(
+                                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                            })
+                    }
+
+                    if (state.showNoLocationServiceDialog) {
+                        NoLocationServiceDialog(
+                            onDismissRequest = {
+                                toggleOnNoLocationDialog()
+                                onCancelLocation()
+                                locationServiceJob?.cancel()
+                            },
+                            onConfirmRequest = {
+                                context.startActivity(
+                                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+
+                                // TODO: Use DI
+                                val locationServiceBroadcastMonitor =
+                                    LocationServiceBroadcastMonitor(context, scope)
+
+                                val areLocationServicesEnabled =
+                                    locationServiceBroadcastMonitor.isEnabled.stateIn(
+                                        scope, SharingStarted.WhileSubscribed(), false)
+
+                                locationServiceJob =
+                                    scope.launch {
+                                        areLocationServicesEnabled.collect { enabled ->
+                                            if (enabled) {
+                                                getCurrentLocation(
+                                                    context.findActivity(),
+                                                    onGetCurrentLocation,
+                                                    onGotLocality,
+                                                    toggleOnNoLocationDialog,
+                                                    onGeocoderFail)
+
+                                                toggleOnNoLocationDialog()
+                                                cancel()
+                                            }
+                                        }
+                                    }
+                            })
+                    }
+
+                    Column(
+                        modifier =
+                            Modifier.padding(innerPadding).verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (state.isLoading) {
+                                LinearProgressIndicator(Modifier.fillMaxWidth())
+                            } else {
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
+
+                            OutlinedTextField(
+                                label = { Text(stringResource(R.string.departure_station)) },
+                                onValueChange = {},
+                                value = state.departureStation,
+                                readOnly = true,
+                                enabled = false,
+                                trailingIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            if (context.checkSelfPermission(
+                                                Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                                                PackageManager.PERMISSION_GRANTED) {
+                                                getCurrentLocation(
+                                                    context.findActivity(),
+                                                    onGetCurrentLocation,
+                                                    onGotLocality,
+                                                    toggleOnNoLocationDialog,
+                                                    onGeocoderFail)
+                                            } else if (ActivityCompat
+                                                .shouldShowRequestPermissionRationale(
+                                                    context.findActivity(),
+                                                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                                                showLocationRationale.value = true
+                                            } else {
+                                                locationPermissionRequest.launch(
+                                                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                                            }
+                                        }) {
+                                            Icon(
+                                                painter =
+                                                    painterResource(R.drawable.my_location_24),
+                                                contentDescription =
+                                                    stringResource(R.string.swap_stations))
+                                        }
+                                },
+                                modifier =
+                                    Modifier.padding(horizontal = 20.dp)
+                                        .padding(top = 20.dp, bottom = 10.dp)
+                                        .fillMaxWidth()
+                                        .clickable { toggleDepartureStationDialog() },
+                                colors =
+                                    OutlinedTextFieldDefaults.colors(
+                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                        disabledLabelColor =
+                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                        disabledTrailingIconColor =
+                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                    ))
+
+                            OutlinedTextField(
+                                label = { Text(stringResource(R.string.arrival_station)) },
+                                onValueChange = {},
+                                value = state.arrivalStation,
+                                readOnly = true,
+                                enabled = false,
+                                trailingIcon = {
+                                    if (state.arrivalStation.isNotEmpty() ||
+                                        state.departureStation.isNotEmpty()) {
+                                        IconButton(onClick = onSwapStationsClick) {
+                                            Icon(
+                                                painter =
+                                                    painterResource(
+                                                        R.drawable.outline_swap_vert_24),
+                                                contentDescription =
+                                                    stringResource(R.string.swap_stations))
+                                        }
+                                    }
+                                },
+                                modifier =
+                                    Modifier.padding(horizontal = 20.dp)
+                                        .padding(vertical = 10.dp)
+                                        .fillMaxWidth()
+                                        .clickable { toggleArrivalStationDialog() },
+                                colors =
+                                    OutlinedTextFieldDefaults.colors(
+                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                        disabledLabelColor =
+                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                        disabledTrailingIconColor =
+                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                    ))
+
+                            Row {
+                                OutlinedTextField(
+                                    label = { Text(stringResource(R.string.departure_date)) },
+                                    value =
+                                        departureDate.value.format(
+                                            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    enabled = false,
+                                    modifier =
+                                        Modifier.padding(vertical = 10.dp)
+                                            .padding(start = 20.dp, end = 10.dp)
+                                            .weight(1f)
+                                            .clickable { showDatePicker.value = true },
+                                    colors =
+                                        OutlinedTextFieldDefaults.colors(
+                                            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                            disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                            disabledLabelColor =
+                                                MaterialTheme.colorScheme.onSurfaceVariant,
+                                        ))
+
+                                OutlinedTextField(
+                                    label = { Text(stringResource(R.string.departure_time)) },
+                                    value =
+                                        departureTime.value.format(
+                                            DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)),
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    enabled = false,
+                                    modifier =
+                                        Modifier.padding(vertical = 10.dp)
+                                            .padding(start = 10.dp, end = 20.dp)
+                                            .weight(1f)
+                                            .clickable { showTimePicker.value = true },
+                                    colors =
+                                        OutlinedTextFieldDefaults.colors(
+                                            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                            disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                            disabledLabelColor =
+                                                MaterialTheme.colorScheme.onSurfaceVariant,
+                                        ))
+                            }
+
+                            Button(
+                                onClick = {
+                                    onSearchClick(
+                                        state.departureStation,
+                                        state.arrivalStation,
+                                        departureDate.value.toString(),
+                                        departureTime.value.toString())
+                                },
+                                modifier = Modifier.padding(10.dp)) {
+                                    Text(stringResource(R.string.search))
+                                }
                         }
-                    },
-                    modifier =
-                        Modifier.padding(horizontal = 20.dp)
-                            .padding(vertical = 10.dp)
-                            .fillMaxWidth()
-                            .clickable { toggleArrivalStationDialog() },
-                    colors =
-                        OutlinedTextFieldDefaults.colors(
-                            disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-                            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                )
 
-                Row {
-                    OutlinedTextField(
-                        label = { Text(stringResource(R.string.departure_date)) },
-                        value =
-                            departureDate.value.format(
-                                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-                            ),
-                        onValueChange = {},
-                        readOnly = true,
-                        enabled = false,
-                        modifier =
-                            Modifier.padding(vertical = 10.dp)
-                                .padding(start = 20.dp, end = 10.dp)
-                                .weight(1f)
-                                .clickable { showDatePicker.value = true },
-                        colors =
-                            OutlinedTextFieldDefaults.colors(
-                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                disabledBorderColor = MaterialTheme.colorScheme.outline,
-                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                    )
-
-                    OutlinedTextField(
-                        label = { Text(stringResource(R.string.departure_time)) },
-                        value =
-                            departureTime.value.format(
-                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-                            ),
-                        onValueChange = {},
-                        readOnly = true,
-                        enabled = false,
-                        modifier =
-                            Modifier.padding(vertical = 10.dp)
-                                .padding(start = 10.dp, end = 20.dp)
-                                .weight(1f)
-                                .clickable { showTimePicker.value = true },
-                        colors =
-                            OutlinedTextFieldDefaults.colors(
-                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                disabledBorderColor = MaterialTheme.colorScheme.outline,
-                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                    )
+                    state.userMessage?.let { message ->
+                        LaunchedEffect(snackbarHostState) {
+                            snackbarHostState.showSnackbar(context.getString(message))
+                            onMessageShown()
+                        }
+                    }
                 }
-
-                Button(onClick = onSearchClick, modifier = Modifier.padding(10.dp)) {
-                    Text(stringResource(R.string.search))
-                }
-            }
-
-            state.userMessage?.let { message ->
-                LaunchedEffect(snackbarHostState) {
-                    snackbarHostState.showSnackbar(context.getString(message))
-                    onMessageShown()
-                }
-            }
         }
-    }
 }
 
 private fun getCurrentLocation(
@@ -430,10 +425,8 @@ private fun getCurrentLocation(
     onNoLocationService: () -> Unit,
     onGeocoderFail: () -> Unit,
 ) {
-    if (
-        activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
-    ) {
+    if (activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED) {
         onGetCurrentLocation()
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
@@ -472,11 +465,9 @@ private fun TopAppBar(
             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = stringResource(R.string.menu)
-                )
+                    contentDescription = stringResource(R.string.menu))
             }
-        }
-    )
+        })
 }
 
 @Preview(showBackground = true)

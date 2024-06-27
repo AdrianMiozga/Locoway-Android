@@ -67,6 +67,8 @@
     <string name="settings">Ustawienia</string>
     <string name="enable_location_services">Aby wyszukać stację włącz lokalizację urządzenia.</string>
     <string name="could_not_find_station">Nie udało się wyszukać stacji</string>
+    <string name="duration_time">%dm</string>
+    <string name="price_from">Cena od</string>
 
     <string-array name="discounts">
         <item>Normalny</item>

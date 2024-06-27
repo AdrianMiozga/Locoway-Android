@@ -1,0 +1,8 @@
+package com.wentura.pkp_android.data
+
+import com.google.gson.annotations.SerializedName
+
+data class TrainApiModel(
+    val id: Long,
+    @SerializedName("train_brand") val trainBrand: String,
+)
