@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -41,45 +40,14 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
-import com.wentura.pkp_android.viewmodels.PassengersUiState
-import com.wentura.pkp_android.viewmodels.PassengersViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-
-@Composable
-fun EditPassengerDialog(
-    onDismissRequest: () -> Unit = {},
-    passengerViewModel: PassengersViewModel = hiltViewModel(),
-) {
-    EditPassengerDialog(
-        uiState = passengerViewModel.uiState,
-        onDismissRequest = {
-            onDismissRequest()
-            passengerViewModel.resetCurrentPassenger()
-        },
-        onSaveClick = {
-            onDismissRequest()
-            passengerViewModel.updatePassenger()
-            passengerViewModel.resetCurrentPassenger()
-        },
-        onDeletePassenger = {
-            onDismissRequest()
-            passengerViewModel.deletePassenger()
-            passengerViewModel.resetCurrentPassenger()
-        },
-        updateName = { passengerViewModel.updateName(it) },
-        changeDiscount = { passengerViewModel.changeDiscount(it) },
-        toggleREGIOCard = { passengerViewModel.toggleREGIOCard() },
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPassengerDialog(
-    uiState: StateFlow<PassengersUiState>,
+    name: String,
+    discount: Int,
+    hasREGIOCard: Boolean,
     onDismissRequest: () -> Unit = {},
     onSaveClick: () -> Unit = {},
     onDeletePassenger: () -> Unit = {},
@@ -87,13 +55,11 @@ fun EditPassengerDialog(
     changeDiscount: (Int) -> Unit = {},
     toggleREGIOCard: () -> Unit = {},
 ) {
-    val state by uiState.collectAsStateWithLifecycle()
-
     val openConfirmationDialog = rememberSaveable { mutableStateOf(false) }
 
     if (openConfirmationDialog.value) {
         ConfirmationDialog(
-            state.currentPassenger.name,
+            name,
             onDismissRequest = { openConfirmationDialog.value = false },
             onConfirmationRequest = onDeletePassenger
         )
@@ -126,7 +92,7 @@ fun EditPassengerDialog(
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
                     OutlinedTextField(
-                        value = state.currentPassenger.name,
+                        value = name,
                         onValueChange = { updateName(it) },
                         label = { Text(stringResource(R.string.full_name)) },
                         singleLine = true,
@@ -145,16 +111,16 @@ fun EditPassengerDialog(
                     )
                 }
 
-                items(discounts.size) { discount ->
+                items(discounts.size) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
                     ) {
-                        Text(discounts[discount])
+                        Text(discounts[it])
                         RadioButton(
-                            selected = state.currentPassenger.discount == discount,
-                            onClick = { changeDiscount(discount) }
+                            selected = discount == it,
+                            onClick = { changeDiscount(it) }
                         )
                     }
                 }
@@ -173,7 +139,7 @@ fun EditPassengerDialog(
                     ) {
                         Text(stringResource(R.string.regio_card))
                         Checkbox(
-                            checked = state.currentPassenger.hasREGIOCard,
+                            checked = hasREGIOCard,
                             onCheckedChange = { toggleREGIOCard() }
                         )
                     }
@@ -237,7 +203,7 @@ fun ConfirmationDialog(
 @Preview(showBackground = true)
 @Composable
 fun EditPassengerDialogPreview() {
-    EditPassengerDialog(uiState = MutableStateFlow(PassengersUiState()))
+    EditPassengerDialog(name = "", discount = 0, hasREGIOCard = false)
 }
 
 @Preview(showBackground = true)

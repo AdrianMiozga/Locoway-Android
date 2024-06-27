@@ -16,6 +16,8 @@ data class PassengersUiState(
     val isLoading: Boolean = false,
     val passengers: List<Passenger> = emptyList(),
     val currentPassenger: Passenger = Passenger(),
+    val openAddPassengerDialog: Boolean = false,
+    val openEditPassengerDialog: Boolean = false,
 )
 
 @HiltViewModel
@@ -32,10 +34,15 @@ constructor(
     }
 
     fun addPassenger() {
-        val state = _uiState.value
-
         viewModelScope.launch {
-            passengerRepository.addPassenger(state.currentPassenger)
+            passengerRepository.addPassenger(_uiState.value.currentPassenger)
+
+            _uiState.update {
+                it.copy(
+                    openAddPassengerDialog = false,
+                    currentPassenger = Passenger(),
+                )
+            }
 
             getPassengers()
         }
@@ -54,11 +61,16 @@ constructor(
     fun updatePassenger() {
         val state = _uiState.value
 
+        _uiState.update {
+            it.copy(
+                openEditPassengerDialog = false,
+                currentPassenger = Passenger(),
+            )
+        }
+
         viewModelScope.launch {
             passengerRepository.updatePassenger(
-                state.currentPassenger.documentPath,
-                state.currentPassenger
-            )
+                state.currentPassenger.documentPath, state.currentPassenger)
 
             getPassengers()
         }
@@ -67,20 +79,27 @@ constructor(
     fun deletePassenger() {
         viewModelScope.launch {
             passengerRepository.deletePassenger(_uiState.value.currentPassenger.documentPath)
+
+            _uiState.update {
+                it.copy(
+                    openEditPassengerDialog = false,
+                    currentPassenger = Passenger(),
+                )
+            }
+
             getPassengers()
         }
-
-        resetCurrentPassenger()
     }
 
-    fun setCurrentPassenger(position: Int) {
+    fun showEditPassengerDialog(position: Int) {
         val state = _uiState.value
 
-        _uiState.update { it.copy(currentPassenger = state.passengers[position]) }
-    }
-
-    fun resetCurrentPassenger() {
-        _uiState.update { it.copy(currentPassenger = Passenger()) }
+        _uiState.update {
+            it.copy(
+                openEditPassengerDialog = true,
+                currentPassenger = state.passengers[position],
+            )
+        }
     }
 
     fun updateName(name: String) {
@@ -92,8 +111,7 @@ constructor(
     fun toggleREGIOCard() {
         val passenger =
             _uiState.value.currentPassenger.copy(
-                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard
-            )
+                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard)
 
         _uiState.update { it.copy(currentPassenger = passenger) }
     }
@@ -102,5 +120,17 @@ constructor(
         val passenger = _uiState.value.currentPassenger.copy(discount = id)
 
         _uiState.update { it.copy(currentPassenger = passenger) }
+    }
+
+    fun onEditPassengerDialogDismissRequest() {
+        _uiState.update { it.copy(openEditPassengerDialog = false, currentPassenger = Passenger()) }
+    }
+
+    fun onAddPassengerDismissRequest() {
+        _uiState.update { it.copy(openAddPassengerDialog = false, currentPassenger = Passenger()) }
+    }
+
+    fun showAddPassengerDialog() {
+        _uiState.update { it.copy(openAddPassengerDialog = true) }
     }
 }

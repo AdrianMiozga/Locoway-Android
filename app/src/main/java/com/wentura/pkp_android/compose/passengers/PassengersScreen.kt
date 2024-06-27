@@ -25,8 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.compose.common.AddPassengerDialog
 import com.wentura.pkp_android.data.Passenger
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.viewmodels.PassengersUiState
@@ -51,7 +50,17 @@ fun PassengersScreen(
     PassengersScreen(
         uiState = passengersViewModel.uiState,
         onUpClick = onUpClick,
-        onEditPassenger = { passengersViewModel.setCurrentPassenger(it) },
+        showAddPassengerDialog = passengersViewModel::showAddPassengerDialog,
+        onAddPassengerDialogDismissRequest = passengersViewModel::onAddPassengerDismissRequest,
+        onAddPassenger = passengersViewModel::addPassenger,
+        showEditPassengerDialog = passengersViewModel::showEditPassengerDialog,
+        onEditPassengerDialogDismissRequest =
+            passengersViewModel::onEditPassengerDialogDismissRequest,
+        onEditPassenger = passengersViewModel::updatePassenger,
+        onDeletePassenger = passengersViewModel::deletePassenger,
+        updateName = passengersViewModel::updateName,
+        changeDiscount = passengersViewModel::changeDiscount,
+        toggleREGIOCard = passengersViewModel::toggleREGIOCard,
     )
 }
 
@@ -59,67 +68,84 @@ fun PassengersScreen(
 fun PassengersScreen(
     uiState: StateFlow<PassengersUiState>,
     onUpClick: () -> Unit = {},
-    onEditPassenger: (Int) -> Unit = {},
+    showAddPassengerDialog: () -> Unit = {},
+    onAddPassengerDialogDismissRequest: () -> Unit = {},
+    onAddPassenger: () -> Unit = {},
+    showEditPassengerDialog: (Int) -> Unit = {},
+    onEditPassengerDialogDismissRequest: () -> Unit = {},
+    onEditPassenger: () -> Unit = {},
+    onDeletePassenger: () -> Unit = {},
+    updateName: (String) -> Unit = {},
+    changeDiscount: (Int) -> Unit = {},
+    toggleREGIOCard: () -> Unit = {},
 ) {
-    val openAddPassengerDialog = rememberSaveable { mutableStateOf(false) }
-    val openEditPassengerDialog = rememberSaveable { mutableStateOf(false) }
-
     val state by uiState.collectAsStateWithLifecycle()
 
-    if (openAddPassengerDialog.value) {
-        AddPassengerDialog(onDismissRequest = { openAddPassengerDialog.value = false })
+    if (state.openAddPassengerDialog) {
+        AddPassengerDialog(
+            name = state.currentPassenger.name,
+            discount = state.currentPassenger.discount,
+            hasREGIOCard = state.currentPassenger.hasREGIOCard,
+            onDismissRequest = onAddPassengerDialogDismissRequest,
+            onSaveClick = onAddPassenger,
+            updateName = updateName,
+            changeDiscount = changeDiscount,
+            toggleREGIOCard = toggleREGIOCard,
+        )
     }
 
-    if (openEditPassengerDialog.value) {
-        EditPassengerDialog(onDismissRequest = { openEditPassengerDialog.value = false })
+    if (state.openEditPassengerDialog) {
+        EditPassengerDialog(
+            name = state.currentPassenger.name,
+            discount = state.currentPassenger.discount,
+            hasREGIOCard = state.currentPassenger.hasREGIOCard,
+            onDismissRequest = onEditPassengerDialogDismissRequest,
+            onSaveClick = onEditPassenger,
+            onDeletePassenger = onDeletePassenger,
+            updateName = updateName,
+            changeDiscount = changeDiscount,
+            toggleREGIOCard = toggleREGIOCard,
+        )
     }
 
     Scaffold(
         topBar = { PassengersTopAppBar(onUpClick) },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { openAddPassengerDialog.value = true },
-            ) {
+            FloatingActionButton(onClick = showAddPassengerDialog) {
                 Icon(Icons.Filled.Add, stringResource(R.string.add_new_passenger))
             }
-        }
-    ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            if (state.isLoading) {
-                LinearProgressIndicator(Modifier.fillMaxWidth())
-            } else {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-
-            LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
-                if (state.passengers.isNotEmpty() || state.isLoading) {
-                    items(state.passengers.size) { passenger ->
-                        PassengerListItem(
-                            passenger = state.passengers[passenger],
-                            onEditPassenger = {
-                                openEditPassengerDialog.value = true
-                                onEditPassenger(passenger)
-                            }
-                        )
-
-                        if (passenger != state.passengers.size - 1) {
-                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-                        }
-                    }
+        }) { innerPadding ->
+            Column(modifier = Modifier.padding(innerPadding)) {
+                if (state.isLoading) {
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
                 } else {
-                    item {
-                        Column(
-                            modifier = Modifier.fillParentMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(stringResource(R.string.no_passengers))
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
+                    if (state.passengers.isNotEmpty() || state.isLoading) {
+                        items(state.passengers.size) { passenger ->
+                            PassengerListItem(
+                                passenger = state.passengers[passenger],
+                                onEditPassenger = { showEditPassengerDialog(passenger) })
+
+                            if (passenger != state.passengers.size - 1) {
+                                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                            }
+                        }
+                    } else {
+                        item {
+                            Column(
+                                modifier = Modifier.fillParentMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(stringResource(R.string.no_passengers))
+                                }
                         }
                     }
                 }
             }
         }
-    }
 }
 
 @Composable
@@ -128,27 +154,27 @@ fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp).padding(vertical = 8.dp)
-    ) {
-        Column {
-            Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
+            Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp).padding(vertical = 8.dp)) {
+            Column {
+                Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
 
-            val discount = stringArrayResource(R.array.discounts)[passenger.discount]
+                val discount = stringArrayResource(R.array.discounts)[passenger.discount]
 
-            if (passenger.hasREGIOCard) {
-                Text(
-                    stringResource(R.string.passenger_with_regio_card, discount),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            } else {
-                Text(discount, style = MaterialTheme.typography.bodyMedium)
+                if (passenger.hasREGIOCard) {
+                    Text(
+                        stringResource(R.string.passenger_with_regio_card, discount),
+                        style = MaterialTheme.typography.bodyMedium)
+                } else {
+                    Text(discount, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+
+            IconButton(onClick = onEditPassenger) {
+                Icon(
+                    Icons.Outlined.Edit,
+                    contentDescription = stringResource(R.string.edit_passenger))
             }
         }
-
-        IconButton(onClick = onEditPassenger) {
-            Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit_passenger))
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,28 +188,24 @@ fun PassengersTopAppBar(onUpClick: () -> Unit) {
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = null,
+                )
             }
-        }
-    )
+        })
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PassengersScreenPreview() {
+    val passengers =
+        listOf(
+            Passenger("Adam Majewski", true, 0),
+            Passenger("Marzena Nowakowska", false, 1),
+            Passenger("Roman Zawadzki", false, 2))
+
     PKPAndroidTheme {
-        PassengersScreen(
-            uiState =
-                MutableStateFlow(
-                    PassengersUiState(
-                        passengers =
-                            listOf(
-                                Passenger("Adam Majewski", true, 0),
-                                Passenger("Marzena Nowakowska", false, 1),
-                                Passenger("Roman Zawadzki", false, 2)
-                            )
-                    )
-                )
-        )
+        PassengersScreen(MutableStateFlow(PassengersUiState(passengers = passengers)))
     }
 }
