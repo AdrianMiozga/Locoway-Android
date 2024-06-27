@@ -397,6 +397,11 @@ fun HomeScreen(
 
                             Button(
                                 onClick = {
+                                    if (state.departureStation.isEmpty() ||
+                                        state.arrivalStation.isEmpty()) {
+                                        return@Button
+                                    }
+
                                     onSearchClick(
                                         state.departureStation,
                                         state.arrivalStation,
