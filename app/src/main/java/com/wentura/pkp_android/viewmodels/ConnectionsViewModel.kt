@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class SearchUiState(
+data class ConnectionsUiState(
     val isLoading: Boolean = true,
     val departureStation: String = "",
     val arrivalStation: String = "",
@@ -21,7 +21,7 @@ data class SearchUiState(
 )
 
 @HiltViewModel
-class SearchViewModel
+class ConnectionsViewModel
 @Inject
 constructor(
     savedStateHandle: SavedStateHandle,
@@ -29,11 +29,11 @@ constructor(
 ) : ViewModel() {
     private val _uiState =
         MutableStateFlow(
-            SearchUiState(
+            ConnectionsUiState(
                 departureStation = checkNotNull(savedStateHandle["departureStation"]),
                 arrivalStation = checkNotNull(savedStateHandle["arrivalStation"])))
 
-    val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ConnectionsUiState> = _uiState.asStateFlow()
 
     private var departureDate: String = checkNotNull(savedStateHandle["departureDate"])
     private var departureTime: String = checkNotNull(savedStateHandle["departureTime"])

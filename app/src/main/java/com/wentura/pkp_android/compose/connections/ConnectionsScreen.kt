@@ -39,8 +39,8 @@ import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.Connection
 import com.wentura.pkp_android.data.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
-import com.wentura.pkp_android.viewmodels.SearchUiState
-import com.wentura.pkp_android.viewmodels.SearchViewModel
+import com.wentura.pkp_android.viewmodels.ConnectionsUiState
+import com.wentura.pkp_android.viewmodels.ConnectionsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.text.NumberFormat
@@ -52,16 +52,16 @@ import kotlin.math.ceil
 
 @Composable
 fun ConnectionsScreen(
-    searchViewModel: SearchViewModel = hiltViewModel(),
+    connectionsViewModel: ConnectionsViewModel = hiltViewModel(),
     onUpClick: () -> Unit = {}
 ) {
-    val uiState = searchViewModel.uiState
+    val uiState = connectionsViewModel.uiState
 
     ConnectionsScreen(uiState, onUpClick)
 }
 
 @Composable
-fun ConnectionsScreen(uiState: StateFlow<SearchUiState>, onUpClick: () -> Unit = {}) {
+fun ConnectionsScreen(uiState: StateFlow<ConnectionsUiState>, onUpClick: () -> Unit = {}) {
     val state by uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -214,7 +214,7 @@ fun ConnectionsPreview() {
         ConnectionsScreen(
             uiState =
                 MutableStateFlow(
-                    SearchUiState(
+                    ConnectionsUiState(
                         isLoading = false,
                         departureStation = "Strzelce Opolskie",
                         arrivalStation = "Gliwice",
