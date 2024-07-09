@@ -34,16 +34,13 @@ constructor(
                         override fun onReceive(broadcastContext: Context?, intent: Intent?) {
                             if (intent?.action == LocationManager.PROVIDERS_CHANGED_ACTION) {
                                 trySend(
-                                    locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                                )
+                                    locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                             }
                         }
                     }
 
                 context.registerReceiver(
-                    receiver,
-                    IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
-                )
+                    receiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
 
                 trySend(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 

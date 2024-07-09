@@ -41,8 +41,7 @@ fun DatePicker(
                     override fun isSelectableYear(year: Int): Boolean {
                         return year >= Year.now().value
                     }
-                }
-        )
+                })
 
     val confirmEnabled by remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
 
@@ -57,19 +56,17 @@ fun DatePicker(
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate()
                 },
-                enabled = confirmEnabled
-            ) {
-                Text(stringResource(R.string.ok))
-            }
+                enabled = confirmEnabled) {
+                    Text(stringResource(R.string.ok))
+                }
         },
         dismissButton = {
             TextButton(onClick = { showDatePicker.value = false }) {
                 Text(stringResource(R.string.cancel))
             }
+        }) {
+            AndroidDatePicker(state = datePickerState)
         }
-    ) {
-        AndroidDatePicker(state = datePickerState)
-    }
 }
 
 @Preview(showBackground = true)

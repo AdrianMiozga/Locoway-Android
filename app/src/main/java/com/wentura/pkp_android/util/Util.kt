@@ -25,10 +25,10 @@ fun travelTime(departureDateTime: LocalDateTime, arrivalDateTime: LocalDateTime)
     // TODO: What about hour+
     val minutes =
         ceil(
-            ChronoUnit.SECONDS.between(
-                departureDateTime,
-                arrivalDateTime,
-            ) / 60.0)
+                ChronoUnit.SECONDS.between(
+                    departureDateTime,
+                    arrivalDateTime,
+                ) / 60.0)
             .toInt()
 
     return minutes

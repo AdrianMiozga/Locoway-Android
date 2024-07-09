@@ -71,61 +71,56 @@ fun AuthenticationScreen(
 
     Scaffold(
         topBar = { AuthenticationTopAppBar(onUpClick = onUpClick) },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { innerPadding ->
+            Column(modifier = Modifier.padding(innerPadding)) {
+                val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
 
-            if (uiState.isLoading) {
-                LinearProgressIndicator(Modifier.fillMaxWidth())
-            } else {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
+                if (uiState.isLoading) {
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                } else {
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
 
-            PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
-                pages.forEachIndexed { index, page ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        unselectedContentColor = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.height(49.dp)
-                    ) {
-                        Text(stringResource(page.titleResId))
+                PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
+                    pages.forEachIndexed { index, page ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                            },
+                            unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.height(49.dp)) {
+                                Text(stringResource(page.titleResId))
+                            }
                     }
                 }
-            }
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.Top
-            ) { index ->
-                when (pages[index]) {
-                    LoginPage.LOGIN -> {
-                        Login(
-                            onSignIn = onSignIn,
-                            authenticationViewModel = authenticationViewModel
-                        )
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalAlignment = Alignment.Top) { index ->
+                        when (pages[index]) {
+                            LoginPage.LOGIN -> {
+                                Login(
+                                    onSignIn = onSignIn,
+                                    authenticationViewModel = authenticationViewModel)
+                            }
+                            LoginPage.REGISTER -> {
+                                Register(
+                                    onSignUp = onSignUp,
+                                    authenticationViewModel = authenticationViewModel)
+                            }
+                        }
                     }
-                    LoginPage.REGISTER -> {
-                        Register(
-                            onSignUp = onSignUp,
-                            authenticationViewModel = authenticationViewModel
-                        )
-                    }
-                }
-            }
 
-            uiState.userMessage?.let { message ->
-                LaunchedEffect(snackbarHostState) {
-                    snackbarHostState.showSnackbar(context.getString(message))
-                    authenticationViewModel.onMessageShown()
+                uiState.userMessage?.let { message ->
+                    LaunchedEffect(snackbarHostState) {
+                        snackbarHostState.showSnackbar(context.getString(message))
+                        authenticationViewModel.onMessageShown()
+                    }
                 }
             }
         }
-    }
 }
 
 fun signInWithGoogle(
@@ -169,8 +164,7 @@ private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
             IconButton(onClick = onUpClick) {
                 Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
-        }
-    )
+        })
 }
 
 @Composable

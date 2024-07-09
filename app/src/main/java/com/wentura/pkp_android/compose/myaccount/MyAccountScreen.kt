@@ -43,8 +43,7 @@ fun MyAccountScreen(
         myAccountViewModel.uiState,
         onUpClick,
         myAccountViewModel::deleteAccount,
-        myAccountViewModel::signOut
-    )
+        myAccountViewModel::signOut)
 }
 
 @Composable
@@ -65,39 +64,37 @@ fun MyAccountScreen(
     Scaffold(topBar = { MyAccountTopAppBar(onUpClick) }) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (openAlertDialog.value) {
-                AccountDeletionDialog(
-                    onDismissRequest = { openAlertDialog.value = false },
-                    onConfirmation = {
-                        openAlertDialog.value = false
-                        onAccountDelete()
-                    }
-                )
-            }
-
-            Text(
-                stringResource(R.string.email_address),
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Text(state.email)
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                TextButton(onClick = { openAlertDialog.value = true }) {
-                    Text(
-                        stringResource(R.string.delete_account),
-                        color = MaterialTheme.colorScheme.error
-                    )
+            horizontalAlignment = Alignment.CenterHorizontally) {
+                if (openAlertDialog.value) {
+                    AccountDeletionDialog(
+                        onDismissRequest = { openAlertDialog.value = false },
+                        onConfirmation = {
+                            openAlertDialog.value = false
+                            onAccountDelete()
+                        })
                 }
 
-                OutlinedButton(onClick = { onSignOut() }) { Text(stringResource(R.string.logout)) }
+                Text(
+                    stringResource(R.string.email_address),
+                    style = MaterialTheme.typography.titleMedium)
+
+                Text(state.email)
+
+                Row(
+                    modifier =
+                        Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                        TextButton(onClick = { openAlertDialog.value = true }) {
+                            Text(
+                                stringResource(R.string.delete_account),
+                                color = MaterialTheme.colorScheme.error)
+                        }
+
+                        OutlinedButton(onClick = { onSignOut() }) {
+                            Text(stringResource(R.string.logout))
+                        }
+                    }
             }
-        }
     }
 }
 
@@ -110,8 +107,7 @@ fun MyAccountTopAppBar(onUpClick: () -> Unit) {
             IconButton(onClick = onUpClick) {
                 Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
-        }
-    )
+        })
 }
 
 @Preview(showBackground = true)
@@ -119,7 +115,6 @@ fun MyAccountTopAppBar(onUpClick: () -> Unit) {
 fun MyAccountPreview() {
     PKPAndroidTheme {
         MyAccountScreen(
-            MutableStateFlow(MyAccountUiState(isSignedIn = true, email = "user@email.com"))
-        )
+            MutableStateFlow(MyAccountUiState(isSignedIn = true, email = "user@email.com")))
     }
 }

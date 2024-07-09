@@ -34,8 +34,7 @@ fun TimePicker(showTimePicker: MutableState<Boolean>, departureTime: MutableStat
             ) {
                 Text(stringResource(R.string.cancel))
             }
+        }) {
+            androidx.compose.material3.TimePicker(state = timePickerState)
         }
-    ) {
-        androidx.compose.material3.TimePicker(state = timePickerState)
-    }
 }

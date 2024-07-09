@@ -45,9 +45,7 @@ constructor(
     private val _uiState =
         MutableStateFlow(
             ConnectionDetailsUiState(
-                connection = connectionsRepository.getConnectionById(trainId.toLong())
-            )
-        )
+                connection = connectionsRepository.getConnectionById(trainId.toLong())))
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -102,8 +100,7 @@ constructor(
     fun toggleREGIOCard() {
         val passenger =
             _uiState.value.currentPassenger.copy(
-                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard
-            )
+                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard)
 
         _uiState.update { it.copy(currentPassenger = passenger) }
     }

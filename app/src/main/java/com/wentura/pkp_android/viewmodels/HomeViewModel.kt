@@ -51,8 +51,7 @@ constructor(
                 _uiState.update {
                     it.copy(
                         isSignedIn = authentication.isSignedIn,
-                        userMessage = authentication.userMessage
-                    )
+                        userMessage = authentication.userMessage)
                 }
             }
         }
@@ -115,8 +114,7 @@ constructor(
 
         viewModelScope.launch {
             recentSearchRepository.addRecentStation(
-                RecentSearchStation(type = "departure", name = station)
-            )
+                RecentSearchStation(type = "departure", name = station))
         }
     }
 
@@ -131,8 +129,7 @@ constructor(
 
         viewModelScope.launch {
             recentSearchRepository.addRecentStation(
-                RecentSearchStation(type = "arrival", name = station)
-            )
+                RecentSearchStation(type = "arrival", name = station))
         }
     }
 
@@ -160,8 +157,7 @@ constructor(
                             recentSearchRepository.getRecentDepartureStations().map {
                                 recentSearchStation ->
                                 Station(recentSearchStation.name)
-                            }
-                    )
+                            })
                 }
             }
         }
@@ -178,8 +174,7 @@ constructor(
                             recentSearchRepository.getRecentArrivalStations().map {
                                 recentSearchStation ->
                                 Station(recentSearchStation.name)
-                            }
-                    )
+                            })
                 }
             }
         }

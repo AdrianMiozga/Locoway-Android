@@ -31,29 +31,31 @@ fun NoLocationServiceDialog(onDismissRequest: () -> Unit = {}, onConfirmRequest:
         Surface(
             modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
-            tonalElevation = AlertDialogDefaults.TonalElevation
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.enable_location_services),
-                    modifier = Modifier.align(Alignment.Start),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+            tonalElevation = AlertDialogDefaults.TonalElevation) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.enable_location_services),
+                            modifier = Modifier.align(Alignment.Start),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End) {
+                                TextButton(onClick = onDismissRequest) {
+                                    Text(stringResource(R.string.cancel))
+                                }
 
-                    TextButton(onClick = onConfirmRequest) {
-                        Text(stringResource(R.string.settings))
+                                TextButton(onClick = onConfirmRequest) {
+                                    Text(stringResource(R.string.settings))
+                                }
+                            }
                     }
-                }
             }
-        }
     }
 }
 

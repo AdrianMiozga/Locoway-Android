@@ -44,26 +44,24 @@ fun MyTicketsScreen(onUpClick: () -> Unit = {}, onPullToRefresh: () -> Unit = {}
         Box(
             modifier =
                 Modifier.padding(innerPadding)
-                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
-        ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
-                    Column(
-                        modifier = Modifier.fillParentMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(stringResource(R.string.no_tickets))
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        Column(
+                            modifier = Modifier.fillParentMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(stringResource(R.string.no_tickets))
+                            }
                     }
                 }
-            }
 
-            PullToRefreshContainer(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = pullToRefreshState,
-                contentColor = MaterialTheme.colorScheme.primary,
-            )
-        }
+                PullToRefreshContainer(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    state = pullToRefreshState,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                )
+            }
     }
 }
 
@@ -80,8 +78,7 @@ private fun MyTicketsTopAppBar(onUpClick: () -> Unit) {
             IconButton(onClick = onUpClick) {
                 Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
-        }
-    )
+        })
 }
 
 @Preview(showBackground = true)

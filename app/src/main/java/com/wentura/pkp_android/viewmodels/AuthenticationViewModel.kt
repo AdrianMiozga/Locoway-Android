@@ -49,8 +49,7 @@ constructor(
                     it.copy(
                         isSignedIn = authentication.isSignedIn,
                         isLoading = false,
-                        userMessage = authentication.userMessage
-                    )
+                        userMessage = authentication.userMessage)
                 }
             }
         }
