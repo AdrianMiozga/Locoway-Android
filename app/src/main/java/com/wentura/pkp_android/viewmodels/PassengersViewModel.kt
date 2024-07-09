@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wentura.pkp_android.data.Passenger
 import com.wentura.pkp_android.data.PassengerRepository
+import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +26,7 @@ class PassengersViewModel
 @Inject
 constructor(
     private val passengerRepository: PassengerRepository,
+    private val trimPassengerNameUseCase: TrimPassengerNameUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PassengersUiState())
     val uiState: StateFlow<PassengersUiState> = _uiState.asStateFlow()
@@ -35,7 +37,8 @@ constructor(
 
     fun addPassenger() {
         viewModelScope.launch {
-            passengerRepository.addPassenger(_uiState.value.currentPassenger)
+            passengerRepository.addPassenger(
+                trimPassengerNameUseCase(_uiState.value.currentPassenger))
 
             _uiState.update {
                 it.copy(

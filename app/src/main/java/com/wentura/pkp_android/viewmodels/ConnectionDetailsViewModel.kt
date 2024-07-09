@@ -8,6 +8,7 @@ import com.wentura.pkp_android.data.ConnectionsRepository
 import com.wentura.pkp_android.data.Passenger
 import com.wentura.pkp_android.data.PassengerRepository
 import com.wentura.pkp_android.data.PriceRepository
+import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +37,7 @@ constructor(
     private val passengerRepository: PassengerRepository,
     connectionsRepository: ConnectionsRepository,
     private val priceRepository: PriceRepository,
+    private val trimPassengerNameUseCase: TrimPassengerNameUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private var trainId: String = checkNotNull(savedStateHandle["trainId"])
@@ -55,7 +57,8 @@ constructor(
 
     fun addPassenger() {
         viewModelScope.launch {
-            passengerRepository.addPassenger(_uiState.value.currentPassenger)
+            passengerRepository.addPassenger(
+                trimPassengerNameUseCase(_uiState.value.currentPassenger))
 
             _uiState.update {
                 it.copy(
