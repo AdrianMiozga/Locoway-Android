@@ -7,7 +7,6 @@ import com.wentura.pkp_android.data.PassengerRepository
 import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,7 +28,7 @@ constructor(
     private val trimPassengerNameUseCase: TrimPassengerNameUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PassengersUiState())
-    val uiState: StateFlow<PassengersUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     init {
         getPassengers()

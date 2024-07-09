@@ -14,7 +14,6 @@ import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,7 +39,7 @@ constructor(
     }
 
     private val _uiState = MutableStateFlow(AuthenticationUiState())
-    val uiState: StateFlow<AuthenticationUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
