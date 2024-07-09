@@ -51,7 +51,12 @@ constructor(
                     _uiState.value.departureStation,
                     _uiState.value.arrivalStation)
 
-            _uiState.update { it.copy(connections = connections, isLoading = false) }
+            _uiState.update {
+                it.copy(
+                    connections = connections.values.toList(),
+                    isLoading = false,
+                )
+            }
         }
     }
 }

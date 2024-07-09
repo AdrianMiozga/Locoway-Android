@@ -69,10 +69,51 @@
     <string name="could_not_find_station">Nie udało się wyszukać stacji</string>
     <string name="duration_time">%dm</string>
     <string name="price_from">Cena od</string>
+    <string name="connection_details">Szczegóły połączenia</string>
+    <string name="select_passengers">Wybierz pasażerów</string>
+    <string name="price_for_selected_passengers">Cena dla wybranych pasażerów %s</string>
+    <string name="buy_ticket">Kup bilet</string>
+    <string name="select_additional_options">Wybierz opcje dodatkowe</string>
+    <string name="departure">"Odjazd: %s"</string>
+    <string name="arrival">Przyjazd: %s</string>
+    <string name="travel_time">Czas podróży: %sm</string>
+    <string name="journey">Trasa: %s - %s</string>
+    <string name="travels_with_dog">Przewozi psa</string>
+    <string name="travels_with_bike">Przewozi rower</string>
+    <string name="extra_luggage">Płatny bagaż</string>
+    <string name="class_string">Klasa</string>
+    <string name="no">Nie</string>
+    <string name="absence">Brak</string>
 
     <string-array name="discounts">
         <item>Normalny</item>
         <item>Student/doktorant (51%)</item>
         <item>Dzieci i młodzież (37%)</item>
     </string-array>
+
+    <string-array name="classes">
+        <item>1 klasa</item>
+        <item>2 klasa</item>
+    </string-array>
+
+    <plurals name="dogs">
+        <item quantity="one">%d pies</item>
+        <item quantity="few">%d psy</item>
+        <item quantity="many">%d psów</item>
+        <item quantity="other">%d psów</item>
+    </plurals>
+
+    <plurals name="bikes">
+        <item quantity="one">%d rower</item>
+        <item quantity="few">%d rowery</item>
+        <item quantity="many">%d rowerów</item>
+        <item quantity="other">%d rowerów</item>
+    </plurals>
+
+    <plurals name="luggage">
+        <item quantity="one">%d bagaż</item>
+        <item quantity="few">%d bagaże</item>
+        <item quantity="many">%d bagażów</item>
+        <item quantity="other">%d bagażów</item>
+    </plurals>
 </resources>

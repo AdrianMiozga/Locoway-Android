@@ -1,6 +1,7 @@
 package com.wentura.pkp_android.compose.connections
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.Connection
 import com.wentura.pkp_android.data.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.ConnectionsUiState
 import com.wentura.pkp_android.viewmodels.ConnectionsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,22 +48,25 @@ import kotlinx.coroutines.flow.StateFlow
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.Currency
-import kotlin.math.ceil
 
 @Composable
 fun ConnectionsScreen(
     connectionsViewModel: ConnectionsViewModel = hiltViewModel(),
-    onUpClick: () -> Unit = {}
+    onUpClick: () -> Unit = {},
+    onConnectionClick: (Long) -> Unit = {},
 ) {
     val uiState = connectionsViewModel.uiState
 
-    ConnectionsScreen(uiState, onUpClick)
+    ConnectionsScreen(uiState, onUpClick, onConnectionClick)
 }
 
 @Composable
-fun ConnectionsScreen(uiState: StateFlow<ConnectionsUiState>, onUpClick: () -> Unit = {}) {
+fun ConnectionsScreen(
+    uiState: StateFlow<ConnectionsUiState>,
+    onUpClick: () -> Unit = {},
+    onConnectionClick: (Long) -> Unit = {},
+) {
     val state by uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -77,7 +82,7 @@ fun ConnectionsScreen(uiState: StateFlow<ConnectionsUiState>, onUpClick: () -> U
 
                 LazyColumn {
                     items(state.connections.size) { connection ->
-                        ConnectionListItem(state.connections[connection])
+                        ConnectionListItem(state.connections[connection], onConnectionClick)
 
                         if (connection != state.connections.size - 1) {
                             HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
@@ -89,69 +94,65 @@ fun ConnectionsScreen(uiState: StateFlow<ConnectionsUiState>, onUpClick: () -> U
 }
 
 @Composable
-private fun ConnectionListItem(connection: Connection) {
-    Row(
-        modifier = Modifier.padding(8.dp).fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                Modifier.clip(CircleShape)
-                    .background(connection.trainBrand.displayColor)
-                    .height(40.dp)
-                    .aspectRatio(1f),
-                contentAlignment = Alignment.Center) {
-                    Text(
-                        connection.trainBrand.displayName,
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleSmall)
+private fun ConnectionListItem(connection: Connection, onConnectionClick: (Long) -> Unit = {}) {
+    Box(modifier = Modifier.clickable { onConnectionClick(connection.trainId) }) {
+        Row(
+            modifier = Modifier.padding(8.dp).fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier.clip(CircleShape)
+                        .background(connection.trainBrand.displayColor)
+                        .height(40.dp)
+                        .aspectRatio(1f),
+                    contentAlignment = Alignment.Center) {
+                        Text(
+                            connection.trainBrand.displayName,
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleSmall)
+                    }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    ConnectionTime(connection.departureDateTime)
+                    ConnectionDate(connection.departureDateTime)
                 }
 
-            Spacer(modifier = Modifier.weight(1f))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val minutes =
+                        travelTime(connection.departureDateTime, connection.arrivalDateTime)
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                ConnectionTime(connection.departureDateTime)
-                ConnectionDate(connection.departureDateTime)
+                    Text(
+                        text = stringResource(R.string.duration_time, minutes),
+                        style = MaterialTheme.typography.labelSmall)
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.padding(horizontal = 16.dp))
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    ConnectionTime(connection.arrivalDateTime)
+                    ConnectionDate(connection.arrivalDateTime)
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.price_from),
+                        style = MaterialTheme.typography.labelMedium)
+
+                    val numberFormat = NumberFormat.getCurrencyInstance()
+                    numberFormat.currency = Currency.getInstance("PLN")
+
+                    Text(
+                        text = numberFormat.format(connection.ticketPrice.toDouble()),
+                        style = MaterialTheme.typography.titleMedium)
+                }
             }
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // TODO: What about hour+
-                val minutes =
-                    ceil(
-                            ChronoUnit.SECONDS.between(
-                                connection.departureDateTime,
-                                connection.arrivalDateTime,
-                            ) / 60.0)
-                        .toInt()
-
-                Text(
-                    text = stringResource(R.string.duration_time, minutes),
-                    style = MaterialTheme.typography.labelSmall)
-
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
-                    contentDescription = null,
-                    modifier = Modifier.padding(horizontal = 16.dp))
-            }
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                ConnectionTime(connection.arrivalDateTime)
-                ConnectionDate(connection.arrivalDateTime)
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = stringResource(R.string.price_from),
-                    style = MaterialTheme.typography.labelMedium)
-
-                val numberFormat = NumberFormat.getCurrencyInstance()
-                numberFormat.currency = Currency.getInstance("PLN")
-
-                Text(
-                    text = numberFormat.format(connection.price.toDouble()),
-                    style = MaterialTheme.typography.titleMedium)
-            }
-        }
+    }
 }
 
 @Composable
@@ -195,18 +196,30 @@ fun ConnectionsPreview() {
     val connections =
         listOf(
             Connection(
+                1,
+                64340,
                 TrainBrand.REG,
                 "16.0",
+                "Strzelce Opolskie",
+                "Gliwice",
                 LocalDateTime.parse("2024-06-24T12:00:00"),
                 LocalDateTime.parse("2024-06-24T13:00:00")),
             Connection(
+                1,
+                64340,
                 TrainBrand.IC,
                 "10.5",
+                "Strzelce Opolskie",
+                "Gliwice",
                 LocalDateTime.parse("2024-06-24T14:00:00"),
                 LocalDateTime.parse("2024-06-24T15:00:00")),
             Connection(
+                1,
+                64340,
                 TrainBrand.REG,
                 "16.0",
+                "Strzelce Opolskie",
+                "Gliwice",
                 LocalDateTime.parse("2024-06-24T21:55:30"),
                 LocalDateTime.parse("2024-06-24T22:28:00")))
 

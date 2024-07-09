@@ -3,6 +3,9 @@ package com.wentura.pkp_android.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import kotlin.math.ceil
 
 fun Context.findActivity(): Activity {
     var context = this
@@ -16,4 +19,17 @@ fun Context.findActivity(): Activity {
     }
 
     throw IllegalStateException("No activity")
+}
+
+fun travelTime(departureDateTime: LocalDateTime, arrivalDateTime: LocalDateTime): Int {
+    // TODO: What about hour+
+    val minutes =
+        ceil(
+            ChronoUnit.SECONDS.between(
+                departureDateTime,
+                arrivalDateTime,
+            ) / 60.0)
+            .toInt()
+
+    return minutes
 }

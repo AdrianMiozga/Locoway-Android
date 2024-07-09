@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.wentura.pkp_android.compose.authentication.AuthenticationScreen
+import com.wentura.pkp_android.compose.connectiondetails.ConnectionsDetailsScreen
 import com.wentura.pkp_android.compose.connections.ConnectionsScreen
 import com.wentura.pkp_android.compose.home.HomeScreen
 import com.wentura.pkp_android.compose.myaccount.MyAccountScreen
@@ -71,7 +72,16 @@ fun PKPApp() {
             composable(
                 "${Screen.Search.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}",
             ) {
-                ConnectionsScreen(onUpClick = { navController.navigateUp() })
+                ConnectionsScreen(
+                    onUpClick = { navController.navigateUp() },
+                    onConnectionClick = { trainId ->
+                        navController.navigate("${Screen.ConnectionDetails.route}/$trainId")
+                    },
+                )
+            }
+
+            composable("${Screen.ConnectionDetails.route}/{trainId}") {
+                ConnectionsDetailsScreen(onUpClick = { navController.navigateUp() })
             }
 
             composable(Screen.Login.route) {

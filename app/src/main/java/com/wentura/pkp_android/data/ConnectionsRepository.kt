@@ -10,12 +10,14 @@ import javax.inject.Singleton
 
 @Singleton
 class ConnectionsRepository @Inject constructor(private val koleoService: KoleoService) {
+    private var connections: Map<Long, Connection> = emptyMap()
+
     suspend fun getConnections(
         departureDate: String,
         departureTime: String,
         departureStation: String,
         arrivalStation: String
-    ): List<Connection> {
+    ): Map<Long, Connection> {
         val formattedDate =
             LocalDate.parse(departureDate).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
 
@@ -26,19 +28,38 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
             koleoService.getConnections(
                 "$formattedDate+$formattedTime", departureStation, arrivalStation)
 
-        return koleoSearchResponse.connections.map {
-            val trainId = it.trainIds.first()
-            val trainMap = koleoSearchResponse.trains.associateBy { train -> train.id }
-            val koleoFormatter = DateTimeFormatter.ofPattern("HH:mm:ss yyyy-MM-dd")
-            val price = koleoService.getPrices(it.priceId).price.value
+        connections =
+            koleoSearchResponse.connections
+                .map {
+                    val trainId = it.trainIds.first()
+                    val trainMap = koleoSearchResponse.trains.associateBy { train -> train.id }
+                    val koleoFormatter = DateTimeFormatter.ofPattern("HH:mm:ss yyyy-MM-dd")
+                    val price = koleoService.getPrices(it.priceId).price
 
-            Connection(
-                TrainBrand.valueOf(
-                    trainMap[trainId]?.trainBrand
-                        ?: throw IllegalStateException("Unknown train brand")),
-                price,
-                LocalDateTime.parse(it.departureDateTime, koleoFormatter),
-                LocalDateTime.parse(it.arrivalDateTime, koleoFormatter))
-        }
+                    Connection(
+                        trainId,
+                        trainMap[trainId]?.trainNumber
+                            ?: throw IllegalStateException("Unknown train"),
+                        TrainBrand.valueOf(
+                            trainMap[trainId]?.trainBrand
+                                ?: throw IllegalStateException("Unknown train")),
+                        price.ticketPrice,
+                        departureStation,
+                        arrivalStation,
+                        LocalDateTime.parse(it.departureDateTime, koleoFormatter),
+                        LocalDateTime.parse(it.arrivalDateTime, koleoFormatter),
+                        price.dogPrice,
+                        price.bikePrice,
+                        price.luggagePrice,
+                    )
+                }
+                .associateBy { it.trainId }
+
+        return connections
+    }
+
+    /** Returns connection from cache. */
+    fun getConnectionById(id: Long): Connection {
+        return connections[id] ?: throw IllegalArgumentException("Connection with id $id not found")
     }
 }
