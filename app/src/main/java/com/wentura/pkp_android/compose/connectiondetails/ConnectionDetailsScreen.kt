@@ -56,22 +56,25 @@ import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.ConnectionDetailsUiState
 import com.wentura.pkp_android.viewmodels.ConnectionDetailsViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun ConnectionsDetailsScreen(
     connectionDetailsViewModel: ConnectionDetailsViewModel = hiltViewModel(),
     onUpClick: () -> Unit = {},
+    onBuyButtonClick: () -> Unit = {},
 ) {
     ConnectionsDetailsScreen(
         uiState = connectionDetailsViewModel.uiState,
         onUpClick = onUpClick,
+        onBuyTicket = connectionDetailsViewModel::onBuyTicket,
+        onBuyButtonClick = onBuyButtonClick,
         showAddPassengerDialog = connectionDetailsViewModel::showAddPassengerDialog,
         onAddPassengerDialogDismissRequest =
             connectionDetailsViewModel::onAddPassengerDismissRequest,
@@ -93,6 +96,8 @@ fun ConnectionsDetailsScreen(
 fun ConnectionsDetailsScreen(
     uiState: StateFlow<ConnectionDetailsUiState>,
     onUpClick: () -> Unit = {},
+    onBuyTicket: () -> Unit = {},
+    onBuyButtonClick: () -> Unit = {},
     showAddPassengerDialog: () -> Unit = {},
     onAddPassengerDialogDismissRequest: () -> Unit = {},
     onAddPassenger: () -> Unit = {},
@@ -419,7 +424,12 @@ fun ConnectionsDetailsScreen(
             )
 
             Button(
-                onClick = {},
+                onClick = {
+                    if (state.checkedPassengers.any { it }) {
+                        onBuyTicket()
+                        onBuyButtonClick()
+                    }
+                },
                 modifier = Modifier.padding(10.dp).align(Alignment.CenterHorizontally),
             ) {
                 Text(stringResource(R.string.buy_ticket))

@@ -81,7 +81,9 @@ fun PKPApp() {
             }
 
             composable("${Screen.ConnectionDetails.route}/{trainId}") {
-                ConnectionsDetailsScreen(onUpClick = { navController.navigateUp() })
+                ConnectionsDetailsScreen(
+                    onUpClick = { navController.navigateUp() },
+                    onBuyButtonClick = { navController.popBackStack(Screen.Home.route, false) })
             }
 
             composable(Screen.Login.route) {

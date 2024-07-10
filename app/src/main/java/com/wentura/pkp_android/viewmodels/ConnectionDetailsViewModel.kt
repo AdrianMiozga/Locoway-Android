@@ -8,14 +8,15 @@ import com.wentura.pkp_android.data.ConnectionsRepository
 import com.wentura.pkp_android.data.Passenger
 import com.wentura.pkp_android.data.PassengerRepository
 import com.wentura.pkp_android.data.PriceRepository
+import com.wentura.pkp_android.data.TicketRepository
 import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.math.BigDecimal
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
-import javax.inject.Inject
 
 data class ConnectionDetailsUiState(
     val passengers: List<Passenger> = emptyList(),
@@ -37,8 +38,9 @@ constructor(
     private val passengerRepository: PassengerRepository,
     connectionsRepository: ConnectionsRepository,
     private val priceRepository: PriceRepository,
+    private val ticketRepository: TicketRepository,
     private val trimPassengerNameUseCase: TrimPassengerNameUseCase,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private var trainId: String = checkNotNull(savedStateHandle["trainId"])
 
@@ -169,5 +171,9 @@ constructor(
 
     fun getSelectedPassengerAmount(): Int {
         return _uiState.value.checkedPassengers.count { it }
+    }
+
+    fun onBuyTicket() {
+        ticketRepository.addTicket(_uiState.value.connection)
     }
 }
