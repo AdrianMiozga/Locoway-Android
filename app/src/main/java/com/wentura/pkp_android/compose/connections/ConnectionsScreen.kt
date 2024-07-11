@@ -1,18 +1,15 @@
 package com.wentura.pkp_android.compose.connections
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
@@ -29,26 +26,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.compose.common.TrainBrandCircle
 import com.wentura.pkp_android.data.Connection
 import com.wentura.pkp_android.data.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.ConnectionsUiState
 import com.wentura.pkp_android.viewmodels.ConnectionsViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun ConnectionsScreen(
@@ -99,17 +95,7 @@ private fun ConnectionListItem(connection: Connection, onConnectionClick: (Long)
         Row(
             modifier = Modifier.padding(8.dp).fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier.clip(CircleShape)
-                        .background(connection.trainBrand.displayColor)
-                        .height(40.dp)
-                        .aspectRatio(1f),
-                    contentAlignment = Alignment.Center) {
-                        Text(
-                            connection.trainBrand.displayName,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleSmall)
-                    }
+                TrainBrandCircle(connection.trainBrand)
 
                 Spacer(modifier = Modifier.weight(1f))
 

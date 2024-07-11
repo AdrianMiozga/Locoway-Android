@@ -22,7 +22,7 @@ class TicketRepository @Inject constructor() {
                 uid = firebaseAuth.currentUser!!.uid,
                 carrier = "",
                 trainNumber = connection.trainNumber,
-                trainCategory = connection.trainBrand.displayName,
+                trainBrand = connection.trainBrand.displayName,
                 trainClass = 1,
                 seat = 1,
                 departureStation = connection.departureStation,

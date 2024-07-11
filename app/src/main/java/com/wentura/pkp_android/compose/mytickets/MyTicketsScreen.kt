@@ -1,5 +1,6 @@
 package com.wentura.pkp_android.compose.mytickets
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,10 +37,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.compose.common.TrainBrandCircle
 import com.wentura.pkp_android.data.Ticket
+import com.wentura.pkp_android.data.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.MyTicketsUiState
 import com.wentura.pkp_android.viewmodels.MyTicketsViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -117,10 +124,80 @@ fun MyTicketsScreen(
 
 @Composable
 fun MyTicketListItem(ticket: Ticket) {
-    Row(modifier = Modifier.padding(16.dp)) {
-        Text(text = ticket.departureStation)
-        Spacer(modifier = Modifier.weight(1f))
-        Text(text = ticket.arrivalStation)
+    Box(modifier = Modifier.clickable {}) {
+        Row(
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TrainBrandCircle(
+                trainBrand = TrainBrand.valueOf(ticket.trainBrand),
+                modifier = Modifier.padding(end = 16.dp),
+            )
+
+            Column {
+                Text(
+                    text = "${ticket.departureStation} - ${ticket.arrivalStation}",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+
+                Row {
+                    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+                    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM")
+
+                    val departureDateTime = LocalDateTime.parse(ticket.departureDate)
+                    val arrivalDateTime = LocalDateTime.parse(ticket.arrivalDate)
+
+                    Column {
+                        Text(
+                            text = departureDateTime.format(timeFormatter),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+
+                        Text(
+                            text = departureDateTime.format(dateFormatter),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text =
+                                stringResource(
+                                    R.string.duration_time,
+                                    travelTime(
+                                        departureDateTime,
+                                        arrivalDateTime,
+                                    ),
+                                ),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Column {
+                        Text(
+                            text = arrivalDateTime.format(timeFormatter),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+
+                        Text(
+                            text = arrivalDateTime.format(dateFormatter),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -149,7 +226,7 @@ fun MyTicketsPreview() {
                 uid = "",
                 carrier = "REG",
                 trainNumber = 1L,
-                trainCategory = "",
+                trainBrand = "REG",
                 trainClass = 1,
                 seat = 1,
                 departureStation = "Strzelce Opolskie",
@@ -161,7 +238,7 @@ fun MyTicketsPreview() {
                 uid = "",
                 carrier = "IC",
                 trainNumber = 1L,
-                trainCategory = "",
+                trainBrand = "IC",
                 trainClass = 1,
                 seat = 1,
                 departureStation = "Gliwice",

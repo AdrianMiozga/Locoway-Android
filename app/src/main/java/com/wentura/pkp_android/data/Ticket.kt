@@ -6,7 +6,7 @@ data class Ticket(
     val uid: String = "",
     val carrier: String = "",
     val trainNumber: Long = 0,
-    val trainCategory: String = "",
+    val trainBrand: String = "",
     @get:PropertyName("class") val trainClass: Int = 0,
     val seat: Int = 0,
     val departureStation: String = "",
