@@ -196,7 +196,7 @@ fun ConnectionsDetailsScreen(
             Column {
                 state.passengers.forEachIndexed { index, passenger ->
                     PassengerListItem(
-                        index, passenger, state.checkedPassengers[index], onCheckedChange)
+                        index, passenger, state.selectedPassengers[index], onCheckedChange)
                 }
             }
 
@@ -425,7 +425,7 @@ fun ConnectionsDetailsScreen(
 
             Button(
                 onClick = {
-                    if (state.checkedPassengers.any { it }) {
+                    if (state.selectedPassengers.any { it }) {
                         onBuyTicket()
                         onBuyButtonClick()
                     }
@@ -500,7 +500,7 @@ fun ConnectionsDetailsREGScreenPreview() {
                 MutableStateFlow(
                     ConnectionDetailsUiState(
                         passengers = passengers,
-                        checkedPassengers = List(passengers.size) { false },
+                        selectedPassengers = List(passengers.size) { false },
                         connection =
                             Connection(
                                 trainId = 1,
@@ -531,7 +531,7 @@ fun ConnectionsDetailsICScreenPreview() {
                 MutableStateFlow(
                     ConnectionDetailsUiState(
                         passengers = passengers,
-                        checkedPassengers = List(passengers.size) { false },
+                        selectedPassengers = List(passengers.size) { false },
                         connection =
                             Connection(
                                 trainId = 1,

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 data class ConnectionDetailsUiState(
     val passengers: List<Passenger> = emptyList(),
-    val checkedPassengers: List<Boolean> = emptyList(),
+    val selectedPassengers: List<Boolean> = emptyList(),
     val currentPassenger: Passenger = Passenger(),
     val openAddPassengerDialog: Boolean = false,
     val connection: Connection,
@@ -64,7 +64,7 @@ constructor(
                 it.copy(
                     openAddPassengerDialog = false,
                     currentPassenger = Passenger(),
-                    checkedPassengers = it.checkedPassengers.plus(true),
+                    selectedPassengers = it.selectedPassengers.plus(true),
                 )
             }
 
@@ -79,7 +79,7 @@ constructor(
             _uiState.update {
                 it.copy(
                     passengers = passengers,
-                    checkedPassengers = List(passengers.size) { false },
+                    selectedPassengers = List(passengers.size) { false },
                 )
             }
         }
@@ -124,8 +124,8 @@ constructor(
     fun onCheckedChange(index: Int, value: Boolean) {
         _uiState.update {
             it.copy(
-                checkedPassengers =
-                    it.checkedPassengers.toMutableList().apply { set(index, value) },
+                selectedPassengers =
+                    it.selectedPassengers.toMutableList().apply { set(index, value) },
             )
         }
 
@@ -137,7 +137,7 @@ constructor(
 
         val selectedPassengers =
             state.passengers.filter { passenger ->
-                state.checkedPassengers[state.passengers.indexOf(passenger)]
+                state.selectedPassengers[state.passengers.indexOf(passenger)]
             }
 
         return priceRepository.getPrice(
@@ -170,7 +170,7 @@ constructor(
     }
 
     fun getSelectedPassengerAmount(): Int {
-        return _uiState.value.checkedPassengers.count { it }
+        return _uiState.value.selectedPassengers.count { it }
     }
 
     fun onBuyTicket() {
