@@ -26,7 +26,7 @@ fun TrainBrandCircle(trainBrand: TrainBrand, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            trainBrand.displayName,
+            trainBrand.displayShortName,
             color = Color.White,
             style = MaterialTheme.typography.titleSmall,
         )
