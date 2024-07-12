@@ -12,6 +12,6 @@ data class Connection(
     val departureDateTime: LocalDateTime,
     val arrivalDateTime: LocalDateTime,
     val dogPrice: String = "0",
-    val bikePrice: String = "0",
+    val bikePrice: String? = "0",
     val luggagePrice: String = "0",
 )
