@@ -4,9 +4,12 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.tasks.await
+import com.wentura.pkp_android.config.Collections
+import com.wentura.pkp_android.config.Fields
+import com.wentura.pkp_android.config.Values
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
 
 @Singleton
 class RecentSearchRepository @Inject constructor() {
@@ -19,11 +22,11 @@ class RecentSearchRepository @Inject constructor() {
         }
 
         val document =
-            db.collection("users")
+            db.collection(Collections.USERS)
                 .document(firebaseAuth.uid!!)
-                .collection("recentSearch")
-                .whereEqualTo("name", recentSearchStation.name)
-                .whereEqualTo("type", recentSearchStation.type)
+                .collection(Collections.RECENT_SEARCH)
+                .whereEqualTo(Fields.NAME, recentSearchStation.name)
+                .whereEqualTo(Fields.TYPE, recentSearchStation.type)
                 .limit(1)
                 .get()
                 .await()
@@ -32,15 +35,15 @@ class RecentSearchRepository @Inject constructor() {
         if (document.isNotEmpty()) {
             val id = document.first().id
 
-            db.collection("users")
+            db.collection(Collections.USERS)
                 .document(firebaseAuth.uid!!)
-                .collection("recentSearch")
+                .collection(Collections.RECENT_SEARCH)
                 .document(id)
                 .set(recentSearchStation)
         } else {
-            db.collection("users")
+            db.collection(Collections.USERS)
                 .document(firebaseAuth.uid!!)
-                .collection("recentSearch")
+                .collection(Collections.RECENT_SEARCH)
                 .document()
                 .set(recentSearchStation)
         }
@@ -51,11 +54,11 @@ class RecentSearchRepository @Inject constructor() {
             return emptyList()
         }
 
-        return db.collection("users")
+        return db.collection(Collections.USERS)
             .document(firebaseAuth.uid!!)
-            .collection("recentSearch")
-            .whereEqualTo("type", "departure")
-            .orderBy("addedAt", Query.Direction.DESCENDING)
+            .collection(Collections.RECENT_SEARCH)
+            .whereEqualTo(Fields.TYPE, Values.DEPARTURE)
+            .orderBy(Fields.ADDED_AT, Query.Direction.DESCENDING)
             .get()
             .await()
             .toObjects(RecentSearchStation::class.java)
@@ -66,11 +69,11 @@ class RecentSearchRepository @Inject constructor() {
             return emptyList()
         }
 
-        return db.collection("users")
+        return db.collection(Collections.USERS)
             .document(firebaseAuth.uid!!)
-            .collection("recentSearch")
-            .whereEqualTo("type", "arrival")
-            .orderBy("addedAt", Query.Direction.DESCENDING)
+            .collection(Collections.RECENT_SEARCH)
+            .whereEqualTo(Fields.TYPE, Values.ARRIVAL)
+            .orderBy(Fields.ADDED_AT, Query.Direction.DESCENDING)
             .get()
             .await()
             .toObjects(RecentSearchStation::class.java)

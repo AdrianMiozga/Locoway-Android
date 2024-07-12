@@ -3,9 +3,11 @@ package com.wentura.pkp_android.data
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.tasks.await
+import com.wentura.pkp_android.config.Collections
+import com.wentura.pkp_android.config.Fields
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
 
 @Singleton
 class TicketRepository @Inject constructor() {
@@ -34,7 +36,7 @@ class TicketRepository @Inject constructor() {
                 additionalLuggage = 0,
             )
 
-        db.collection("tickets").add(ticket)
+        db.collection(Collections.TICKETS).add(ticket)
     }
 
     suspend fun getTicketsForCurrentUser(): List<Ticket> {
@@ -42,8 +44,8 @@ class TicketRepository @Inject constructor() {
             throw IllegalStateException("User is not logged in")
         }
 
-        return db.collection("tickets")
-            .whereEqualTo("uid", firebaseAuth.currentUser!!.uid)
+        return db.collection(Collections.TICKETS)
+            .whereEqualTo(Fields.UID, firebaseAuth.currentUser!!.uid)
             .get()
             .await()
             .toObjects(Ticket::class.java)
