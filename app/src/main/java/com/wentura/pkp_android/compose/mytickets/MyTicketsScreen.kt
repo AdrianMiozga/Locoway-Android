@@ -126,7 +126,7 @@ fun MyTicketsScreen(
 fun MyTicketListItem(ticket: Ticket) {
     Box(modifier = Modifier.clickable {}) {
         Row(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 24.dp),
+            modifier = Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TrainBrandCircle(

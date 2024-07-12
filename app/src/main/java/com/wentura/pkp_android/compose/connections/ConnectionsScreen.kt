@@ -39,12 +39,12 @@ import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.ConnectionsUiState
 import com.wentura.pkp_android.viewmodels.ConnectionsViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun ConnectionsScreen(
@@ -93,7 +93,7 @@ fun ConnectionsScreen(
 private fun ConnectionListItem(connection: Connection, onConnectionClick: (Long) -> Unit = {}) {
     Box(modifier = Modifier.clickable { onConnectionClick(connection.trainId) }) {
         Row(
-            modifier = Modifier.padding(8.dp).fillMaxSize(),
+            modifier = Modifier.padding(12.dp).fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically) {
                 TrainBrandCircle(connection.trainBrand)
 
