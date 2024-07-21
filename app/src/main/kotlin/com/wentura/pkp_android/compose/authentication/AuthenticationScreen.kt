@@ -200,7 +200,10 @@ private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
         title = { Text(stringResource(R.string.app_name)) },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = null,
+                )
             }
         })
 }
