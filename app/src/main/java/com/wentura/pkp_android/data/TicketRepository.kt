@@ -4,11 +4,14 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import com.wentura.pkp_android.R
 import com.wentura.pkp_android.config.Collections
 import com.wentura.pkp_android.config.Fields
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 
 @Singleton
@@ -17,6 +20,9 @@ class TicketRepository @Inject constructor() {
     private val db = Firebase.firestore
 
     private var tickets: Map<String, Ticket> = hashMapOf()
+
+    private val _userMessage = MutableStateFlow<Int?>(null)
+    val userMessage = _userMessage.asStateFlow()
 
     fun addTicket(
         connection: Connection,
@@ -48,6 +54,8 @@ class TicketRepository @Inject constructor() {
             )
 
         db.collection(Collections.TICKETS).add(ticket)
+
+        _userMessage.value = R.string.ticket_bought
     }
 
     suspend fun getTicketsForCurrentUser(): List<Ticket> {
@@ -72,5 +80,9 @@ class TicketRepository @Inject constructor() {
         return tickets.getOrElse(id) {
             throw IllegalArgumentException("Ticket with id $id not found")
         }
+    }
+
+    fun clearMessage() {
+        _userMessage.value = null
     }
 }

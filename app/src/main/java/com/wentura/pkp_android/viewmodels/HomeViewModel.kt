@@ -9,12 +9,13 @@ import com.wentura.pkp_android.data.RecentSearchRepository
 import com.wentura.pkp_android.data.RecentSearchStation
 import com.wentura.pkp_android.data.Station
 import com.wentura.pkp_android.data.StationRepository
+import com.wentura.pkp_android.data.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class HomeUiState(
     val isSignedIn: Boolean = false,
@@ -40,6 +41,7 @@ constructor(
     private val authenticationRepository: AuthenticationRepository,
     private val stationRepository: StationRepository,
     private val recentSearchRepository: RecentSearchRepository,
+    private val ticketRepository: TicketRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -54,10 +56,17 @@ constructor(
                 }
             }
         }
+
+        viewModelScope.launch {
+            ticketRepository.userMessage.collect { stringResource ->
+                _uiState.update { it.copy(userMessage = stringResource) }
+            }
+        }
     }
 
     fun onMessageShown() {
         authenticationRepository.clearMessage()
+        ticketRepository.clearMessage()
 
         _uiState.update { it.copy(userMessage = null) }
     }

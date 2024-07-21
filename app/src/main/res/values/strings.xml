@@ -87,6 +87,7 @@
     <string name="my_ticket">Mój bilet</string>
     <string name="class_with_value">Klasa: %d</string>
     <string name="seat_number">Numer miejsca: %d</string>
+    <string name="ticket_bought">Kupiono bilet</string>
 
     <string-array name="discounts">
         <item>Normalny</item>
