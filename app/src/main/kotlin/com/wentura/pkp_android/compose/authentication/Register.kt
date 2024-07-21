@@ -37,31 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
 import com.wentura.pkp_android.viewmodels.AuthenticationUiState
-import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
-@Composable
-fun Register(
-    modifier: Modifier = Modifier,
-    onSignUp: () -> Unit = {},
-    authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
-) {
-    Register(
-        uiState = authenticationViewModel.uiState,
-        modifier = modifier,
-        onSignUp = onSignUp,
-        passwordSignUp = authenticationViewModel::passwordSignUp,
-        handleGoogleSignIn = authenticationViewModel::handleGoogleSignIn,
-        signInFailed = authenticationViewModel::signInFailed,
-    )
-}
 
 @Composable
 fun Register(

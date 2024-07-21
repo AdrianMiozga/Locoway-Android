@@ -47,8 +47,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
+import com.wentura.pkp_android.viewmodels.AuthenticationUiState
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 enum class LoginPage(@StringRes val titleResId: Int) {
@@ -56,7 +59,6 @@ enum class LoginPage(@StringRes val titleResId: Int) {
     REGISTER(R.string.register)
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AuthenticationScreen(
     onUpClick: () -> Unit = {},
@@ -64,6 +66,36 @@ fun AuthenticationScreen(
     onSignUp: () -> Unit = {},
     onSignIn: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
+) {
+    AuthenticationScreen(
+        uiState = authenticationViewModel.uiState,
+        onUpClick = onUpClick,
+        pages = pages,
+        onSignUp = onSignUp,
+        onSignIn = onSignIn,
+        resetPassword = authenticationViewModel::resetPassword,
+        passwordSignIn = authenticationViewModel::passwordSignIn,
+        handleGoogleSignIn = authenticationViewModel::handleGoogleSignIn,
+        signInFailed = authenticationViewModel::signInFailed,
+        passwordSignUp = authenticationViewModel::passwordSignUp,
+        onMessageShown = authenticationViewModel::onMessageShown,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@Composable
+fun AuthenticationScreen(
+    uiState: StateFlow<AuthenticationUiState>,
+    onUpClick: () -> Unit = {},
+    pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
+    onSignUp: () -> Unit = {},
+    onSignIn: () -> Unit = {},
+    resetPassword: (String) -> Boolean = { false },
+    passwordSignIn: (String, String) -> Unit = { _, _ -> },
+    handleGoogleSignIn: (GetCredentialResponse) -> Unit = {},
+    signInFailed: (GetCredentialException) -> Unit = {},
+    passwordSignUp: (String, String, String) -> Unit = { _, _, _ -> },
+    onMessageShown: () -> Unit = {},
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val coroutineScope = rememberCoroutineScope()
@@ -74,9 +106,9 @@ fun AuthenticationScreen(
         topBar = { AuthenticationTopAppBar(onUpClick = onUpClick) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
-                val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
+                val state by uiState.collectAsStateWithLifecycle()
 
-                if (uiState.isLoading) {
+                if (state.isLoading) {
                     LinearProgressIndicator(Modifier.fillMaxWidth())
                 } else {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -103,21 +135,30 @@ fun AuthenticationScreen(
                         when (pages[index]) {
                             LoginPage.LOGIN -> {
                                 Login(
+                                    uiState = uiState,
                                     onSignIn = onSignIn,
-                                    authenticationViewModel = authenticationViewModel)
+                                    resetPassword = resetPassword,
+                                    passwordSignIn = passwordSignIn,
+                                    handleGoogleSignIn = handleGoogleSignIn,
+                                    signInFailed = signInFailed,
+                                )
                             }
                             LoginPage.REGISTER -> {
                                 Register(
+                                    uiState = uiState,
                                     onSignUp = onSignUp,
-                                    authenticationViewModel = authenticationViewModel)
+                                    passwordSignUp = passwordSignUp,
+                                    handleGoogleSignIn = handleGoogleSignIn,
+                                    signInFailed = signInFailed,
+                                )
                             }
                         }
                     }
 
-                uiState.userMessage?.let { message ->
+                state.userMessage?.let { message ->
                     LaunchedEffect(snackbarHostState) {
                         snackbarHostState.showSnackbar(context.getString(message))
-                        authenticationViewModel.onMessageShown()
+                        onMessageShown()
                     }
                 }
             }
@@ -172,5 +213,7 @@ private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
 @Composable
 @Preview(showBackground = true)
 private fun AuthenticationPreview() {
-    PKPAndroidTheme { AuthenticationScreen() }
+    PKPAndroidTheme {
+        AuthenticationScreen(uiState = MutableStateFlow(AuthenticationUiState()))
+    }
 }
