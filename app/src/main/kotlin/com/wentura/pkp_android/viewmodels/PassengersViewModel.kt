@@ -35,9 +35,14 @@ constructor(
     }
 
     fun addPassenger() {
+        val state = _uiState.value
+
+        if (state.currentPassenger.name.isBlank()) {
+            return
+        }
+
         viewModelScope.launch {
-            passengerRepository.addPassenger(
-                trimPassengerNameUseCase(_uiState.value.currentPassenger))
+            passengerRepository.addPassenger(trimPassengerNameUseCase(state.currentPassenger))
 
             _uiState.update {
                 it.copy(
@@ -62,6 +67,10 @@ constructor(
 
     fun updatePassenger() {
         val state = _uiState.value
+
+        if (state.currentPassenger.name.isBlank()) {
+            return
+        }
 
         _uiState.update {
             it.copy(

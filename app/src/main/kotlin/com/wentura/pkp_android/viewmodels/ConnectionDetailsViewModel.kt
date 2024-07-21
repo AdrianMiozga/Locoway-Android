@@ -57,6 +57,10 @@ constructor(
     }
 
     fun addPassenger() {
+        if (_uiState.value.currentPassenger.name.isBlank()) {
+            return
+        }
+
         viewModelScope.launch {
             passengerRepository.addPassenger(
                 trimPassengerNameUseCase(_uiState.value.currentPassenger))
