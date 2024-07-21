@@ -22,7 +22,7 @@ constructor(
     ticketRepository: TicketRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<MyTicketUiState> = MutableStateFlow(MyTicketUiState())
+    private val _uiState = MutableStateFlow(MyTicketUiState())
     val uiState = _uiState.asStateFlow()
 
     private val ticketId: String = checkNotNull(savedStateHandle["ticketId"])

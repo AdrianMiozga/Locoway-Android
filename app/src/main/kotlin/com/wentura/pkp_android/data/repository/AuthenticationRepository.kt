@@ -10,7 +10,6 @@ import com.wentura.pkp_android.R
 import com.wentura.pkp_android.data.model.Authentication
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,7 +20,7 @@ class AuthenticationRepository @Inject constructor() {
     private val firebaseAuth = Firebase.auth
 
     private val _authentication = MutableStateFlow(Authentication(isUserSignedIn()))
-    val authentication: Flow<Authentication> = _authentication.asStateFlow()
+    val authentication = _authentication.asStateFlow()
 
     fun signOut() {
         firebaseAuth.signOut()

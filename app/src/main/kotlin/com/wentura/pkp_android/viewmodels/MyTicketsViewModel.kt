@@ -19,7 +19,7 @@ data class MyTicketsUiState(
 @HiltViewModel
 class MyTicketsViewModel @Inject constructor(private val ticketRepository: TicketRepository) :
     ViewModel() {
-    private val _uiState: MutableStateFlow<MyTicketsUiState> = MutableStateFlow(MyTicketsUiState())
+    private val _uiState = MutableStateFlow(MyTicketsUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
