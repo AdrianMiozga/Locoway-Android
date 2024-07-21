@@ -27,7 +27,6 @@
     <string name="signed_in">Zalogowano pomyślnie</string>
     <string name="unknown_error">Nieznany błąd</string>
     <string name="network_error">Brak internetu</string>
-    <string name="created_account">Utworzono konto</string>
     <string name="user_with_that_account_exists">Użytkownik z tym adresem e-mail istnieje</string>
     <string name="my_account">Moje konto</string>
     <string name="delete_account">Usuń konto</string>
@@ -58,12 +57,10 @@
     <string name="passenger_with_regio_card">%s z REGIOkartą</string>
     <string name="are_you_sure_you_want_to_delete_passenger">Czy na pewno chcesz usunąć pasażera %s?</string>
     <string name="passenger_deletion">Usuwanie pasażera</string>
-    <string name="search_with_ellipsis">Szukaj…</string>
     <string name="swap_stations">Zamień stacje</string>
     <string name="results">Wyniki</string>
     <string name="recent_searches">Ostatnio wyszukane</string>
     <string name="location_rationale_explanation">W celu automatycznego wyszukania stacji, aplikacja potrzebuje dostępu do Twojej lokalizacji.</string>
-    <string name="no_location">Brak lokalizacji</string>
     <string name="settings">Ustawienia</string>
     <string name="enable_location_services">Aby wyszukać stację włącz lokalizację urządzenia.</string>
     <string name="could_not_find_station">Nie udało się wyszukać stacji</string>
