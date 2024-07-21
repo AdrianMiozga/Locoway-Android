@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun Login(
+fun LoginPage(
     uiState: StateFlow<AuthenticationUiState>,
     modifier: Modifier = Modifier,
     onSignIn: () -> Unit = {},
@@ -168,9 +168,9 @@ fun Login(
 
 @Composable
 @Preview(showBackground = true)
-private fun LoginPreview() {
+private fun LoginPagePreview() {
     PKPAndroidTheme {
-        Login(
+        LoginPage(
             uiState = MutableStateFlow(AuthenticationUiState()),
             modifier = Modifier.fillMaxHeight().fillMaxWidth(),
         )

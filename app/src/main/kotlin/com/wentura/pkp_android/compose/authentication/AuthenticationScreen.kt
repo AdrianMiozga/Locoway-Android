@@ -2,7 +2,6 @@ package com.wentura.pkp_android.compose.authentication
 
 import android.app.Activity
 import android.content.Context
-import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -54,15 +53,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-enum class LoginPage(@StringRes val titleResId: Int) {
-    LOGIN(R.string.login),
-    REGISTER(R.string.register)
-}
-
 @Composable
 fun AuthenticationScreen(
     onUpClick: () -> Unit = {},
-    pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
+    pages: Array<AuthenticationPage> = AuthenticationPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
     onSignIn: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
@@ -87,7 +81,7 @@ fun AuthenticationScreen(
 fun AuthenticationScreen(
     uiState: StateFlow<AuthenticationUiState>,
     onUpClick: () -> Unit = {},
-    pages: Array<LoginPage> = LoginPage.entries.toTypedArray(),
+    pages: Array<AuthenticationPage> = AuthenticationPage.entries.toTypedArray(),
     onSignUp: () -> Unit = {},
     onSignIn: () -> Unit = {},
     resetPassword: (String) -> Boolean = { false },
@@ -133,8 +127,8 @@ fun AuthenticationScreen(
                     modifier = Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.Top) { index ->
                         when (pages[index]) {
-                            LoginPage.LOGIN -> {
-                                Login(
+                            AuthenticationPage.LOGIN -> {
+                                LoginPage(
                                     uiState = uiState,
                                     onSignIn = onSignIn,
                                     resetPassword = resetPassword,
@@ -143,8 +137,9 @@ fun AuthenticationScreen(
                                     signInFailed = signInFailed,
                                 )
                             }
-                            LoginPage.REGISTER -> {
-                                Register(
+
+                            AuthenticationPage.REGISTER -> {
+                                RegisterPage(
                                     uiState = uiState,
                                     onSignUp = onSignUp,
                                     passwordSignUp = passwordSignUp,
@@ -213,7 +208,5 @@ private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
 @Composable
 @Preview(showBackground = true)
 private fun AuthenticationPreview() {
-    PKPAndroidTheme {
-        AuthenticationScreen(uiState = MutableStateFlow(AuthenticationUiState()))
-    }
+    PKPAndroidTheme { AuthenticationScreen(uiState = MutableStateFlow(AuthenticationUiState())) }
 }

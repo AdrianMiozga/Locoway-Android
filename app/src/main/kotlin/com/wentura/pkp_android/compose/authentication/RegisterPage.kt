@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun Register(
+fun RegisterPage(
     uiState: StateFlow<AuthenticationUiState>,
     modifier: Modifier = Modifier,
     onSignUp: () -> Unit = {},
@@ -204,9 +204,9 @@ fun Register(
 
 @Composable
 @Preview(showBackground = true)
-private fun RegisterPreview() {
+private fun RegisterPagePreview() {
     PKPAndroidTheme {
-        Register(
+        RegisterPage(
             uiState = MutableStateFlow(AuthenticationUiState()),
             modifier = Modifier.fillMaxHeight().fillMaxWidth(),
         )
