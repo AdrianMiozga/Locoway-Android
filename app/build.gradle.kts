@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -42,9 +43,7 @@ android {
             isMinifyEnabled = true
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
             signingConfig = signingConfigs.getByName("release")
         }
@@ -68,8 +67,6 @@ android {
     kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
     buildFeatures { compose = true }
-
-    composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get() }
 
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }

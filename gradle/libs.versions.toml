@@ -1,12 +1,11 @@
 [versions]
 agp = "8.5.1"
 desugar_jdk_libs = "2.0.4"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.21"
 minSdk = "23" # @keep
 targetSdk = "34" # @keep
 compileSdk = "34" # @keep
-compose-compiler = "1.5.13" # @keep
 coreKtx = "1.13.1"
 composeBom = "2024.05.00"
 activityCompose = "1.9.0"
@@ -61,6 +60,7 @@ androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchm
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
