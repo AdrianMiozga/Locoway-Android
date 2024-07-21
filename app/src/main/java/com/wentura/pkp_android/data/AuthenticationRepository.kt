@@ -85,7 +85,7 @@ class AuthenticationRepository @Inject constructor() {
         }
     }
 
-    fun isUserSignedIn(): Boolean {
+    private fun isUserSignedIn(): Boolean {
         return firebaseAuth.currentUser != null
     }
 
