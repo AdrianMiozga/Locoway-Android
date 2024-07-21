@@ -84,6 +84,9 @@
     <string name="class_string">Klasa</string>
     <string name="no">Nie</string>
     <string name="absence">Brak</string>
+    <string name="my_ticket">Mój bilet</string>
+    <string name="class_with_value">Klasa: %d</string>
+    <string name="seat_number">Numer miejsca: %d</string>
 
     <string-array name="discounts">
         <item>Normalny</item>

@@ -7,6 +7,7 @@ import com.wentura.pkp_android.config.Collections
 import com.wentura.pkp_android.config.Fields
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 import kotlinx.coroutines.tasks.await
 
 @Singleton
@@ -14,7 +15,16 @@ class TicketRepository @Inject constructor() {
     private val firebaseAuth = Firebase.auth
     private val db = Firebase.firestore
 
-    fun addTicket(connection: Connection) {
+    private var tickets: Map<String, Ticket> = hashMapOf()
+
+    fun addTicket(
+        connection: Connection,
+        passengers: List<Passenger>,
+        amountOfDogs: Int,
+        amountOfBikes: Int,
+        amountOfLuggage: Int,
+        selectedClass: Int,
+    ) {
         if (firebaseAuth.currentUser == null) {
             return
         }
@@ -22,18 +32,18 @@ class TicketRepository @Inject constructor() {
         val ticket =
             Ticket(
                 uid = firebaseAuth.currentUser!!.uid,
-                carrier = "",
                 trainNumber = connection.trainNumber,
                 trainBrand = connection.trainBrand.displayName,
-                trainClass = 1,
-                seat = 1,
+                trainClass = selectedClass,
+                seat = Random.nextInt(1, 65),
                 departureStation = connection.departureStation,
                 departureDate = connection.departureDateTime.toString(),
                 arrivalStation = connection.arrivalStation,
                 arrivalDate = connection.arrivalDateTime.toString(),
-                dog = 0,
-                bicycle = 0,
-                additionalLuggage = 0,
+                dog = amountOfDogs,
+                bicycle = amountOfBikes,
+                additionalLuggage = amountOfLuggage,
+                passengers = passengers,
             )
 
         db.collection(Collections.TICKETS).add(ticket)
@@ -44,10 +54,21 @@ class TicketRepository @Inject constructor() {
             throw IllegalStateException("User is not logged in")
         }
 
-        return db.collection(Collections.TICKETS)
-            .whereEqualTo(Fields.UID, firebaseAuth.currentUser!!.uid)
-            .get()
-            .await()
-            .toObjects(Ticket::class.java)
+        val listOfTickets =
+            db.collection(Collections.TICKETS)
+                .whereEqualTo(Fields.UID, firebaseAuth.currentUser!!.uid)
+                .get()
+                .await()
+                .toObjects(Ticket::class.java)
+
+        tickets = listOfTickets.associateBy { it.documentPath }
+
+        return listOfTickets
+    }
+
+    fun getTicketByIdFromCache(id: String): Ticket {
+        return tickets.getOrElse(id) {
+            throw IllegalArgumentException("Ticket with id $id not found")
+        }
     }
 }

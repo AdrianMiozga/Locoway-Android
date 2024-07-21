@@ -1,15 +1,12 @@
 package com.wentura.pkp_android.compose.connectiondetails
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -37,8 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.compose.common.AddPassengerDialog
+import com.wentura.pkp_android.compose.common.TrainBrandWide
 import com.wentura.pkp_android.data.Connection
 import com.wentura.pkp_android.data.Passenger
 import com.wentura.pkp_android.data.TrainBrand
@@ -137,18 +133,11 @@ fun ConnectionsDetailsScreen(
                 Column(
                     modifier =
                         Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxSize()) {
-                        Box(
-                            modifier =
-                                Modifier.clip(CircleShape)
-                                    .background(state.connection.trainBrand.displayColor)
-                                    .align(Alignment.CenterHorizontally)) {
-                                Text(
-                                    "${state.connection.trainBrand.displayShortName} ${state.connection.trainNumber}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(4.dp),
-                                    color = Color.White,
-                                )
-                            }
+                        TrainBrandWide(
+                            state.connection.trainBrand,
+                            state.connection.trainNumber,
+                            Modifier.align(Alignment.CenterHorizontally),
+                        )
 
                         Text(
                             stringResource(
@@ -400,7 +389,7 @@ fun ConnectionsDetailsScreen(
                             DropdownMenuItem(
                                 text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
                                 onClick = {
-                                    selectClass(index)
+                                    selectClass(index + 1)
                                     classText = option
                                     classExpanded = false
                                 },

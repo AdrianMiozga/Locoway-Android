@@ -16,6 +16,7 @@ import com.wentura.pkp_android.compose.connectiondetails.ConnectionsDetailsScree
 import com.wentura.pkp_android.compose.connections.ConnectionsScreen
 import com.wentura.pkp_android.compose.home.HomeScreen
 import com.wentura.pkp_android.compose.myaccount.MyAccountScreen
+import com.wentura.pkp_android.compose.myticket.MyTicketScreen
 import com.wentura.pkp_android.compose.mytickets.MyTicketsScreen
 import com.wentura.pkp_android.compose.passengers.PassengersScreen
 import kotlinx.coroutines.launch
@@ -98,7 +99,14 @@ fun PKPApp() {
             }
 
             composable(Screen.MyTickets.route) {
-                MyTicketsScreen(onUpClick = { navController.navigateUp() })
+                MyTicketsScreen(
+                    onUpClick = { navController.navigateUp() },
+                    onTicketClick = { navController.navigate("${Screen.MyTicket.route}/$it") },
+                )
+            }
+
+            composable("${Screen.MyTicket.route}/{ticketId}") {
+                MyTicketScreen(onUpClick = { navController.navigateUp() })
             }
 
             composable(Screen.Passengers.route) {

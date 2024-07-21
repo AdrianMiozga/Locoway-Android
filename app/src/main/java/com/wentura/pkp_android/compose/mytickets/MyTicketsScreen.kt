@@ -52,10 +52,12 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun MyTicketsScreen(
     onUpClick: () -> Unit = {},
+    onTicketClick: (String) -> Unit = {},
     myTicketsViewModel: MyTicketsViewModel = hiltViewModel(),
 ) {
     MyTicketsScreen(
         onUpClick = onUpClick,
+        onTicketClick = onTicketClick,
         uiState = myTicketsViewModel.uiState,
         onPullToRefresh = myTicketsViewModel::getTickets,
     )
@@ -65,6 +67,7 @@ fun MyTicketsScreen(
 @Composable
 fun MyTicketsScreen(
     onUpClick: () -> Unit = {},
+    onTicketClick: (String) -> Unit = {},
     uiState: StateFlow<MyTicketsUiState>,
     onPullToRefresh: suspend () -> Unit = {},
 ) {
@@ -95,7 +98,9 @@ fun MyTicketsScreen(
 
                     if (state.tickets.isNotEmpty() || state.isLoading) {
                         items(state.tickets.size) { index ->
-                            MyTicketListItem(state.tickets[index])
+                            MyTicketListItem(state.tickets[index]) {
+                                onTicketClick(state.tickets[index].documentPath)
+                            }
 
                             if (index != state.tickets.size - 1) {
                                 HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
@@ -123,8 +128,8 @@ fun MyTicketsScreen(
 }
 
 @Composable
-fun MyTicketListItem(ticket: Ticket) {
-    Box(modifier = Modifier.clickable {}) {
+fun MyTicketListItem(ticket: Ticket, onTicketClick: () -> Unit) {
+    Box(modifier = Modifier.clickable { onTicketClick() }) {
         Row(
             modifier = Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -224,7 +229,6 @@ fun MyTicketsPreview() {
         listOf(
             Ticket(
                 uid = "",
-                carrier = "REG",
                 trainNumber = 1L,
                 trainBrand = "REG",
                 trainClass = 1,
@@ -236,7 +240,6 @@ fun MyTicketsPreview() {
             ),
             Ticket(
                 uid = "",
-                carrier = "IC",
                 trainNumber = 1L,
                 trainBrand = "IC",
                 trainClass = 1,

@@ -1,13 +1,13 @@
 package com.wentura.pkp_android.data
 
-import com.google.firebase.firestore.PropertyName
+import com.google.firebase.firestore.DocumentId
 
 data class Ticket(
+    @DocumentId val documentPath: String = "",
     val uid: String = "",
-    val carrier: String = "",
     val trainNumber: Long = 0,
     val trainBrand: String = "",
-    @get:PropertyName("class") val trainClass: Int = 0,
+    val trainClass: Int = 0,
     val seat: Int = 0,
     val departureStation: String = "",
     val departureDate: String = "",
@@ -16,4 +16,5 @@ data class Ticket(
     val dog: Int = 0,
     val bicycle: Int = 0,
     val additionalLuggage: Int = 0,
+    val passengers: List<Passenger> = emptyList(),
 )
