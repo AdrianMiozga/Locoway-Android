@@ -2,6 +2,7 @@ package com.wentura.pkp_android.data
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.wentura.pkp_android.config.Collections
 import com.wentura.pkp_android.config.Fields
@@ -57,6 +58,7 @@ class TicketRepository @Inject constructor() {
         val listOfTickets =
             db.collection(Collections.TICKETS)
                 .whereEqualTo(Fields.UID, firebaseAuth.currentUser!!.uid)
+                .orderBy(Fields.DEPARTURE_DATE, Query.Direction.ASCENDING)
                 .get()
                 .await()
                 .toObjects(Ticket::class.java)

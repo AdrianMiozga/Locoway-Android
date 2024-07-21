@@ -12,6 +12,7 @@ object Fields {
     const val NAME = "name"
     const val ADDED_AT = "addedAt"
     const val TYPE = "type"
+    const val DEPARTURE_DATE = "departureDate"
 }
 
 object Values {
