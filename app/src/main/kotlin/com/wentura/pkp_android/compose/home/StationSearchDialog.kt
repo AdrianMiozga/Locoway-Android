@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.wentura.pkp_android.R
-import com.wentura.pkp_android.data.Station
+import com.wentura.pkp_android.data.model.Station
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -38,8 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.compose.common.TrainBrandCircle
-import com.wentura.pkp_android.data.Ticket
-import com.wentura.pkp_android.data.TrainBrand
+import com.wentura.pkp_android.data.model.Ticket
+import com.wentura.pkp_android.data.model.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.MyTicketsUiState

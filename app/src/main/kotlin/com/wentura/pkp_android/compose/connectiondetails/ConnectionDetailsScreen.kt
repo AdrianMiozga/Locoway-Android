@@ -45,9 +45,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.compose.common.AddPassengerDialog
 import com.wentura.pkp_android.compose.common.TrainBrandWide
-import com.wentura.pkp_android.data.Connection
-import com.wentura.pkp_android.data.Passenger
-import com.wentura.pkp_android.data.TrainBrand
+import com.wentura.pkp_android.data.model.Connection
+import com.wentura.pkp_android.data.model.Passenger
+import com.wentura.pkp_android.data.model.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.travelTime
 import com.wentura.pkp_android.viewmodels.ConnectionDetailsUiState

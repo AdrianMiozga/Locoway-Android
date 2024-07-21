@@ -1,5 +1,8 @@
-package com.wentura.pkp_android.data
+package com.wentura.pkp_android.data.repository
 
+import com.wentura.pkp_android.data.model.Connection
+import com.wentura.pkp_android.data.model.Discount
+import com.wentura.pkp_android.data.model.Passenger
 import java.math.BigDecimal
 import javax.inject.Inject
 import javax.inject.Singleton

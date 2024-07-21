@@ -2,8 +2,8 @@ package com.wentura.pkp_android.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.wentura.pkp_android.data.Ticket
-import com.wentura.pkp_android.data.TicketRepository
+import com.wentura.pkp_android.data.model.Ticket
+import com.wentura.pkp_android.data.repository.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

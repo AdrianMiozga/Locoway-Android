@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.data
+package com.wentura.pkp_android.data.repository
 
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseNetworkException
@@ -7,13 +7,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.auth
 import com.wentura.pkp_android.R
+import com.wentura.pkp_android.data.model.Authentication
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class AuthenticationRepository @Inject constructor() {

@@ -1,6 +1,8 @@
-package com.wentura.pkp_android.data
+package com.wentura.pkp_android.data.repository
 
 import com.wentura.pkp_android.api.KoleoService
+import com.wentura.pkp_android.data.model.Connection
+import com.wentura.pkp_android.data.model.TrainBrand
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

@@ -1,6 +1,7 @@
-package com.wentura.pkp_android.data
+package com.wentura.pkp_android.data.repository
 
 import com.wentura.pkp_android.api.BilkomService
+import com.wentura.pkp_android.data.model.Station
 import javax.inject.Inject
 import javax.inject.Singleton
 

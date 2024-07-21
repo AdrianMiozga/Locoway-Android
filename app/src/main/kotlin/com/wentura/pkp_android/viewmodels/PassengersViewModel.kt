@@ -2,15 +2,15 @@ package com.wentura.pkp_android.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wentura.pkp_android.data.Passenger
-import com.wentura.pkp_android.data.PassengerRepository
+import com.wentura.pkp_android.data.model.Passenger
+import com.wentura.pkp_android.data.repository.PassengerRepository
 import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class PassengersUiState(
     val isLoading: Boolean = false,

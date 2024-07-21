@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.compose.common.AddPassengerDialog
-import com.wentura.pkp_android.data.Passenger
+import com.wentura.pkp_android.data.model.Passenger
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.viewmodels.PassengersUiState
 import com.wentura.pkp_android.viewmodels.PassengersViewModel

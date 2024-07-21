@@ -1,6 +1,6 @@
 package com.wentura.pkp_android.domain
 
-import com.wentura.pkp_android.data.Passenger
+import com.wentura.pkp_android.data.model.Passenger
 import javax.inject.Inject
 
 class TrimPassengerNameUseCase @Inject constructor() {

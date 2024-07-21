@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.data
+package com.wentura.pkp_android.data.repository
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -6,6 +6,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.wentura.pkp_android.config.Collections
 import com.wentura.pkp_android.config.Fields
+import com.wentura.pkp_android.data.model.Passenger
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await

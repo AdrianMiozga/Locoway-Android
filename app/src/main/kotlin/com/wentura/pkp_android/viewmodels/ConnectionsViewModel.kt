@@ -3,14 +3,14 @@ package com.wentura.pkp_android.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wentura.pkp_android.data.Connection
-import com.wentura.pkp_android.data.ConnectionsRepository
+import com.wentura.pkp_android.data.model.Connection
+import com.wentura.pkp_android.data.repository.ConnectionsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class ConnectionsUiState(
     val isLoading: Boolean = true,

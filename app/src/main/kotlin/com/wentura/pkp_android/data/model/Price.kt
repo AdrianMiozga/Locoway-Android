@@ -1,4 +1,4 @@
-package com.wentura.pkp_android.data
+package com.wentura.pkp_android.data.model
 
 import com.google.gson.annotations.SerializedName
 

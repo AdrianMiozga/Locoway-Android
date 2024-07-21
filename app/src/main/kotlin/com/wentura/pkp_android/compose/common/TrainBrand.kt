@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.wentura.pkp_android.data.TrainBrand
+import com.wentura.pkp_android.data.model.TrainBrand
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 
 @Composable
@@ -38,11 +38,7 @@ fun TrainBrandCircle(trainBrand: TrainBrand, modifier: Modifier = Modifier) {
 
 @Composable
 fun TrainBrandWide(trainBrand: TrainBrand, trainNumber: Long, modifier: Modifier = Modifier) {
-    Box(
-        modifier
-            .clip(CircleShape)
-            .background(trainBrand.displayColor)
-    ) {
+    Box(modifier.clip(CircleShape).background(trainBrand.displayColor)) {
         Text(
             "${trainBrand.displayShortName} $trainNumber",
             style = MaterialTheme.typography.bodyMedium,
@@ -55,15 +51,11 @@ fun TrainBrandWide(trainBrand: TrainBrand, trainNumber: Long, modifier: Modifier
 @Preview
 @Composable
 fun TrainBrandCirclePreview() {
-    PKPAndroidTheme {
-        TrainBrandCircle(trainBrand = TrainBrand.REG)
-    }
+    PKPAndroidTheme { TrainBrandCircle(trainBrand = TrainBrand.REG) }
 }
 
 @Preview
 @Composable
 fun TrainBrandWidePreview() {
-    PKPAndroidTheme {
-        TrainBrandWide(trainBrand = TrainBrand.REG, trainNumber = 64326)
-    }
+    PKPAndroidTheme { TrainBrandWide(trainBrand = TrainBrand.REG, trainNumber = 64326) }
 }

@@ -2,13 +2,13 @@ package com.wentura.pkp_android.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wentura.pkp_android.data.AuthenticationRepository
+import com.wentura.pkp_android.data.repository.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class MyAccountUiState(
     val email: String,

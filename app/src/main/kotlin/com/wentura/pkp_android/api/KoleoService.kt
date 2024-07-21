@@ -1,7 +1,7 @@
 package com.wentura.pkp_android.api
 
-import com.wentura.pkp_android.data.KoleoPriceResponse
-import com.wentura.pkp_android.data.KoleoSearchResponse
+import com.wentura.pkp_android.data.model.KoleoPriceResponse
+import com.wentura.pkp_android.data.model.KoleoSearchResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
