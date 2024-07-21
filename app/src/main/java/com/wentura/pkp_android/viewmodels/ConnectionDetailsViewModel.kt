@@ -11,12 +11,12 @@ import com.wentura.pkp_android.data.PriceRepository
 import com.wentura.pkp_android.data.TicketRepository
 import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.math.BigDecimal
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
-import javax.inject.Inject
 
 data class ConnectionDetailsUiState(
     val passengers: List<Passenger> = emptyList(),
@@ -147,7 +147,6 @@ constructor(
             state.amountOfDogs,
             state.amountOfBikes,
             state.amountOfLuggage,
-            state.selectedClass,
         )
     }
 

@@ -12,7 +12,6 @@ class PriceRepository @Inject constructor() {
         amountOfDogs: Int = 0,
         amountOfBikes: Int = 0,
         amountOfLuggage: Int = 0,
-        selectedClass: Int = 0,
     ): BigDecimal {
         return passengers
             .map {
