@@ -37,12 +37,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
+import com.wentura.pkp_android.viewmodels.AuthenticationUiState
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun Login(
@@ -50,13 +55,34 @@ fun Login(
     onSignIn: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
-    val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
+    Login(
+        uiState = authenticationViewModel.uiState,
+        modifier = modifier,
+        onSignIn = onSignIn,
+        resetPassword = authenticationViewModel::resetPassword,
+        passwordSignIn = authenticationViewModel::passwordSignIn,
+        handleGoogleSignIn = authenticationViewModel::handleGoogleSignIn,
+        signInFailed = authenticationViewModel::signInFailed,
+    )
+}
+
+@Composable
+fun Login(
+    uiState: StateFlow<AuthenticationUiState>,
+    modifier: Modifier = Modifier,
+    onSignIn: () -> Unit = {},
+    resetPassword: (String) -> Boolean = { false },
+    passwordSignIn: (String, String) -> Unit = { _, _ -> },
+    handleGoogleSignIn: (GetCredentialResponse) -> Unit = {},
+    signInFailed: (GetCredentialException) -> Unit = {},
+) {
+    val state by uiState.collectAsStateWithLifecycle()
 
     val emailText = rememberSaveable { mutableStateOf("") }
-    val isEmailWrong = uiState.isEmailWrong
+    val isEmailWrong = state.isEmailWrong
 
     val passwordText = rememberSaveable { mutableStateOf("") }
-    val isPasswordWrong = uiState.isPasswordWrong
+    val isPasswordWrong = state.isPasswordWrong
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
 
     val openAlertDialog = rememberSaveable { mutableStateOf(false) }
@@ -65,18 +91,17 @@ fun Login(
         ResetPasswordDialog(
             onDismissRequest = { openAlertDialog.value = false },
             onSendClick = { email ->
-                if (authenticationViewModel.resetPassword(email)) {
+                if (resetPassword(email)) {
                     openAlertDialog.value = false
                 }
             })
     }
 
-    if (uiState.isSignedIn) {
+    if (state.isSignedIn) {
         onSignIn()
     }
 
     val context = LocalContext.current
-    val activity = context.findActivity()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -132,10 +157,7 @@ fun Login(
                         }
 
                     Button(
-                        onClick = {
-                            authenticationViewModel.passwordSignIn(
-                                emailText.value, passwordText.value)
-                        },
+                        onClick = { passwordSignIn(emailText.value, passwordText.value) },
                         modifier = Modifier.padding(vertical = 10.dp)) {
                             Text(stringResource(R.string.login))
                         }
@@ -145,7 +167,10 @@ fun Login(
 
             OutlinedButton(
                 onClick = {
-                    signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
+                    val activity = context.findActivity()
+
+                    signInWithGoogle(
+                        context, activity, coroutineScope, handleGoogleSignIn, signInFailed)
                 },
                 modifier = Modifier.padding(10.dp)) {
                     Icon(
@@ -163,5 +188,10 @@ fun Login(
 @Composable
 @Preview(showBackground = true)
 private fun LoginPreview() {
-    PKPAndroidTheme { Login(modifier = Modifier.fillMaxHeight().fillMaxWidth()) }
+    PKPAndroidTheme {
+        Login(
+            uiState = MutableStateFlow(AuthenticationUiState()),
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+        )
+    }
 }

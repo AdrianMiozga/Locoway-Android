@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -127,7 +128,8 @@ fun signInWithGoogle(
     context: Context,
     activity: Activity,
     coroutineScope: CoroutineScope,
-    authenticationViewModel: AuthenticationViewModel,
+    handleGoogleSignIn: (GetCredentialResponse) -> Unit,
+    signInFailed: (GetCredentialException) -> Unit,
 ) {
     // TODO: Add nonce
     //  https://developer.android.com/training/sign-in/credential-manager#set-nonce
@@ -147,10 +149,10 @@ fun signInWithGoogle(
                     request = request,
                 )
 
-            authenticationViewModel.handleGoogleSignIn(result)
+            handleGoogleSignIn(result)
         } catch (_: GetCredentialCancellationException) {} catch (
             exception: GetCredentialException) {
-            authenticationViewModel.signInFailed(exception)
+            signInFailed(exception)
         }
     }
 }

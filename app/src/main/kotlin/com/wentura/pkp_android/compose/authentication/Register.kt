@@ -35,12 +35,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wentura.pkp_android.R
 import com.wentura.pkp_android.ui.PKPAndroidTheme
 import com.wentura.pkp_android.util.findActivity
+import com.wentura.pkp_android.viewmodels.AuthenticationUiState
 import com.wentura.pkp_android.viewmodels.AuthenticationViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun Register(
@@ -48,25 +53,43 @@ fun Register(
     onSignUp: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel(),
 ) {
-    val uiState by authenticationViewModel.uiState.collectAsStateWithLifecycle()
+    Register(
+        uiState = authenticationViewModel.uiState,
+        modifier = modifier,
+        onSignUp = onSignUp,
+        passwordSignUp = authenticationViewModel::passwordSignUp,
+        handleGoogleSignIn = authenticationViewModel::handleGoogleSignIn,
+        signInFailed = authenticationViewModel::signInFailed,
+    )
+}
+
+@Composable
+fun Register(
+    uiState: StateFlow<AuthenticationUiState>,
+    modifier: Modifier = Modifier,
+    onSignUp: () -> Unit = {},
+    passwordSignUp: (String, String, String) -> Unit = { _, _, _ -> },
+    handleGoogleSignIn: (GetCredentialResponse) -> Unit = {},
+    signInFailed: (GetCredentialException) -> Unit = {},
+) {
+    val state by uiState.collectAsStateWithLifecycle()
 
     val emailText = rememberSaveable { mutableStateOf("") }
-    val isEmailWrong = uiState.isEmailWrong
+    val isEmailWrong = state.isEmailWrong
 
     val passwordText = rememberSaveable { mutableStateOf("") }
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
-    val isPasswordWrong = uiState.isPasswordWrong
+    val isPasswordWrong = state.isPasswordWrong
 
     val passwordConfirmationText = rememberSaveable { mutableStateOf("") }
     val passwordConfirmationVisible = rememberSaveable { mutableStateOf(false) }
-    val isConfirmationPasswordWrong = uiState.isConfirmationPasswordWrong
+    val isConfirmationPasswordWrong = state.isConfirmationPasswordWrong
 
     val context = LocalContext.current
-    val activity = context.findActivity()
 
     val coroutineScope = rememberCoroutineScope()
 
-    if (uiState.isSignedIn) {
+    if (state.isSignedIn) {
         onSignUp()
     }
 
@@ -102,7 +125,7 @@ fun Register(
                 keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                isError = uiState.isPasswordWrong,
+                isError = state.isPasswordWrong,
                 supportingText = {
                     if (isPasswordWrong) Text(stringResource(R.string.password_too_short))
                     else Text("")
@@ -163,7 +186,7 @@ fun Register(
 
             Button(
                 onClick = {
-                    authenticationViewModel.passwordSignUp(
+                    passwordSignUp(
                         emailText.value, passwordText.value, passwordConfirmationText.value)
                 },
                 modifier = Modifier.padding(bottom = 10.dp)) {
@@ -174,7 +197,15 @@ fun Register(
 
             OutlinedButton(
                 onClick = {
-                    signInWithGoogle(context, activity, coroutineScope, authenticationViewModel)
+                    val activity = context.findActivity()
+
+                    signInWithGoogle(
+                        context,
+                        activity,
+                        coroutineScope,
+                        handleGoogleSignIn,
+                        signInFailed,
+                    )
                 },
                 modifier = Modifier.padding(10.dp)) {
                     Icon(
@@ -192,5 +223,10 @@ fun Register(
 @Composable
 @Preview(showBackground = true)
 private fun RegisterPreview() {
-    PKPAndroidTheme { Register(Modifier.fillMaxHeight().fillMaxWidth()) }
+    PKPAndroidTheme {
+        Register(
+            uiState = MutableStateFlow(AuthenticationUiState()),
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+        )
+    }
 }
