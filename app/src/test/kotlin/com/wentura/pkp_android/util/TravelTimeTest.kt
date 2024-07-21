@@ -1,9 +1,8 @@
-package com.wentura.pkp_android
+package com.wentura.pkp_android.util
 
-import com.wentura.pkp_android.util.travelTime
+import java.time.LocalDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.time.LocalDateTime
 
 class TravelTimeTest {
 

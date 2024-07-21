@@ -1,7 +1,6 @@
-package com.wentura.pkp_android
+package com.wentura.pkp_android.domain
 
 import com.wentura.pkp_android.data.model.Passenger
-import com.wentura.pkp_android.domain.TrimPassengerNameUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
