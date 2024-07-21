@@ -48,7 +48,7 @@ constructor(
     private val _uiState =
         MutableStateFlow(
             ConnectionDetailsUiState(
-                connection = connectionsRepository.getConnectionById(trainId.toLong())))
+                connection = connectionsRepository.getConnectionByIdFromCache(trainId.toLong())))
     val uiState = _uiState.asStateFlow()
 
     init {

@@ -19,7 +19,7 @@ import kotlinx.coroutines.tasks.await
 class AuthenticationRepository @Inject constructor() {
     private val firebaseAuth = Firebase.auth
 
-    private val _authentication = MutableStateFlow(Authentication(isUserSignedIn()))
+    private val _authentication = MutableStateFlow(Authentication(firebaseAuth.currentUser != null))
     val authentication = _authentication.asStateFlow()
 
     fun signOut() {
@@ -83,10 +83,6 @@ class AuthenticationRepository @Inject constructor() {
         _authentication.update {
             it.copy(isSignedIn = false, userMessage = R.string.account_deleted)
         }
-    }
-
-    private fun isUserSignedIn(): Boolean {
-        return firebaseAuth.currentUser != null
     }
 
     fun getEmail(): String {

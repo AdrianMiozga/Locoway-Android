@@ -60,8 +60,7 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
         return connections
     }
 
-    /** Returns connection from cache. */
-    fun getConnectionById(id: Long): Connection {
+    fun getConnectionByIdFromCache(id: Long): Connection {
         return connections[id] ?: throw IllegalArgumentException("Connection with id $id not found")
     }
 }

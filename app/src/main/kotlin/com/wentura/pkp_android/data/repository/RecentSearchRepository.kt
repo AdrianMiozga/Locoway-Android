@@ -18,7 +18,7 @@ class RecentSearchRepository @Inject constructor() {
     private val db = Firebase.firestore
 
     suspend fun addRecentStation(recentSearchStation: RecentSearchStation) {
-        if (firebaseAuth.uid == null) {
+        if (firebaseAuth.currentUser == null) {
             return
         }
 
@@ -51,7 +51,7 @@ class RecentSearchRepository @Inject constructor() {
     }
 
     suspend fun getRecentDepartureStations(): List<RecentSearchStation> {
-        if (firebaseAuth.uid == null) {
+        if (firebaseAuth.currentUser == null) {
             return emptyList()
         }
 
@@ -66,7 +66,7 @@ class RecentSearchRepository @Inject constructor() {
     }
 
     suspend fun getRecentArrivalStations(): List<RecentSearchStation> {
-        if (firebaseAuth.uid == null) {
+        if (firebaseAuth.currentUser == null) {
             return emptyList()
         }
 
