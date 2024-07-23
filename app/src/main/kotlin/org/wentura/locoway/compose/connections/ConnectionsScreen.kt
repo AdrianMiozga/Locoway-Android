@@ -1,6 +1,7 @@
 package org.wentura.locoway.compose.connections
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Currency
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.wentura.locoway.R
@@ -41,10 +46,6 @@ import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.util.travelTime
 import org.wentura.locoway.viewmodels.ConnectionsUiState
 import org.wentura.locoway.viewmodels.ConnectionsViewModel
-import java.text.NumberFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Currency
 
 @Composable
 fun ConnectionsScreen(
@@ -79,16 +80,27 @@ fun ConnectionsScreen(
                 }
 
                 LazyColumn {
-                    items(state.connections.size) { connection ->
-                        ConnectionListItem(
-                            state.connections[connection],
-                            state.isSignedIn,
-                            onConnectionClick,
-                            goToAuthenticationScreen,
-                        )
+                    if (state.connections.isNotEmpty() || state.isLoading) {
+                        items(state.connections.size) { connection ->
+                            ConnectionListItem(
+                                state.connections[connection],
+                                state.isSignedIn,
+                                onConnectionClick,
+                                goToAuthenticationScreen,
+                            )
 
-                        if (connection != state.connections.size - 1) {
-                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                            if (connection != state.connections.size - 1) {
+                                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                            }
+                        }
+                    } else {
+                        item {
+                            Column(
+                                modifier = Modifier.fillParentMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(stringResource(R.string.no_connections))
+                                }
                         }
                     }
                 }
