@@ -18,7 +18,7 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
         departureDate: String,
         departureTime: String,
         departureStation: String,
-        arrivalStation: String
+        arrivalStation: String,
     ): Map<Long, Connection> {
         val formattedDate =
             LocalDate.parse(departureDate).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))

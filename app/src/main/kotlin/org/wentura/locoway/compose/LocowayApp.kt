@@ -37,83 +37,84 @@ fun LocowayApp() {
         popEnterTransition = { fadeIn(animationSpec = tween(700)) },
         popExitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down, tween(700))
-        }) {
-            composable(Screen.Home.route) {
-                HomeScreen(
-                    drawerState = drawerState,
-                    onSearchClick = { departureStation, arrivalStation, departureDate, departureTime
-                        ->
-                        navController.navigate(
-                            "${Screen.Connections.route}/$departureStation/$arrivalStation/$departureDate/$departureTime")
+        },
+    ) {
+        composable(Screen.Home.route) {
+            HomeScreen(
+                drawerState = drawerState,
+                onSearchClick = { departureStation, arrivalStation, departureDate, departureTime ->
+                    navController.navigate(
+                        "${Screen.Connections.route}/$departureStation/$arrivalStation/$departureDate/$departureTime")
 
-                        scope.launch { drawerState.close() }
-                    },
-                    onLoginClick = {
-                        navController.navigate(Screen.Authentication.route)
+                    scope.launch { drawerState.close() }
+                },
+                onLoginClick = {
+                    navController.navigate(Screen.Authentication.route)
 
-                        scope.launch { drawerState.close() }
-                    },
-                    onMyAccountClick = {
-                        navController.navigate(Screen.MyAccount.route)
+                    scope.launch { drawerState.close() }
+                },
+                onMyAccountClick = {
+                    navController.navigate(Screen.MyAccount.route)
 
-                        scope.launch { drawerState.close() }
-                    },
-                    onMyTicketsClick = {
-                        navController.navigate(Screen.MyTickets.route)
+                    scope.launch { drawerState.close() }
+                },
+                onMyTicketsClick = {
+                    navController.navigate(Screen.MyTickets.route)
 
-                        scope.launch { drawerState.close() }
-                    },
-                    onPassengersClick = {
-                        navController.navigate(Screen.Passengers.route)
+                    scope.launch { drawerState.close() }
+                },
+                onPassengersClick = {
+                    navController.navigate(Screen.Passengers.route)
 
-                        scope.launch { drawerState.close() }
-                    })
-            }
-
-            composable(
-                "${Screen.Connections.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}",
-            ) {
-                ConnectionsScreen(
-                    onUpClick = { navController.navigateUp() },
-                    onConnectionClick = { trainId ->
-                        navController.navigate("${Screen.ConnectionDetails.route}/$trainId")
-                    },
-                    goToAuthenticationScreen = {
-                        navController.navigate(Screen.Authentication.route)
-                    },
-                )
-            }
-
-            composable("${Screen.ConnectionDetails.route}/{trainId}") {
-                ConnectionsDetailsScreen(
-                    onUpClick = { navController.navigateUp() },
-                    onBuyButtonClick = { navController.popBackStack(Screen.Home.route, false) })
-            }
-
-            composable(Screen.Authentication.route) {
-                AuthenticationScreen(
-                    onUpClick = { navController.navigateUp() },
-                    onSignUp = { navController.navigateUp() },
-                    onSignIn = { navController.navigateUp() })
-            }
-
-            composable(Screen.MyAccount.route) {
-                MyAccountScreen(onUpClick = { navController.navigateUp() })
-            }
-
-            composable(Screen.MyTickets.route) {
-                MyTicketsScreen(
-                    onUpClick = { navController.navigateUp() },
-                    onTicketClick = { navController.navigate("${Screen.MyTicket.route}/$it") },
-                )
-            }
-
-            composable("${Screen.MyTicket.route}/{ticketId}") {
-                MyTicketScreen(onUpClick = { navController.navigateUp() })
-            }
-
-            composable(Screen.Passengers.route) {
-                PassengersScreen(onUpClick = { navController.navigateUp() })
-            }
+                    scope.launch { drawerState.close() }
+                },
+            )
         }
+
+        composable(
+            "${Screen.Connections.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}",
+        ) {
+            ConnectionsScreen(
+                onUpClick = { navController.navigateUp() },
+                onConnectionClick = { trainId ->
+                    navController.navigate("${Screen.ConnectionDetails.route}/$trainId")
+                },
+                goToAuthenticationScreen = { navController.navigate(Screen.Authentication.route) },
+            )
+        }
+
+        composable("${Screen.ConnectionDetails.route}/{trainId}") {
+            ConnectionsDetailsScreen(
+                onUpClick = { navController.navigateUp() },
+                onBuyButtonClick = { navController.popBackStack(Screen.Home.route, false) },
+            )
+        }
+
+        composable(Screen.Authentication.route) {
+            AuthenticationScreen(
+                onUpClick = { navController.navigateUp() },
+                onSignUp = { navController.navigateUp() },
+                onSignIn = { navController.navigateUp() },
+            )
+        }
+
+        composable(Screen.MyAccount.route) {
+            MyAccountScreen(onUpClick = { navController.navigateUp() })
+        }
+
+        composable(Screen.MyTickets.route) {
+            MyTicketsScreen(
+                onUpClick = { navController.navigateUp() },
+                onTicketClick = { navController.navigate("${Screen.MyTicket.route}/$it") },
+            )
+        }
+
+        composable("${Screen.MyTicket.route}/{ticketId}") {
+            MyTicketScreen(onUpClick = { navController.navigateUp() })
+        }
+
+        composable(Screen.Passengers.route) {
+            PassengersScreen(onUpClick = { navController.navigateUp() })
+        }
+    }
 }

@@ -48,7 +48,12 @@ constructor(
     private val _uiState =
         MutableStateFlow(
             ConnectionDetailsUiState(
-                connection = connectionsRepository.getConnectionByIdFromCache(trainId.toLong())))
+                connection =
+                    connectionsRepository.getConnectionByIdFromCache(
+                        trainId.toLong(),
+                    ),
+            ),
+        )
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -119,7 +124,12 @@ constructor(
     }
 
     fun onAddPassengerDismissRequest() {
-        _uiState.update { it.copy(openAddPassengerDialog = false, currentPassenger = Passenger()) }
+        _uiState.update {
+            it.copy(
+                openAddPassengerDialog = false,
+                currentPassenger = Passenger(),
+            )
+        }
     }
 
     fun showAddPassengerDialog() {

@@ -47,154 +47,166 @@ import org.wentura.locoway.viewmodels.MyTicketUiState
 import org.wentura.locoway.viewmodels.MyTicketViewModel
 
 @Composable
-fun MyTicketScreen(onUpClick: () -> Unit, myTicketViewModel: MyTicketViewModel = hiltViewModel()) {
+fun MyTicketScreen(
+    onUpClick: () -> Unit,
+    myTicketViewModel: MyTicketViewModel = hiltViewModel(),
+) {
     MyTicketScreen(onUpClick = onUpClick, uiState = myTicketViewModel.uiState)
 }
 
 @Composable
-fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiState>) {
+fun MyTicketScreen(
+    onUpClick: () -> Unit = {},
+    uiState: StateFlow<MyTicketUiState>,
+) {
     val state by uiState.collectAsStateWithLifecycle()
     val trainBrand = TrainBrand.valueOf(state.ticket.trainBrand)
 
     Scaffold(topBar = { MyTicketTopAppBar(onUpClick) }) { innerPadding ->
         Column(
             modifier =
-                Modifier.padding(innerPadding)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())) {
-                Icon(
-                    painter = painterResource(R.drawable.qr_code),
-                    contentDescription = null,
-                    modifier =
-                        Modifier.size(256.dp).align(Alignment.CenterHorizontally).padding(10.dp),
-                )
+                Modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState()),
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.qr_code),
+                contentDescription = null,
+                modifier = Modifier.size(256.dp).align(Alignment.CenterHorizontally).padding(10.dp),
+            )
 
-                Card(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxWidth(),
                 ) {
-                    Column(
-                        modifier =
-                            Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxWidth(),
-                    ) {
-                        TrainBrandWide(
-                            trainBrand,
-                            state.ticket.trainNumber,
-                            Modifier.align(Alignment.CenterHorizontally),
-                        )
+                    TrainBrandWide(
+                        trainBrand,
+                        state.ticket.trainNumber,
+                        Modifier.align(Alignment.CenterHorizontally),
+                    )
 
-                        val departureDateTime = LocalDateTime.parse(state.ticket.departureDate)
-                        val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm, dd.MM.yyyy")
-                        val arrivalDateTime = LocalDateTime.parse(state.ticket.arrivalDate)
+                    val departureDateTime = LocalDateTime.parse(state.ticket.departureDate)
+                    val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm, dd.MM.yyyy")
+                    val arrivalDateTime = LocalDateTime.parse(state.ticket.arrivalDate)
 
-                        Text(
-                            stringResource(
-                                R.string.journey,
-                                state.ticket.departureStation,
-                                state.ticket.arrivalStation))
-                        Text(
-                            stringResource(
-                                R.string.departure, departureDateTime.format(dateTimeFormatter)))
+                    Text(
+                        stringResource(
+                            R.string.journey,
+                            state.ticket.departureStation,
+                            state.ticket.arrivalStation,
+                        ),
+                    )
 
-                        Text(
-                            stringResource(
-                                R.string.arrival, arrivalDateTime.format(dateTimeFormatter)))
+                    Text(
+                        stringResource(
+                            R.string.departure,
+                            departureDateTime.format(dateTimeFormatter),
+                        ),
+                    )
 
-                        Text(
-                            stringResource(
-                                R.string.travel_time,
-                                travelTime(departureDateTime, arrivalDateTime)))
+                    Text(
+                        stringResource(
+                            R.string.arrival,
+                            arrivalDateTime.format(dateTimeFormatter),
+                        ),
+                    )
 
-                        if (trainBrand != TrainBrand.REG) {
-                            Text(stringResource(R.string.class_with_value, state.ticket.trainClass))
-                            Text(stringResource(R.string.seat_number, state.ticket.seat))
+                    Text(
+                        stringResource(
+                            R.string.travel_time,
+                            travelTime(departureDateTime, arrivalDateTime),
+                        ),
+                    )
+
+                    if (trainBrand != TrainBrand.REG) {
+                        Text(stringResource(R.string.class_with_value, state.ticket.trainClass))
+                        Text(stringResource(R.string.seat_number, state.ticket.seat))
+                    }
+                }
+            }
+
+            Text(
+                stringResource(R.string.passengers),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.padding(10.dp),
+            )
+
+            state.ticket.passengers.forEachIndexed { index, passenger ->
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(start = 24.dp, end = 16.dp)
+                            .padding(vertical = 8.dp),
+                ) {
+                    Column {
+                        Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
+
+                        val discount = stringArrayResource(R.array.discounts)[passenger.discount]
+
+                        if (passenger.hasREGIOCard) {
+                            Text(
+                                stringResource(R.string.passenger_with_regio_card, discount),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        } else {
+                            Text(discount, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
 
+                if (index != state.ticket.passengers.size - 1) {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                }
+            }
+
+            if (trainBrand == TrainBrand.REG &&
+                (state.ticket.dog > 0 ||
+                    state.ticket.bicycle > 0 ||
+                    state.ticket.additionalLuggage > 0)) {
                 Text(
-                    stringResource(R.string.passengers),
+                    stringResource(R.string.optionals),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(10.dp),
                 )
 
-                state.ticket.passengers.forEachIndexed { index, passenger ->
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .padding(start = 24.dp, end = 16.dp)
-                                .padding(vertical = 8.dp)) {
-                            Column {
-                                Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
-
-                                val discount =
-                                    stringArrayResource(R.array.discounts)[passenger.discount]
-
-                                if (passenger.hasREGIOCard) {
-                                    Text(
-                                        stringResource(
-                                            R.string.passenger_with_regio_card, discount),
-                                        style = MaterialTheme.typography.bodyMedium)
-                                } else {
-                                    Text(discount, style = MaterialTheme.typography.bodyMedium)
-                                }
-                            }
-                        }
-
-                    if (index != state.ticket.passengers.size - 1) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-                    }
-                }
-
-                if (trainBrand == TrainBrand.REG &&
-                    (state.ticket.dog > 0 ||
-                        state.ticket.bicycle > 0 ||
-                        state.ticket.additionalLuggage > 0)) {
+                if (state.ticket.dog > 0) {
                     Text(
-                        stringResource(R.string.optionals),
-                        style = MaterialTheme.typography.labelLarge,
+                        text =
+                            pluralStringResource(
+                                id = R.plurals.dogs, count = state.ticket.dog, state.ticket.dog),
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(10.dp),
                     )
+                }
 
-                    if (state.ticket.dog > 0) {
-                        Text(
-                            text =
-                                pluralStringResource(
-                                    id = R.plurals.dogs,
-                                    count = state.ticket.dog,
-                                    state.ticket.dog),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(10.dp),
-                        )
-                    }
+                if (state.ticket.bicycle > 0) {
+                    Text(
+                        text =
+                            pluralStringResource(
+                                id = R.plurals.bikes,
+                                count = state.ticket.bicycle,
+                                state.ticket.bicycle),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(10.dp),
+                    )
+                }
 
-                    if (state.ticket.bicycle > 0) {
-                        Text(
-                            text =
-                                pluralStringResource(
-                                    id = R.plurals.bikes,
-                                    count = state.ticket.bicycle,
-                                    state.ticket.bicycle),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(10.dp),
-                        )
-                    }
-
-                    if (state.ticket.additionalLuggage > 0) {
-                        Text(
-                            text =
-                                pluralStringResource(
-                                    id = R.plurals.luggage,
-                                    count = state.ticket.additionalLuggage,
-                                    state.ticket.additionalLuggage),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(10.dp),
-                        )
-                    }
+                if (state.ticket.additionalLuggage > 0) {
+                    Text(
+                        text =
+                            pluralStringResource(
+                                id = R.plurals.luggage,
+                                count = state.ticket.additionalLuggage,
+                                state.ticket.additionalLuggage),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(10.dp),
+                    )
                 }
             }
+        }
     }
 }
 
@@ -239,7 +251,11 @@ fun MyTicketREGScreenPreview() {
                                     listOf(
                                         Passenger(name = "Adam Majewski"),
                                         Passenger(name = "Roman Zawadzki", discount = 2),
-                                    )))))
+                                    ),
+                            ),
+                    ),
+                ),
+        )
     }
 }
 
@@ -261,7 +277,13 @@ fun MyTicketICScreenPreview() {
                                 arrivalDate = "2024-04-26T10:01:00",
                                 trainClass = 2,
                                 seat = 64,
-                                passengers = listOf(Passenger(name = "Adam Majewski")),
-                            ))))
+                                passengers =
+                                    listOf(
+                                        Passenger(name = "Adam Majewski"),
+                                    ),
+                            ),
+                    ),
+                ),
+        )
     }
 }

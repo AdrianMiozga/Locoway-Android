@@ -48,7 +48,8 @@ fun HomeNavigationDrawer(
             ModalDrawerSheet(modifier = Modifier.width(252.dp)) {
                 Text(
                     stringResource(R.string.app_name),
-                    modifier = Modifier.padding(start = 28.dp, end = 28.dp, top = 16.dp))
+                    modifier = Modifier.padding(start = 28.dp, end = 28.dp, top = 16.dp),
+                )
 
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
@@ -57,7 +58,8 @@ fun HomeNavigationDrawer(
                     icon = { Icon(imageVector = Icons.Filled.Search, contentDescription = null) },
                     selected = true,
                     onClick = { scope.launch { drawerState.close() } },
-                    modifier = Modifier.padding(horizontal = 12.dp))
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                )
 
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp))
 
@@ -69,11 +71,13 @@ fun HomeNavigationDrawer(
                         icon = {
                             Icon(
                                 imageVector = Icons.Outlined.AccountCircle,
-                                contentDescription = null)
+                                contentDescription = null,
+                            )
                         },
                         selected = false,
                         onClick = onMyAccountClick,
-                        modifier = Modifier.padding(horizontal = 12.dp))
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                    )
 
                     NavigationDrawerItem(
                         label = { Text(text = stringResource(R.string.my_tickets)) },
@@ -81,38 +85,45 @@ fun HomeNavigationDrawer(
                             Icon(
                                 painter =
                                     painterResource(R.drawable.outline_confirmation_number_24),
-                                contentDescription = null)
+                                contentDescription = null,
+                            )
                         },
                         selected = false,
                         onClick = onMyTicketsClick,
-                        modifier = Modifier.padding(horizontal = 12.dp))
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                    )
 
                     NavigationDrawerItem(
                         label = { Text(text = stringResource(R.string.passengers)) },
                         icon = {
                             Icon(
                                 painter = painterResource(R.drawable.outline_groups_24),
-                                contentDescription = null)
+                                contentDescription = null,
+                            )
                         },
                         selected = false,
                         onClick = onPassengersClick,
-                        modifier = Modifier.padding(horizontal = 12.dp))
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                    )
                 } else {
                     NavigationDrawerItem(
                         label = { Text(text = stringResource(R.string.login)) },
                         icon = {
                             Icon(
                                 imageVector = Icons.Outlined.AccountCircle,
-                                contentDescription = null)
+                                contentDescription = null,
+                            )
                         },
                         selected = false,
                         onClick = onLoginClick,
-                        modifier = Modifier.padding(horizontal = 12.dp))
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                    )
                 }
             }
-        }) {
-            content()
-        }
+        },
+    ) {
+        content()
+    }
 }
 
 @Preview(showBackground = true)
@@ -121,7 +132,8 @@ fun HomeNavigationDrawerPreview() {
     LocowayTheme {
         HomeNavigationDrawer(
             uiState = MutableStateFlow(HomeUiState(isSignedIn = false)),
-            drawerState = rememberDrawerState(initialValue = DrawerValue.Open))
+            drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
+        )
     }
 }
 
@@ -131,6 +143,7 @@ fun SignedInHomeNavigationDrawerPreview() {
     LocowayTheme {
         HomeNavigationDrawer(
             uiState = MutableStateFlow(HomeUiState(isSignedIn = true)),
-            drawerState = rememberDrawerState(initialValue = DrawerValue.Open))
+            drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
+        )
     }
 }

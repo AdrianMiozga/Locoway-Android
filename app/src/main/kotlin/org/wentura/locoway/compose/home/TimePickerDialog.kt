@@ -42,29 +42,33 @@ fun TimePickerDialog(
         Surface(
             modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
-            tonalElevation = AlertDialogDefaults.TonalElevation) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            stringResource(R.string.specify_time),
-                            modifier = Modifier.align(Alignment.Start),
-                            style = MaterialTheme.typography.labelLarge)
+            tonalElevation = AlertDialogDefaults.TonalElevation,
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    stringResource(R.string.specify_time),
+                    modifier = Modifier.align(Alignment.Start),
+                    style = MaterialTheme.typography.labelLarge,
+                )
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                        content()
+                content()
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End) {
-                                dismissButton?.invoke()
-                                confirmButton()
-                            }
-                    }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    dismissButton?.invoke()
+                    confirmButton()
+                }
             }
+        }
     }
 }
 
@@ -86,7 +90,8 @@ private fun TimePickerDialogPreview() {
             ) {
                 Text(stringResource(R.string.cancel))
             }
-        }) {
-            TimePicker(state = rememberTimePickerState(initialHour = 12, is24Hour = true))
-        }
+        },
+    ) {
+        TimePicker(state = rememberTimePickerState(initialHour = 12, is24Hour = true))
+    }
 }

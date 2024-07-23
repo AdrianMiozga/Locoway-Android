@@ -60,7 +60,10 @@ constructor(
 
         viewModelScope.launch {
             _uiState.update {
-                it.copy(passengers = passengerRepository.getPassengers(), isLoading = false)
+                it.copy(
+                    passengers = passengerRepository.getPassengers(),
+                    isLoading = false,
+                )
             }
         }
     }
@@ -81,7 +84,9 @@ constructor(
 
         viewModelScope.launch {
             passengerRepository.updatePassenger(
-                state.currentPassenger.documentPath, state.currentPassenger)
+                state.currentPassenger.documentPath,
+                state.currentPassenger,
+            )
 
             getPassengers()
         }
@@ -134,11 +139,21 @@ constructor(
     }
 
     fun onEditPassengerDialogDismissRequest() {
-        _uiState.update { it.copy(openEditPassengerDialog = false, currentPassenger = Passenger()) }
+        _uiState.update {
+            it.copy(
+                openEditPassengerDialog = false,
+                currentPassenger = Passenger(),
+            )
+        }
     }
 
     fun onAddPassengerDismissRequest() {
-        _uiState.update { it.copy(openAddPassengerDialog = false, currentPassenger = Passenger()) }
+        _uiState.update {
+            it.copy(
+                openAddPassengerDialog = false,
+                currentPassenger = Passenger(),
+            )
+        }
     }
 
     fun showAddPassengerDialog() {

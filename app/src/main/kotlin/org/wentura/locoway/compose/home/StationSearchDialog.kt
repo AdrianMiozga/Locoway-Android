@@ -44,66 +44,73 @@ fun StationSearchDialog(
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.fillMaxSize(),
-        properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(stringResource(dialogTitle)) },
-                        navigationIcon = {
-                            IconButton(onClick = onDismissRequest) {
-                                Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
-                            }
-                        })
-                }) { paddingValues ->
-                    LazyColumn(modifier = Modifier.padding(paddingValues)) {
-                        item {
-                            OutlinedTextField(
-                                value = query,
-                                onValueChange = onQueryUpdate,
-                                singleLine = true,
-                                label = { Text(stringResource(dialogTitle)) },
-                                trailingIcon = {
-                                    if (query.isNotEmpty()) {
-                                        IconButton(onClick = onQueryClear) {
-                                            Icon(
-                                                imageVector = Icons.Outlined.Close,
-                                                contentDescription = null)
-                                        }
-                                    }
-                                },
-                                keyboardOptions =
-                                    KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                                modifier = Modifier.padding(20.dp).fillMaxWidth())
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(dialogTitle)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(
+                                imageVector = Icons.Outlined.Close,
+                                contentDescription = null,
+                            )
                         }
-
-                        item {
-                            val label =
-                                if (stations.isNotEmpty()) {
-                                    R.string.results
-                                } else {
-                                    R.string.recent_searches
+                    },
+                )
+            },
+        ) { paddingValues ->
+            LazyColumn(modifier = Modifier.padding(paddingValues)) {
+                item {
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = onQueryUpdate,
+                        singleLine = true,
+                        label = { Text(stringResource(dialogTitle)) },
+                        trailingIcon = {
+                            if (query.isNotEmpty()) {
+                                IconButton(onClick = onQueryClear) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Close,
+                                        contentDescription = null,
+                                    )
                                 }
+                            }
+                        },
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                        modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                    )
+                }
 
-                            Text(
-                                stringResource(label),
-                                style = MaterialTheme.typography.labelLarge,
-                                modifier =
-                                    Modifier.padding(horizontal = 10.dp).padding(bottom = 4.dp))
-                        }
-
+                item {
+                    val label =
                         if (stations.isNotEmpty()) {
-                            items(stations.size) { index ->
-                                StationListItem(stations[index], onStationClick = onStationClick)
-                            }
+                            R.string.results
                         } else {
-                            items(recentStations.size) { index ->
-                                StationListItem(
-                                    recentStations[index], onStationClick = onStationClick)
-                            }
+                            R.string.recent_searches
                         }
+
+                    Text(
+                        stringResource(label),
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 10.dp).padding(bottom = 4.dp),
+                    )
+                }
+
+                if (stations.isNotEmpty()) {
+                    items(stations.size) { index ->
+                        StationListItem(stations[index], onStationClick = onStationClick)
+                    }
+                } else {
+                    items(recentStations.size) { index ->
+                        StationListItem(recentStations[index], onStationClick = onStationClick)
                     }
                 }
+            }
         }
+    }
 }
 
 @Composable
@@ -112,9 +119,10 @@ fun StationListItem(station: Station, onStationClick: (String) -> Unit = {}) {
         modifier =
             Modifier.clickable { onStationClick(station.name) }
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-                .fillMaxWidth()) {
-            Text(station.name)
-        }
+                .fillMaxWidth(),
+    ) {
+        Text(station.name)
+    }
 }
 
 @Preview(showBackground = true)

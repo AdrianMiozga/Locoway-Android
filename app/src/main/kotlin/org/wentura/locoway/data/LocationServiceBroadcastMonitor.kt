@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
-import javax.inject.Inject
 
 class LocationServiceBroadcastMonitor
 @Inject
@@ -23,7 +23,7 @@ constructor(
     private val context: Context,
     coroutineScope: CoroutineScope,
     private val locationManager: LocationManager =
-        context.getSystemService(LocationManager::class.java)
+        context.getSystemService(LocationManager::class.java),
 ) {
     val isEnabled: SharedFlow<Boolean> =
         callbackFlow {
@@ -40,7 +40,9 @@ constructor(
                     }
 
                 context.registerReceiver(
-                    receiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+                    receiver,
+                    IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION),
+                )
 
                 trySend(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 

@@ -75,7 +75,8 @@ fun LoginPage(
                 if (resetPassword(email)) {
                     openAlertDialog.value = false
                 }
-            })
+            },
+        )
     }
 
     if (state.isSignedIn) {
@@ -88,82 +89,92 @@ fun LoginPage(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.verticalScroll(rememberScrollState())) {
-            OutlinedTextField(
-                value = emailText.value,
-                onValueChange = { emailText.value = it },
-                keyboardOptions =
-                    KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                supportingText = {
-                    if (isEmailWrong) Text(stringResource(R.string.invalid_email)) else Text("")
-                },
-                isError = isEmailWrong,
-                singleLine = true,
-                label = { Text(stringResource(R.string.email)) },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 20.dp))
+        modifier = modifier.verticalScroll(rememberScrollState()),
+    ) {
+        OutlinedTextField(
+            value = emailText.value,
+            onValueChange = { emailText.value = it },
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+            supportingText = {
+                if (isEmailWrong) Text(stringResource(R.string.invalid_email)) else Text("")
+            },
+            isError = isEmailWrong,
+            singleLine = true,
+            label = { Text(stringResource(R.string.email)) },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 20.dp),
+        )
 
-            OutlinedTextField(
-                value = passwordText.value,
-                visualTransformation =
-                    if (passwordVisible.value) VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                        val resource =
-                            if (passwordVisible.value) R.drawable.outline_visibility_off_24
-                            else R.drawable.outline_visibility_24
+        OutlinedTextField(
+            value = passwordText.value,
+            visualTransformation =
+                if (passwordVisible.value) VisualTransformation.None
+                else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
+                    val resource =
+                        if (passwordVisible.value) R.drawable.outline_visibility_off_24
+                        else R.drawable.outline_visibility_24
 
-                        val description =
-                            if (passwordVisible.value) stringResource(R.string.hide_password)
-                            else stringResource(R.string.show_password)
+                    val description =
+                        if (passwordVisible.value) stringResource(R.string.hide_password)
+                        else stringResource(R.string.show_password)
 
-                        Icon(painter = painterResource(resource), contentDescription = description)
-                    }
-                },
-                isError = isPasswordWrong,
-                onValueChange = { passwordText.value = it },
-                singleLine = true,
-                label = { Text(stringResource(R.string.password)) },
-                modifier =
-                    Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 10.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth()) {
-                    TextButton(
-                        onClick = { openAlertDialog.value = true },
-                        modifier = Modifier.padding(vertical = 10.dp)) {
-                            Text(stringResource(R.string.forgot_password))
-                        }
-
-                    Button(
-                        onClick = { passwordSignIn(emailText.value, passwordText.value) },
-                        modifier = Modifier.padding(vertical = 10.dp)) {
-                            Text(stringResource(R.string.login))
-                        }
-                }
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
-
-            OutlinedButton(
-                onClick = {
-                    val activity = context.findActivity()
-
-                    signInWithGoogle(
-                        context, activity, coroutineScope, handleGoogleSignIn, signInFailed)
-                },
-                modifier = Modifier.padding(10.dp)) {
                     Icon(
-                        painter = painterResource(R.drawable.google_g_logo),
-                        tint = Color.Unspecified,
-                        contentDescription = null)
-
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-
-                    Text(stringResource(R.string.continue_with_google))
+                        painter = painterResource(resource),
+                        contentDescription = description,
+                    )
                 }
+            },
+            isError = isPasswordWrong,
+            onValueChange = { passwordText.value = it },
+            singleLine = true,
+            label = { Text(stringResource(R.string.password)) },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 10.dp),
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+        ) {
+            TextButton(
+                onClick = { openAlertDialog.value = true },
+                modifier = Modifier.padding(vertical = 10.dp),
+            ) {
+                Text(stringResource(R.string.forgot_password))
+            }
+
+            Button(
+                onClick = { passwordSignIn(emailText.value, passwordText.value) },
+                modifier = Modifier.padding(vertical = 10.dp),
+            ) {
+                Text(stringResource(R.string.login))
+            }
         }
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 26.dp))
+
+        OutlinedButton(
+            onClick = {
+                val activity = context.findActivity()
+
+                signInWithGoogle(
+                    context, activity, coroutineScope, handleGoogleSignIn, signInFailed)
+            },
+            modifier = Modifier.padding(10.dp),
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.google_g_logo),
+                tint = Color.Unspecified,
+                contentDescription = null,
+            )
+
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+
+            Text(stringResource(R.string.continue_with_google))
+        }
+    }
 }
 
 @Composable

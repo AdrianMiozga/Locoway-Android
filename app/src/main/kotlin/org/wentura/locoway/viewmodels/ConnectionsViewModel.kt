@@ -34,7 +34,9 @@ constructor(
             ConnectionsUiState(
                 isSignedIn = authenticationRepository.isSignedIn(),
                 departureStation = checkNotNull(savedStateHandle["departureStation"]),
-                arrivalStation = checkNotNull(savedStateHandle["arrivalStation"])))
+                arrivalStation = checkNotNull(savedStateHandle["arrivalStation"]),
+            ),
+        )
 
     val uiState = _uiState.asStateFlow()
 
@@ -52,7 +54,8 @@ constructor(
                     departureDate,
                     departureTime,
                     _uiState.value.departureStation,
-                    _uiState.value.arrivalStation)
+                    _uiState.value.arrivalStation,
+                )
 
             _uiState.update {
                 it.copy(

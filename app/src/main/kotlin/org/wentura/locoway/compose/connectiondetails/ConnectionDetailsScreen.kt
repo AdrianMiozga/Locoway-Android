@@ -131,49 +131,47 @@ fun ConnectionsDetailsScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             ) {
                 Column(
-                    modifier =
-                        Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxSize()) {
-                        TrainBrandWide(
-                            state.connection.trainBrand,
-                            state.connection.trainNumber,
-                            Modifier.align(Alignment.CenterHorizontally),
-                        )
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxSize(),
+                ) {
+                    TrainBrandWide(
+                        state.connection.trainBrand,
+                        state.connection.trainNumber,
+                        Modifier.align(Alignment.CenterHorizontally),
+                    )
 
-                        Text(
-                            stringResource(
-                                R.string.journey,
-                                state.connection.departureStation,
-                                state.connection.arrivalStation),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(vertical = 4.dp),
-                        )
+                    Text(
+                        stringResource(
+                            R.string.journey,
+                            state.connection.departureStation,
+                            state.connection.arrivalStation),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    )
 
-                        val departureDateTime = state.connection.departureDateTime
-                        val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm, dd.MM.yyyy")
-                        val arrivalDateTime = state.connection.arrivalDateTime
+                    val departureDateTime = state.connection.departureDateTime
+                    val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm, dd.MM.yyyy")
+                    val arrivalDateTime = state.connection.arrivalDateTime
 
-                        Text(
-                            stringResource(
-                                R.string.departure, departureDateTime.format(dateTimeFormatter)),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(vertical = 4.dp),
-                        )
+                    Text(
+                        stringResource(
+                            R.string.departure, departureDateTime.format(dateTimeFormatter)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    )
 
-                        Text(
-                            stringResource(
-                                R.string.arrival, arrivalDateTime.format(dateTimeFormatter)),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(vertical = 4.dp),
-                        )
+                    Text(
+                        stringResource(R.string.arrival, arrivalDateTime.format(dateTimeFormatter)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    )
 
-                        Text(
-                            stringResource(
-                                R.string.travel_time,
-                                travelTime(departureDateTime, arrivalDateTime)),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(top = 4.dp),
-                        )
-                    }
+                    Text(
+                        stringResource(
+                            R.string.travel_time, travelTime(departureDateTime, arrivalDateTime)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
             }
 
             Text(
@@ -185,7 +183,11 @@ fun ConnectionsDetailsScreen(
             Column {
                 state.passengers.forEachIndexed { index, passenger ->
                     PassengerListItem(
-                        index, passenger, state.selectedPassengers[index], onCheckedChange)
+                        index,
+                        passenger,
+                        state.selectedPassengers[index],
+                        onCheckedChange,
+                    )
                 }
             }
 
@@ -193,7 +195,10 @@ fun ConnectionsDetailsScreen(
                 onClick = showAddPassengerDialog,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = null,
+                )
             }
 
             Text(
@@ -229,7 +234,8 @@ fun ConnectionsDetailsScreen(
                                 disabledTrailingIconColor =
                                     MaterialTheme.colorScheme.onSurfaceVariant,
                             ),
-                        modifier = Modifier.fillMaxWidth().menuAnchor())
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    )
 
                     ExposedDropdownMenu(
                         expanded = dogExpanded,
@@ -279,7 +285,8 @@ fun ConnectionsDetailsScreen(
                                 disabledTrailingIconColor =
                                     MaterialTheme.colorScheme.onSurfaceVariant,
                             ),
-                        modifier = Modifier.fillMaxWidth().menuAnchor())
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    )
 
                     ExposedDropdownMenu(
                         expanded = bikeExpanded,
@@ -329,7 +336,8 @@ fun ConnectionsDetailsScreen(
                                 disabledTrailingIconColor =
                                     MaterialTheme.colorScheme.onSurfaceVariant,
                             ),
-                        modifier = Modifier.fillMaxWidth().menuAnchor())
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    )
 
                     ExposedDropdownMenu(
                         expanded = luggageExpanded,
@@ -448,7 +456,8 @@ fun PassengerListItem(
             if (passenger.hasREGIOCard) {
                 Text(
                     stringResource(R.string.passenger_with_regio_card, discount),
-                    style = MaterialTheme.typography.bodyMedium)
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             } else {
                 Text(discount, style = MaterialTheme.typography.bodyMedium)
             }
@@ -470,7 +479,8 @@ fun ConnectionsDetailsTopAppBar(onUpClick: () -> Unit) {
                     contentDescription = null,
                 )
             }
-        })
+        },
+    )
 }
 
 @Preview(showBackground = true)
@@ -499,8 +509,12 @@ fun ConnectionsDetailsREGScreenPreview() {
                                 departureStation = "Strzelce Opolskie",
                                 arrivalStation = "Gliwice",
                                 departureDateTime = LocalDateTime.parse("2024-06-24T12:00:00"),
-                                arrivalDateTime = LocalDateTime.parse("2024-06-24T13:00:00")),
-                        price = BigDecimal("12.50"))))
+                                arrivalDateTime = LocalDateTime.parse("2024-06-24T13:00:00"),
+                            ),
+                        price = BigDecimal("12.50"),
+                    ),
+                ),
+        )
     }
 }
 
@@ -530,7 +544,11 @@ fun ConnectionsDetailsICScreenPreview() {
                                 departureStation = "Strzelce Opolskie",
                                 arrivalStation = "Gliwice",
                                 departureDateTime = LocalDateTime.parse("2024-06-24T12:00:00"),
-                                arrivalDateTime = LocalDateTime.parse("2024-06-24T13:00:00")),
-                        price = BigDecimal("12.50"))))
+                                arrivalDateTime = LocalDateTime.parse("2024-06-24T13:00:00"),
+                            ),
+                        price = BigDecimal("12.50"),
+                    ),
+                ),
+        )
     }
 }

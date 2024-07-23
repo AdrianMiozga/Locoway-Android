@@ -7,14 +7,20 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
-import java.time.LocalTime
 import org.wentura.locoway.R
+import java.time.LocalTime
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TimePicker(showTimePicker: MutableState<Boolean>, departureTime: MutableState<LocalTime>) {
+fun TimePicker(
+    showTimePicker: MutableState<Boolean>,
+    departureTime: MutableState<LocalTime>,
+) {
     val timePickerState =
-        rememberTimePickerState(departureTime.value.hour, departureTime.value.minute)
+        rememberTimePickerState(
+            departureTime.value.hour,
+            departureTime.value.minute,
+        )
 
     TimePickerDialog(
         onDismissRequest = { showTimePicker.value = false },
@@ -34,7 +40,8 @@ fun TimePicker(showTimePicker: MutableState<Boolean>, departureTime: MutableStat
             ) {
                 Text(stringResource(R.string.cancel))
             }
-        }) {
-            androidx.compose.material3.TimePicker(state = timePickerState)
-        }
+        },
+    ) {
+        androidx.compose.material3.TimePicker(state = timePickerState)
+    }
 }

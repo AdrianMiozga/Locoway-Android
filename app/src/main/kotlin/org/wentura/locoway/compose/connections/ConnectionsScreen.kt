@@ -69,43 +69,43 @@ fun ConnectionsScreen(
     val state by uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = {
-            ConnectionsTopAppBar(onUpClick, state.departureStation, state.arrivalStation)
-        }) { innerPadding ->
-            Column(modifier = Modifier.padding(innerPadding)) {
-                if (state.isLoading) {
-                    LinearProgressIndicator(Modifier.fillMaxWidth())
-                } else {
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
+        topBar = { ConnectionsTopAppBar(onUpClick, state.departureStation, state.arrivalStation) },
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            if (state.isLoading) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+            } else {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
 
-                LazyColumn {
-                    if (state.connections.isNotEmpty() || state.isLoading) {
-                        items(state.connections.size) { connection ->
-                            ConnectionListItem(
-                                state.connections[connection],
-                                state.isSignedIn,
-                                onConnectionClick,
-                                goToAuthenticationScreen,
-                            )
+            LazyColumn {
+                if (state.connections.isNotEmpty() || state.isLoading) {
+                    items(state.connections.size) { connection ->
+                        ConnectionListItem(
+                            state.connections[connection],
+                            state.isSignedIn,
+                            onConnectionClick,
+                            goToAuthenticationScreen,
+                        )
 
-                            if (connection != state.connections.size - 1) {
-                                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-                            }
+                        if (connection != state.connections.size - 1) {
+                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
                         }
-                    } else {
-                        item {
-                            Column(
-                                modifier = Modifier.fillParentMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(stringResource(R.string.no_connections))
-                                }
+                    }
+                } else {
+                    item {
+                        Column(
+                            modifier = Modifier.fillParentMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(stringResource(R.string.no_connections))
                         }
                     }
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -123,68 +123,75 @@ private fun ConnectionListItem(
                 } else {
                     goToAuthenticationScreen()
                 }
-            }) {
-            Row(
-                modifier = Modifier.padding(12.dp).fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically) {
-                    TrainBrandCircle(connection.trainBrand)
+            },
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TrainBrandCircle(connection.trainBrand)
 
-                    Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        ConnectionTime(connection.departureDateTime)
-                        ConnectionDate(connection.departureDateTime)
-                    }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                ConnectionTime(connection.departureDateTime)
+                ConnectionDate(connection.departureDateTime)
+            }
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        val minutes =
-                            travelTime(connection.departureDateTime, connection.arrivalDateTime)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                val minutes = travelTime(connection.departureDateTime, connection.arrivalDateTime)
 
-                        Text(
-                            text = stringResource(R.string.duration_time, minutes),
-                            style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = stringResource(R.string.duration_time, minutes),
+                    style = MaterialTheme.typography.labelSmall,
+                )
 
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
-                            contentDescription = null,
-                            modifier = Modifier.padding(horizontal = 16.dp))
-                    }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                    contentDescription = null,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        ConnectionTime(connection.arrivalDateTime)
-                        ConnectionDate(connection.arrivalDateTime)
-                    }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                ConnectionTime(connection.arrivalDateTime)
+                ConnectionDate(connection.arrivalDateTime)
+            }
 
-                    Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = stringResource(R.string.price_from),
-                            style = MaterialTheme.typography.labelMedium)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = stringResource(R.string.price_from),
+                    style = MaterialTheme.typography.labelMedium,
+                )
 
-                        val numberFormat = NumberFormat.getCurrencyInstance()
-                        numberFormat.currency = Currency.getInstance("PLN")
+                val numberFormat = NumberFormat.getCurrencyInstance()
+                numberFormat.currency = Currency.getInstance("PLN")
 
-                        Text(
-                            text = numberFormat.format(connection.ticketPrice.toDouble()),
-                            style = MaterialTheme.typography.titleMedium)
-                    }
-                }
+                Text(
+                    text = numberFormat.format(connection.ticketPrice.toDouble()),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
         }
+    }
 }
 
 @Composable
 private fun ConnectionDate(departureDateTime: LocalDateTime) {
     Text(
         text = departureDateTime.format(DateTimeFormatter.ofPattern("dd MMM")),
-        style = MaterialTheme.typography.labelMedium)
+        style = MaterialTheme.typography.labelMedium,
+    )
 }
 
 @Composable
 private fun ConnectionTime(localDateTime: LocalDateTime) {
     Text(
         text = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-        style = MaterialTheme.typography.bodyLarge)
+        style = MaterialTheme.typography.bodyLarge,
+    )
 }
 
 @Composable
@@ -203,9 +210,13 @@ private fun ConnectionsTopAppBar(
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = null,
+                )
             }
-        })
+        },
+    )
 }
 
 @Preview(showBackground = true)
@@ -239,7 +250,9 @@ fun ConnectionsPreview() {
                 "Strzelce Opolskie",
                 "Gliwice",
                 LocalDateTime.parse("2024-06-24T21:55:30"),
-                LocalDateTime.parse("2024-06-24T22:28:00")))
+                LocalDateTime.parse("2024-06-24T22:28:00"),
+            ),
+        )
 
     LocowayTheme {
         ConnectionsScreen(
@@ -249,6 +262,8 @@ fun ConnectionsPreview() {
                         isLoading = false,
                         departureStation = "Strzelce Opolskie",
                         arrivalStation = "Gliwice",
-                        connections = connections)))
+                        connections = connections),
+                ),
+        )
     }
 }

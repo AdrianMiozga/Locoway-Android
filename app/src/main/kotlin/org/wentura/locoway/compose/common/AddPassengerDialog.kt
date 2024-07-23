@@ -47,74 +47,88 @@ fun AddPassengerDialog(
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.fillMaxSize(),
-        properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(stringResource(R.string.add_passenger)) },
-                        navigationIcon = {
-                            IconButton(onClick = onDismissRequest) {
-                                Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
-                            }
-                        },
-                        actions = {
-                            TextButton(onClick = { onSaveClick() }) {
-                                Text(stringResource(R.string.save))
-                            }
-                        })
-                }) { paddingValues ->
-                    val discounts = stringArrayResource(R.array.discounts)
-
-                    LazyColumn(modifier = Modifier.padding(paddingValues)) {
-                        item {
-                            OutlinedTextField(
-                                value = name,
-                                onValueChange = { updateName(it) },
-                                label = { Text(stringResource(R.string.full_name)) },
-                                singleLine = true,
-                                keyboardOptions =
-                                    KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                                modifier =
-                                    Modifier.fillMaxWidth()
-                                        .padding(horizontal = 20.dp)
-                                        .padding(top = 20.dp, bottom = 10.dp))
-
-                            Text(
-                                stringResource(R.string.choose_discount),
-                                style = MaterialTheme.typography.labelLarge,
-                                modifier = Modifier.padding(10.dp))
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.add_passenger)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismissRequest) {
+                            Icon(
+                                imageVector = Icons.Outlined.Close,
+                                contentDescription = null,
+                            )
                         }
-
-                        items(discounts.size) {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                                    Text(discounts[it])
-                                    RadioButton(
-                                        selected = discount == it, onClick = { changeDiscount(it) })
-                                }
+                    },
+                    actions = {
+                        TextButton(onClick = { onSaveClick() }) {
+                            Text(stringResource(R.string.save))
                         }
+                    },
+                )
+            },
+        ) { paddingValues ->
+            val discounts = stringArrayResource(R.array.discounts)
 
-                        item {
-                            Text(
-                                stringResource(R.string.optionals),
-                                style = MaterialTheme.typography.labelLarge,
-                                modifier = Modifier.padding(10.dp))
+            LazyColumn(modifier = Modifier.padding(paddingValues)) {
+                item {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { updateName(it) },
+                        label = { Text(stringResource(R.string.full_name)) },
+                        singleLine = true,
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .padding(top = 20.dp, bottom = 10.dp),
+                    )
 
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                                    Text(stringResource(R.string.regio_card))
-                                    Checkbox(
-                                        checked = hasREGIOCard,
-                                        onCheckedChange = { toggleREGIOCard() })
-                                }
-                        }
+                    Text(
+                        stringResource(R.string.choose_discount),
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(10.dp),
+                    )
+                }
+
+                items(discounts.size) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    ) {
+                        Text(discounts[it])
+                        RadioButton(
+                            selected = discount == it,
+                            onClick = { changeDiscount(it) },
+                        )
                     }
                 }
+
+                item {
+                    Text(
+                        stringResource(R.string.optionals),
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(10.dp),
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    ) {
+                        Text(stringResource(R.string.regio_card))
+                        Checkbox(
+                            checked = hasREGIOCard,
+                            onCheckedChange = { toggleREGIOCard() },
+                        )
+                    }
+                }
+            }
         }
+    }
 }
 
 @Preview(showBackground = true)

@@ -114,38 +114,40 @@ fun PassengersScreen(
             FloatingActionButton(onClick = showAddPassengerDialog) {
                 Icon(Icons.Filled.Add, stringResource(R.string.add_new_passenger))
             }
-        }) { innerPadding ->
-            Column(modifier = Modifier.padding(innerPadding)) {
-                if (state.isLoading) {
-                    LinearProgressIndicator(Modifier.fillMaxWidth())
-                } else {
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
+        },
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            if (state.isLoading) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+            } else {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
 
-                LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
-                    if (state.passengers.isNotEmpty() || state.isLoading) {
-                        items(state.passengers.size) { passenger ->
-                            PassengerListItem(
-                                passenger = state.passengers[passenger],
-                                onEditPassenger = { showEditPassengerDialog(passenger) })
+            LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
+                if (state.passengers.isNotEmpty() || state.isLoading) {
+                    items(state.passengers.size) { passenger ->
+                        PassengerListItem(
+                            passenger = state.passengers[passenger],
+                            onEditPassenger = { showEditPassengerDialog(passenger) })
 
-                            if (passenger != state.passengers.size - 1) {
-                                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-                            }
+                        if (passenger != state.passengers.size - 1) {
+                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
                         }
-                    } else {
-                        item {
-                            Column(
-                                modifier = Modifier.fillParentMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(stringResource(R.string.no_passengers))
-                                }
+                    }
+                } else {
+                    item {
+                        Column(
+                            modifier = Modifier.fillParentMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(stringResource(R.string.no_passengers))
                         }
                     }
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -154,27 +156,30 @@ fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp).padding(vertical = 8.dp)) {
-            Column {
-                Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
+            Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp).padding(vertical = 8.dp),
+    ) {
+        Column {
+            Text(passenger.name, style = MaterialTheme.typography.bodyLarge)
 
-                val discount = stringArrayResource(R.array.discounts)[passenger.discount]
+            val discount = stringArrayResource(R.array.discounts)[passenger.discount]
 
-                if (passenger.hasREGIOCard) {
-                    Text(
-                        stringResource(R.string.passenger_with_regio_card, discount),
-                        style = MaterialTheme.typography.bodyMedium)
-                } else {
-                    Text(discount, style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-
-            IconButton(onClick = onEditPassenger) {
-                Icon(
-                    Icons.Outlined.Edit,
-                    contentDescription = stringResource(R.string.edit_passenger))
+            if (passenger.hasREGIOCard) {
+                Text(
+                    stringResource(R.string.passenger_with_regio_card, discount),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            } else {
+                Text(discount, style = MaterialTheme.typography.bodyMedium)
             }
         }
+
+        IconButton(onClick = onEditPassenger) {
+            Icon(
+                Icons.Outlined.Edit,
+                contentDescription = stringResource(R.string.edit_passenger),
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -193,7 +198,8 @@ fun PassengersTopAppBar(onUpClick: () -> Unit) {
                     contentDescription = null,
                 )
             }
-        })
+        },
+    )
 }
 
 @Preview(showBackground = true)
@@ -203,7 +209,8 @@ fun PassengersScreenPreview() {
         listOf(
             Passenger("Adam Majewski", true, 0),
             Passenger("Marzena Nowakowska", false, 1),
-            Passenger("Roman Zawadzki", false, 2))
+            Passenger("Roman Zawadzki", false, 2),
+        )
 
     LocowayTheme { PassengersScreen(MutableStateFlow(PassengersUiState(passengers = passengers))) }
 }

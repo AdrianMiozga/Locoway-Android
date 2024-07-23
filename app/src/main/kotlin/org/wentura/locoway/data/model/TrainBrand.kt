@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 enum class TrainBrand(
     val displayName: String,
     val displayShortName: String,
-    val displayColor: Color
+    val displayColor: Color,
 ) {
     REG("REG", "R", Color(0xFFE50000)),
     IC("IC", "IC", Color(0xFFF47216)),

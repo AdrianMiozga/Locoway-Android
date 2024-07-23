@@ -30,7 +30,9 @@ constructor(
     init {
         _uiState.update {
             MyTicketUiState(
-                ticket = ticketRepository.getTicketByIdFromCache(ticketId), isLoading = false)
+                ticket = ticketRepository.getTicketByIdFromCache(ticketId),
+                isLoading = false,
+            )
         }
     }
 }

@@ -13,7 +13,8 @@ class TravelTimeTest {
             travelTime(
                 LocalDateTime.parse("2024-06-24T12:00:00"),
                 LocalDateTime.parse("2024-06-24T12:00:00"),
-            ))
+            ),
+        )
     }
 
     @Test
@@ -23,7 +24,8 @@ class TravelTimeTest {
             travelTime(
                 LocalDateTime.parse("2024-06-24T12:00:00"),
                 LocalDateTime.parse("2024-06-24T13:00:00"),
-            ))
+            ),
+        )
     }
 
     @Test
@@ -33,7 +35,8 @@ class TravelTimeTest {
             travelTime(
                 LocalDateTime.parse("2024-06-24T23:00:00"),
                 LocalDateTime.parse("2024-06-25T01:00:00"),
-            ))
+            ),
+        )
     }
 
     @Test
@@ -43,6 +46,7 @@ class TravelTimeTest {
             travelTime(
                 LocalDateTime.parse("2024-06-24T10:00:00"),
                 LocalDateTime.parse("2024-06-24T10:05:30"),
-            ))
+            ),
+        )
     }
 }

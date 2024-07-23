@@ -86,44 +86,46 @@ fun MyTicketsScreen(
         Box(
             modifier =
                 Modifier.padding(innerPadding)
-                    .nestedScroll(pullToRefreshState.nestedScrollConnection)) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    item {
-                        if (state.isLoading) {
-                            LinearProgressIndicator(Modifier.fillMaxWidth())
-                        } else {
-                            Spacer(modifier = Modifier.height(4.dp))
-                        }
-                    }
-
-                    if (state.tickets.isNotEmpty() || state.isLoading) {
-                        items(state.tickets.size) { index ->
-                            MyTicketListItem(state.tickets[index]) {
-                                onTicketClick(state.tickets[index].documentPath)
-                            }
-
-                            if (index != state.tickets.size - 1) {
-                                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-                            }
-                        }
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection),
+        ) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    if (state.isLoading) {
+                        LinearProgressIndicator(Modifier.fillMaxWidth())
                     } else {
-                        item {
-                            Column(
-                                modifier = Modifier.fillParentMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(stringResource(R.string.no_tickets))
-                                }
-                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
 
-                PullToRefreshContainer(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    state = pullToRefreshState,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                )
+                if (state.tickets.isNotEmpty() || state.isLoading) {
+                    items(state.tickets.size) { index ->
+                        MyTicketListItem(state.tickets[index]) {
+                            onTicketClick(state.tickets[index].documentPath)
+                        }
+
+                        if (index != state.tickets.size - 1) {
+                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                        }
+                    }
+                } else {
+                    item {
+                        Column(
+                            modifier = Modifier.fillParentMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(stringResource(R.string.no_tickets))
+                        }
+                    }
+                }
             }
+
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.TopCenter),
+                state = pullToRefreshState,
+                contentColor = MaterialTheme.colorScheme.primary,
+            )
+        }
     }
 }
 
@@ -217,9 +219,13 @@ private fun MyTicketsTopAppBar(onUpClick: () -> Unit) {
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = null,
+                )
             }
-        })
+        },
+    )
 }
 
 @Preview(showBackground = true)
@@ -253,6 +259,13 @@ fun MyTicketsPreview() {
 
     LocowayTheme {
         MyTicketsScreen(
-            uiState = MutableStateFlow(MyTicketsUiState(tickets = tickets, isLoading = false)))
+            uiState =
+                MutableStateFlow(
+                    MyTicketsUiState(
+                        tickets = tickets,
+                        isLoading = false,
+                    ),
+                ),
+        )
     }
 }
