@@ -44,12 +44,12 @@ fun LocowayApp() {
                     onSearchClick = { departureStation, arrivalStation, departureDate, departureTime
                         ->
                         navController.navigate(
-                            "${Screen.Search.route}/$departureStation/$arrivalStation/$departureDate/$departureTime")
+                            "${Screen.Connections.route}/$departureStation/$arrivalStation/$departureDate/$departureTime")
 
                         scope.launch { drawerState.close() }
                     },
                     onLoginClick = {
-                        navController.navigate(Screen.Login.route)
+                        navController.navigate(Screen.Authentication.route)
 
                         scope.launch { drawerState.close() }
                     },
@@ -71,14 +71,16 @@ fun LocowayApp() {
             }
 
             composable(
-                "${Screen.Search.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}",
+                "${Screen.Connections.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}",
             ) {
                 ConnectionsScreen(
                     onUpClick = { navController.navigateUp() },
                     onConnectionClick = { trainId ->
                         navController.navigate("${Screen.ConnectionDetails.route}/$trainId")
                     },
-                    goToAuthenticationScreen = { navController.navigate(Screen.Login.route) },
+                    goToAuthenticationScreen = {
+                        navController.navigate(Screen.Authentication.route)
+                    },
                 )
             }
 
@@ -88,7 +90,7 @@ fun LocowayApp() {
                     onBuyButtonClick = { navController.popBackStack(Screen.Home.route, false) })
             }
 
-            composable(Screen.Login.route) {
+            composable(Screen.Authentication.route) {
                 AuthenticationScreen(
                     onUpClick = { navController.navigateUp() },
                     onSignUp = { navController.navigateUp() },
