@@ -10,10 +10,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.wentura.locoway.data.model.Connection
+import org.wentura.locoway.data.repository.AuthenticationRepository
 import org.wentura.locoway.data.repository.ConnectionsRepository
 
 data class ConnectionsUiState(
     val isLoading: Boolean = true,
+    val isSignedIn: Boolean = false,
     val departureStation: String = "",
     val arrivalStation: String = "",
     val connections: List<Connection> = emptyList(),
@@ -24,11 +26,13 @@ class ConnectionsViewModel
 @Inject
 constructor(
     savedStateHandle: SavedStateHandle,
-    private val connectionsRepository: ConnectionsRepository
+    private val connectionsRepository: ConnectionsRepository,
+    authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     private val _uiState =
         MutableStateFlow(
             ConnectionsUiState(
+                isSignedIn = authenticationRepository.isSignedIn(),
                 departureStation = checkNotNull(savedStateHandle["departureStation"]),
                 arrivalStation = checkNotNull(savedStateHandle["arrivalStation"])))
 

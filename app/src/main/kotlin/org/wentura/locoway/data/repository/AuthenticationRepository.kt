@@ -98,4 +98,8 @@ class AuthenticationRepository @Inject constructor() {
 
         _authentication.update { it.copy(userMessage = R.string.reset_password_email_sent) }
     }
+
+    fun isSignedIn(): Boolean {
+        return firebaseAuth.currentUser != null
+    }
 }

@@ -31,10 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import java.text.NumberFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Currency
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.wentura.locoway.R
@@ -45,16 +41,21 @@ import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.util.travelTime
 import org.wentura.locoway.viewmodels.ConnectionsUiState
 import org.wentura.locoway.viewmodels.ConnectionsViewModel
+import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Currency
 
 @Composable
 fun ConnectionsScreen(
     connectionsViewModel: ConnectionsViewModel = hiltViewModel(),
     onUpClick: () -> Unit = {},
-    onConnectionClick: (Long) -> Unit = {},
+    onConnectionClick: (Long) -> Unit,
+    goToAuthenticationScreen: () -> Unit,
 ) {
     val uiState = connectionsViewModel.uiState
 
-    ConnectionsScreen(uiState, onUpClick, onConnectionClick)
+    ConnectionsScreen(uiState, onUpClick, onConnectionClick, goToAuthenticationScreen)
 }
 
 @Composable
@@ -62,6 +63,7 @@ fun ConnectionsScreen(
     uiState: StateFlow<ConnectionsUiState>,
     onUpClick: () -> Unit = {},
     onConnectionClick: (Long) -> Unit = {},
+    goToAuthenticationScreen: () -> Unit = {},
 ) {
     val state by uiState.collectAsStateWithLifecycle()
 
@@ -78,7 +80,12 @@ fun ConnectionsScreen(
 
                 LazyColumn {
                     items(state.connections.size) { connection ->
-                        ConnectionListItem(state.connections[connection], onConnectionClick)
+                        ConnectionListItem(
+                            state.connections[connection],
+                            state.isSignedIn,
+                            onConnectionClick,
+                            goToAuthenticationScreen,
+                        )
 
                         if (connection != state.connections.size - 1) {
                             HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
@@ -90,55 +97,68 @@ fun ConnectionsScreen(
 }
 
 @Composable
-private fun ConnectionListItem(connection: Connection, onConnectionClick: (Long) -> Unit = {}) {
-    Box(modifier = Modifier.clickable { onConnectionClick(connection.trainId) }) {
-        Row(
-            modifier = Modifier.padding(12.dp).fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically) {
-                TrainBrandCircle(connection.trainBrand)
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    ConnectionTime(connection.departureDateTime)
-                    ConnectionDate(connection.departureDateTime)
+private fun ConnectionListItem(
+    connection: Connection,
+    isSignedIn: Boolean,
+    onConnectionClick: (Long) -> Unit = {},
+    goToAuthenticationScreen: () -> Unit = {},
+) {
+    Box(
+        modifier =
+            Modifier.clickable {
+                if (isSignedIn) {
+                    onConnectionClick(connection.trainId)
+                } else {
+                    goToAuthenticationScreen()
                 }
+            }) {
+            Row(
+                modifier = Modifier.padding(12.dp).fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically) {
+                    TrainBrandCircle(connection.trainBrand)
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val minutes =
-                        travelTime(connection.departureDateTime, connection.arrivalDateTime)
+                    Spacer(modifier = Modifier.weight(1f))
 
-                    Text(
-                        text = stringResource(R.string.duration_time, minutes),
-                        style = MaterialTheme.typography.labelSmall)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        ConnectionTime(connection.departureDateTime)
+                        ConnectionDate(connection.departureDateTime)
+                    }
 
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
-                        contentDescription = null,
-                        modifier = Modifier.padding(horizontal = 16.dp))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        val minutes =
+                            travelTime(connection.departureDateTime, connection.arrivalDateTime)
+
+                        Text(
+                            text = stringResource(R.string.duration_time, minutes),
+                            style = MaterialTheme.typography.labelSmall)
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        ConnectionTime(connection.arrivalDateTime)
+                        ConnectionDate(connection.arrivalDateTime)
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.price_from),
+                            style = MaterialTheme.typography.labelMedium)
+
+                        val numberFormat = NumberFormat.getCurrencyInstance()
+                        numberFormat.currency = Currency.getInstance("PLN")
+
+                        Text(
+                            text = numberFormat.format(connection.ticketPrice.toDouble()),
+                            style = MaterialTheme.typography.titleMedium)
+                    }
                 }
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    ConnectionTime(connection.arrivalDateTime)
-                    ConnectionDate(connection.arrivalDateTime)
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = stringResource(R.string.price_from),
-                        style = MaterialTheme.typography.labelMedium)
-
-                    val numberFormat = NumberFormat.getCurrencyInstance()
-                    numberFormat.currency = Currency.getInstance("PLN")
-
-                    Text(
-                        text = numberFormat.format(connection.ticketPrice.toDouble()),
-                        style = MaterialTheme.typography.titleMedium)
-                }
-            }
-    }
+        }
 }
 
 @Composable

@@ -78,6 +78,7 @@ fun LocowayApp() {
                     onConnectionClick = { trainId ->
                         navController.navigate("${Screen.ConnectionDetails.route}/$trainId")
                     },
+                    goToAuthenticationScreen = { navController.navigate(Screen.Login.route) },
                 )
             }
 
