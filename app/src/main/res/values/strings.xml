@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">PKP</string>
+    <string name="app_name" translatable="false">Locoway</string>
     <string name="firebase_web_client_id" translatable="false">236434477481-72l9fn393h16f50bt4gvj96b907cs78q.apps.googleusercontent.com</string>
 
     <string name="departure_station">Stacja początkowa</string>

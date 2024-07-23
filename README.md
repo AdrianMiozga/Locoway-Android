@@ -1,4 +1,4 @@
-# PKP
+# Locoway
 
 > [!NOTE]
 > Application made for educational purposes only.

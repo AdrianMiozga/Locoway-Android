@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.wentura.pkp_android.benchmark"
+    namespace = "org.wentura.locoway.benchmark"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     compileOptions {

@@ -3,6 +3,6 @@
   *;
 }
 
--keep class com.wentura.pkp_android.data.model.** {
+-keep class org.wentura.locoway.data.model.** {
   *;
 }

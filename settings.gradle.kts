@@ -22,7 +22,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PKP-Android"
+rootProject.name = "Locoway"
 
 include(":app")
+
 include(":benchmark")

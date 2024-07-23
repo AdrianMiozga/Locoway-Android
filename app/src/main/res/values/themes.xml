@@ -2,11 +2,11 @@
 
 <resources>
 
-    <style name="Theme.PKPAndroid" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Locoway" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.PKPAndroid.starting" parent="Theme.SplashScreen">
+    <style name="Theme.Locoway.starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/purple_200</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/Theme.PKPAndroid</item>
+        <item name="postSplashScreenTheme">@style/Theme.Locoway</item>
     </style>
 </resources>
