@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package org.wentura.locoway.compose.home
 
 import androidx.compose.foundation.layout.Arrangement
@@ -72,6 +70,7 @@ fun TimePickerDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun TimePickerDialogPreview() {
