@@ -74,7 +74,7 @@
     <string name="departure">"Odjazd: %s"</string>
     <string name="arrival">Przyjazd: %s</string>
     <string name="travel_time">Czas podróży: %sm</string>
-    <string name="journey">Trasa: %s - %s</string>
+    <string name="journey">Trasa: %1$s - %2$s</string>
     <string name="travels_with_dog">Przewozi psa</string>
     <string name="travels_with_bike">Przewozi rower</string>
     <string name="extra_luggage">Płatny bagaż</string>
