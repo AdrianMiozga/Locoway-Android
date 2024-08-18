@@ -18,8 +18,9 @@ class StartupBenchmark {
             packageName = "org.wentura.locoway",
             metrics = listOf(StartupTimingMetric()),
             iterations = 20,
-            startupMode = StartupMode.COLD) {
-                pressHome()
-                startActivityAndWait()
-            }
+            startupMode = StartupMode.COLD,
+        ) {
+            pressHome()
+            startActivityAndWait()
+        }
 }
