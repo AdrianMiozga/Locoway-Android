@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.provider.Settings
+import androidx.activity.compose.ReportDrawn
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -155,6 +156,8 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         ) { innerPadding ->
+            ReportDrawn()
+
             val state by uiState.collectAsStateWithLifecycle()
 
             val departureDate = rememberSaveable { mutableStateOf(LocalDate.now()) }
