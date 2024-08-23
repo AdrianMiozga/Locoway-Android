@@ -182,11 +182,7 @@ fun signInWithGoogle(
 
     coroutineScope.launch {
         try {
-            val result =
-                credentialManager.getCredential(
-                    context = activity,
-                    request = request,
-                )
+            val result = credentialManager.getCredential(context = activity, request = request)
 
             handleGoogleSignIn(result)
         } catch (_: GetCredentialCancellationException) {} catch (
@@ -203,10 +199,7 @@ private fun AuthenticationTopAppBar(onUpClick: () -> Unit) {
         title = { Text(stringResource(R.string.app_name)) },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )

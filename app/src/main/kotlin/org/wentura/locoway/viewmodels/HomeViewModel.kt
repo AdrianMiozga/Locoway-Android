@@ -88,11 +88,7 @@ constructor(
 
     fun clearDepartureQuery() {
         _uiState.update {
-            it.copy(
-                departureQuery = "",
-                departureStation = "",
-                departureStations = emptyList(),
-            )
+            it.copy(departureQuery = "", departureStation = "", departureStations = emptyList())
         }
     }
 
@@ -104,9 +100,7 @@ constructor(
         } else {
             viewModelScope.launch {
                 _uiState.update {
-                    it.copy(
-                        arrivalStations = stationRepository.searchStations(query),
-                    )
+                    it.copy(arrivalStations = stationRepository.searchStations(query))
                 }
             }
         }
@@ -114,11 +108,7 @@ constructor(
 
     fun clearArrivalQuery() {
         _uiState.update {
-            it.copy(
-                arrivalQuery = "",
-                arrivalStation = "",
-                arrivalStations = emptyList(),
-            )
+            it.copy(arrivalQuery = "", arrivalStation = "", arrivalStations = emptyList())
         }
     }
 
@@ -133,7 +123,7 @@ constructor(
 
         viewModelScope.launch {
             recentSearchRepository.addRecentStation(
-                RecentSearchStation(type = "departure", name = station),
+                RecentSearchStation(type = "departure", name = station)
             )
         }
     }
@@ -149,7 +139,7 @@ constructor(
 
         viewModelScope.launch {
             recentSearchRepository.addRecentStation(
-                RecentSearchStation(type = "arrival", name = station),
+                RecentSearchStation(type = "arrival", name = station)
             )
         }
     }
@@ -178,7 +168,7 @@ constructor(
                             recentSearchRepository.getRecentDepartureStations().map {
                                 recentSearchStation ->
                                 Station(recentSearchStation.name)
-                            },
+                            }
                     )
                 }
             }
@@ -196,7 +186,7 @@ constructor(
                             recentSearchRepository.getRecentArrivalStations().map {
                                 recentSearchStation ->
                                 Station(recentSearchStation.name)
-                            },
+                            }
                     )
                 }
             }

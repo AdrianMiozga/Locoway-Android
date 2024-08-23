@@ -47,25 +47,19 @@ import org.wentura.locoway.viewmodels.MyTicketUiState
 import org.wentura.locoway.viewmodels.MyTicketViewModel
 
 @Composable
-fun MyTicketScreen(
-    onUpClick: () -> Unit,
-    myTicketViewModel: MyTicketViewModel = hiltViewModel(),
-) {
+fun MyTicketScreen(onUpClick: () -> Unit, myTicketViewModel: MyTicketViewModel = hiltViewModel()) {
     MyTicketScreen(onUpClick = onUpClick, uiState = myTicketViewModel.uiState)
 }
 
 @Composable
-fun MyTicketScreen(
-    onUpClick: () -> Unit = {},
-    uiState: StateFlow<MyTicketUiState>,
-) {
+fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiState>) {
     val state by uiState.collectAsStateWithLifecycle()
     val trainBrand = TrainBrand.valueOf(state.ticket.trainBrand)
 
     Scaffold(topBar = { MyTicketTopAppBar(onUpClick) }) { innerPadding ->
         Column(
             modifier =
-                Modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState()),
+                Modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState())
         ) {
             Icon(
                 painter = painterResource(R.drawable.qr_code),
@@ -78,7 +72,7 @@ fun MyTicketScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             ) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxWidth(),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxWidth()
                 ) {
                     TrainBrandWide(
                         trainBrand,
@@ -95,28 +89,25 @@ fun MyTicketScreen(
                             R.string.journey,
                             state.ticket.departureStation,
                             state.ticket.arrivalStation,
-                        ),
+                        )
                     )
 
                     Text(
                         stringResource(
                             R.string.departure,
                             departureDateTime.format(dateTimeFormatter),
-                        ),
+                        )
                     )
 
                     Text(
-                        stringResource(
-                            R.string.arrival,
-                            arrivalDateTime.format(dateTimeFormatter),
-                        ),
+                        stringResource(R.string.arrival, arrivalDateTime.format(dateTimeFormatter))
                     )
 
                     Text(
                         stringResource(
                             R.string.travel_time,
                             travelTime(departureDateTime, arrivalDateTime),
-                        ),
+                        )
                     )
 
                     if (trainBrand != TrainBrand.REG) {
@@ -162,10 +153,12 @@ fun MyTicketScreen(
                 }
             }
 
-            if (trainBrand == TrainBrand.REG &&
-                (state.ticket.dog > 0 ||
-                    state.ticket.bicycle > 0 ||
-                    state.ticket.additionalLuggage > 0)) {
+            if (
+                trainBrand == TrainBrand.REG &&
+                    (state.ticket.dog > 0 ||
+                        state.ticket.bicycle > 0 ||
+                        state.ticket.additionalLuggage > 0)
+            ) {
                 Text(
                     stringResource(R.string.optionals),
                     style = MaterialTheme.typography.labelLarge,
@@ -176,7 +169,10 @@ fun MyTicketScreen(
                     Text(
                         text =
                             pluralStringResource(
-                                id = R.plurals.dogs, count = state.ticket.dog, state.ticket.dog),
+                                id = R.plurals.dogs,
+                                count = state.ticket.dog,
+                                state.ticket.dog,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(10.dp),
                     )
@@ -188,7 +184,8 @@ fun MyTicketScreen(
                             pluralStringResource(
                                 id = R.plurals.bikes,
                                 count = state.ticket.bicycle,
-                                state.ticket.bicycle),
+                                state.ticket.bicycle,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(10.dp),
                     )
@@ -200,7 +197,8 @@ fun MyTicketScreen(
                             pluralStringResource(
                                 id = R.plurals.luggage,
                                 count = state.ticket.additionalLuggage,
-                                state.ticket.additionalLuggage),
+                                state.ticket.additionalLuggage,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(10.dp),
                     )
@@ -221,10 +219,7 @@ private fun MyTicketTopAppBar(onUpClick: () -> Unit) {
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )
@@ -252,9 +247,9 @@ fun MyTicketREGScreenPreview() {
                                         Passenger(name = "Adam Majewski"),
                                         Passenger(name = "Roman Zawadzki", discount = 2),
                                     ),
-                            ),
-                    ),
-                ),
+                            )
+                    )
+                )
         )
     }
 }
@@ -277,13 +272,10 @@ fun MyTicketICScreenPreview() {
                                 arrivalDate = "2024-04-26T10:01:00",
                                 trainClass = 2,
                                 seat = 64,
-                                passengers =
-                                    listOf(
-                                        Passenger(name = "Adam Majewski"),
-                                    ),
-                            ),
-                    ),
-                ),
+                                passengers = listOf(Passenger(name = "Adam Majewski")),
+                            )
+                    )
+                )
         )
     }
 }

@@ -121,10 +121,7 @@ fun LoginPage(
                         if (passwordVisible.value) stringResource(R.string.hide_password)
                         else stringResource(R.string.show_password)
 
-                    Icon(
-                        painter = painterResource(resource),
-                        contentDescription = description,
-                    )
+                    Icon(painter = painterResource(resource), contentDescription = description)
                 }
             },
             isError = isPasswordWrong,
@@ -160,7 +157,12 @@ fun LoginPage(
                 val activity = context.findActivity()
 
                 signInWithGoogle(
-                    context, activity, coroutineScope, handleGoogleSignIn, signInFailed)
+                    context,
+                    activity,
+                    coroutineScope,
+                    handleGoogleSignIn,
+                    signInFailed,
+                )
             },
             modifier = Modifier.padding(10.dp),
         ) {

@@ -48,10 +48,7 @@ fun LocationRationaleDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onPermissionRequest) { Text(stringResource(R.string.ok)) }
                 }
             }

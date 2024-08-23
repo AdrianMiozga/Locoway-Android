@@ -108,10 +108,7 @@ fun MyAccountTopAppBar(onUpClick: () -> Unit) {
         title = { Text(stringResource(R.string.my_account)) },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )
@@ -122,7 +119,7 @@ fun MyAccountTopAppBar(onUpClick: () -> Unit) {
 fun MyAccountPreview() {
     LocowayTheme {
         MyAccountScreen(
-            MutableStateFlow(MyAccountUiState(isSignedIn = true, email = "user@email.com")),
+            MutableStateFlow(MyAccountUiState(isSignedIn = true, email = "user@email.com"))
         )
     }
 }

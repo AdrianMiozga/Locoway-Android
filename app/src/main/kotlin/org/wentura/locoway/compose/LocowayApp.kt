@@ -44,7 +44,8 @@ fun LocowayApp() {
                 drawerState = drawerState,
                 onSearchClick = { departureStation, arrivalStation, departureDate, departureTime ->
                     navController.navigate(
-                        "${Screen.Connections.route}/$departureStation/$arrivalStation/$departureDate/$departureTime")
+                        "${Screen.Connections.route}/$departureStation/$arrivalStation/$departureDate/$departureTime"
+                    )
 
                     scope.launch { drawerState.close() }
                 },
@@ -72,7 +73,7 @@ fun LocowayApp() {
         }
 
         composable(
-            "${Screen.Connections.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}",
+            "${Screen.Connections.route}/{departureStation}/{arrivalStation}/{departureDate}/{departureTime}"
         ) {
             ConnectionsScreen(
                 onUpClick = { navController.navigateUp() },

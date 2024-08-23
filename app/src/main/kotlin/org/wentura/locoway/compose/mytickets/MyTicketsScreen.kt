@@ -86,7 +86,7 @@ fun MyTicketsScreen(
         Box(
             modifier =
                 Modifier.padding(innerPadding)
-                    .nestedScroll(pullToRefreshState.nestedScrollConnection),
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
@@ -174,10 +174,7 @@ fun MyTicketListItem(ticket: Ticket, onTicketClick: () -> Unit) {
                             text =
                                 stringResource(
                                     R.string.duration_time,
-                                    travelTime(
-                                        departureDateTime,
-                                        arrivalDateTime,
-                                    ),
+                                    travelTime(departureDateTime, arrivalDateTime),
                                 ),
                             style = MaterialTheme.typography.labelSmall,
                         )
@@ -219,10 +216,7 @@ private fun MyTicketsTopAppBar(onUpClick: () -> Unit) {
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )
@@ -259,13 +253,7 @@ fun MyTicketsPreview() {
 
     LocowayTheme {
         MyTicketsScreen(
-            uiState =
-                MutableStateFlow(
-                    MyTicketsUiState(
-                        tickets = tickets,
-                        isLoading = false,
-                    ),
-                ),
+            uiState = MutableStateFlow(MyTicketsUiState(tickets = tickets, isLoading = false))
         )
     }
 }

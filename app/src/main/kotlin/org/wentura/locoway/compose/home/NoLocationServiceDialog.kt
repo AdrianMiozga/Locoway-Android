@@ -26,10 +26,7 @@ import org.wentura.locoway.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoLocationServiceDialog(
-    onDismissRequest: () -> Unit = {},
-    onConfirmRequest: () -> Unit = {},
-) {
+fun NoLocationServiceDialog(onDismissRequest: () -> Unit = {}, onConfirmRequest: () -> Unit = {}) {
     BasicAlertDialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier.wrapContentWidth().wrapContentHeight(),
@@ -48,10 +45,7 @@ fun NoLocationServiceDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) }
 
                     TextButton(onClick = onConfirmRequest) {

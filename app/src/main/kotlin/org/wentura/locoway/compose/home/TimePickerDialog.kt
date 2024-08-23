@@ -58,10 +58,7 @@ fun TimePickerDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     dismissButton?.invoke()
                     confirmButton()
                 }
@@ -76,20 +73,8 @@ fun TimePickerDialog(
 private fun TimePickerDialogPreview() {
     TimePickerDialog(
         onDismissRequest = {},
-        confirmButton = {
-            TextButton(
-                onClick = {},
-            ) {
-                Text(stringResource(R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {},
-            ) {
-                Text(stringResource(R.string.cancel))
-            }
-        },
+        confirmButton = { TextButton(onClick = {}) { Text(stringResource(R.string.ok)) } },
+        dismissButton = { TextButton(onClick = {}) { Text(stringResource(R.string.cancel)) } },
     ) {
         TimePicker(state = rememberTimePickerState(initialHour = 12, is24Hour = true))
     }

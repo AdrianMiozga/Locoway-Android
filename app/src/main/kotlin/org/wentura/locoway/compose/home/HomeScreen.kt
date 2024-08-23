@@ -57,10 +57,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -75,6 +71,10 @@ import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.util.findActivity
 import org.wentura.locoway.viewmodels.HomeUiState
 import org.wentura.locoway.viewmodels.HomeViewModel
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun HomeScreen(
@@ -242,7 +242,10 @@ fun HomeScreen(
 
                         val areLocationServicesEnabled =
                             locationServiceBroadcastMonitor.isEnabled.stateIn(
-                                scope, SharingStarted.WhileSubscribed(), false)
+                                scope,
+                                SharingStarted.WhileSubscribed(),
+                                false,
+                            )
 
                         locationServiceJob =
                             scope.launch {
@@ -253,7 +256,8 @@ fun HomeScreen(
                                             onGetCurrentLocation,
                                             onGotLocality,
                                             toggleOnNoLocationDialog,
-                                            onGeocoderFail)
+                                            onGeocoderFail,
+                                        )
 
                                         toggleOnNoLocationDialog()
                                         cancel()
@@ -283,24 +287,31 @@ fun HomeScreen(
                     trailingIcon = {
                         IconButton(
                             onClick = {
-                                if (context.checkSelfPermission(
-                                    Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                                    PackageManager.PERMISSION_GRANTED) {
+                                if (
+                                    context.checkSelfPermission(
+                                        Manifest.permission.ACCESS_COARSE_LOCATION
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                ) {
                                     getCurrentLocation(
                                         context.findActivity(),
                                         onGetCurrentLocation,
                                         onGotLocality,
                                         toggleOnNoLocationDialog,
-                                        onGeocoderFail)
-                                } else if (ActivityCompat.shouldShowRequestPermissionRationale(
-                                    context.findActivity(),
-                                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                                        onGeocoderFail,
+                                    )
+                                } else if (
+                                    ActivityCompat.shouldShowRequestPermissionRationale(
+                                        context.findActivity(),
+                                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                                    )
+                                ) {
                                     showLocationRationale.value = true
                                 } else {
                                     locationPermissionRequest.launch(
-                                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                                        Manifest.permission.ACCESS_COARSE_LOCATION
+                                    )
                                 }
-                            },
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.my_location_24),
@@ -329,8 +340,9 @@ fun HomeScreen(
                     readOnly = true,
                     enabled = false,
                     trailingIcon = {
-                        if (state.arrivalStation.isNotEmpty() ||
-                            state.departureStation.isNotEmpty()) {
+                        if (
+                            state.arrivalStation.isNotEmpty() || state.departureStation.isNotEmpty()
+                        ) {
                             IconButton(onClick = onSwapStationsClick) {
                                 Icon(
                                     painter = painterResource(R.drawable.outline_swap_vert_24),
@@ -358,7 +370,8 @@ fun HomeScreen(
                         label = { Text(stringResource(R.string.departure_date)) },
                         value =
                             departureDate.value.format(
-                                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+                                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+                            ),
                         onValueChange = {},
                         readOnly = true,
                         enabled = false,
@@ -379,7 +392,8 @@ fun HomeScreen(
                         label = { Text(stringResource(R.string.departure_time)) },
                         value =
                             departureTime.value.format(
-                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)),
+                                DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                            ),
                         onValueChange = {},
                         readOnly = true,
                         enabled = false,
@@ -433,8 +447,10 @@ private fun getCurrentLocation(
     onNoLocationService: () -> Unit,
     onGeocoderFail: () -> Unit,
 ) {
-    if (activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ==
-        PackageManager.PERMISSION_GRANTED) {
+    if (
+        activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+    ) {
         onGetCurrentLocation()
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
@@ -463,17 +479,15 @@ private fun getCurrentLocation(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun TopAppBar(
-    scope: CoroutineScope,
-    drawerState: DrawerState,
-) {
+private fun TopAppBar(scope: CoroutineScope, drawerState: DrawerState) {
     CenterAlignedTopAppBar(
         title = { Text(stringResource(R.string.app_name)) },
         navigationIcon = {
             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = stringResource(R.string.menu))
+                    contentDescription = stringResource(R.string.menu),
+                )
             }
         },
     )

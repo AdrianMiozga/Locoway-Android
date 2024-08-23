@@ -55,10 +55,7 @@ fun AddPassengerDialog(
                     title = { Text(stringResource(R.string.add_passenger)) },
                     navigationIcon = {
                         IconButton(onClick = onDismissRequest) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = null,
-                            )
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
                         }
                     },
                     actions = {
@@ -67,7 +64,7 @@ fun AddPassengerDialog(
                         }
                     },
                 )
-            },
+            }
         ) { paddingValues ->
             val discounts = stringArrayResource(R.array.discounts)
 
@@ -100,10 +97,7 @@ fun AddPassengerDialog(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                     ) {
                         Text(discounts[it])
-                        RadioButton(
-                            selected = discount == it,
-                            onClick = { changeDiscount(it) },
-                        )
+                        RadioButton(selected = discount == it, onClick = { changeDiscount(it) })
                     }
                 }
 
@@ -120,10 +114,7 @@ fun AddPassengerDialog(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                     ) {
                         Text(stringResource(R.string.regio_card))
-                        Checkbox(
-                            checked = hasREGIOCard,
-                            onCheckedChange = { toggleREGIOCard() },
-                        )
+                        Checkbox(checked = hasREGIOCard, onCheckedChange = { toggleREGIOCard() })
                     }
                 }
             }

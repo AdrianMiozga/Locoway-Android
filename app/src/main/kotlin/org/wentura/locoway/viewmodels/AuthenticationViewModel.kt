@@ -31,9 +31,7 @@ data class AuthenticationUiState(
 @HiltViewModel
 class AuthenticationViewModel
 @Inject
-constructor(
-    private val authenticationRepository: AuthenticationRepository,
-) : ViewModel() {
+constructor(private val authenticationRepository: AuthenticationRepository) : ViewModel() {
     companion object {
         private val TAG = AuthenticationViewModel::class.java.simpleName
     }
@@ -106,11 +104,7 @@ constructor(
         }
     }
 
-    fun passwordSignUp(
-        email: String,
-        password: String,
-        passwordConfirmation: String,
-    ) {
+    fun passwordSignUp(email: String, password: String, passwordConfirmation: String) {
         val isEmailWrong = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
         val isPasswordWrong = password.length < 8
         val isConfirmationPasswordWrong = password != passwordConfirmation
@@ -142,10 +136,7 @@ constructor(
 
         if (isEmailWrong || isPasswordWrong) {
             _uiState.update {
-                it.copy(
-                    isEmailWrong = isEmailWrong,
-                    isPasswordWrong = isPasswordWrong,
-                )
+                it.copy(isEmailWrong = isEmailWrong, isPasswordWrong = isPasswordWrong)
             }
 
             return

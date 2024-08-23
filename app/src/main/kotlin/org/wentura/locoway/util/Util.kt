@@ -24,12 +24,7 @@ fun Context.findActivity(): Activity {
 fun travelTime(departureDateTime: LocalDateTime, arrivalDateTime: LocalDateTime): Int {
     // TODO: What about hour+
     val minutes =
-        ceil(
-                ChronoUnit.SECONDS.between(
-                    departureDateTime,
-                    arrivalDateTime,
-                ) / 60.0)
-            .toInt()
+        ceil(ChronoUnit.SECONDS.between(departureDateTime, arrivalDateTime) / 60.0).toInt()
 
     return minutes
 }

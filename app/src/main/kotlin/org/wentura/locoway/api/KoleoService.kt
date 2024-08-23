@@ -21,9 +21,7 @@ interface KoleoService {
     ): KoleoSearchResponse
 
     @GET("prices/{price_id}")
-    suspend fun getPrices(
-        @Path("price_id") priceId: Long,
-    ): KoleoPriceResponse
+    suspend fun getPrices(@Path("price_id") priceId: Long): KoleoPriceResponse
 
     companion object {
         private const val BASE_URL = "https://koleo.pl/pl/"

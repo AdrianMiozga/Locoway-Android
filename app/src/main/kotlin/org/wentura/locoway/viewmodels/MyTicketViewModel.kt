@@ -10,18 +10,12 @@ import kotlinx.coroutines.flow.update
 import org.wentura.locoway.data.model.Ticket
 import org.wentura.locoway.data.repository.TicketRepository
 
-data class MyTicketUiState(
-    val ticket: Ticket = Ticket(),
-    val isLoading: Boolean = true,
-)
+data class MyTicketUiState(val ticket: Ticket = Ticket(), val isLoading: Boolean = true)
 
 @HiltViewModel
 class MyTicketViewModel
 @Inject
-constructor(
-    ticketRepository: TicketRepository,
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+constructor(ticketRepository: TicketRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _uiState = MutableStateFlow(MyTicketUiState())
     val uiState = _uiState.asStateFlow()
 

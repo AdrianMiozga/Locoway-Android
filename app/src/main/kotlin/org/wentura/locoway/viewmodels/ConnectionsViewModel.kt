@@ -35,7 +35,7 @@ constructor(
                 isSignedIn = authenticationRepository.isSignedIn(),
                 departureStation = checkNotNull(savedStateHandle["departureStation"]),
                 arrivalStation = checkNotNull(savedStateHandle["arrivalStation"]),
-            ),
+            )
         )
 
     val uiState = _uiState.asStateFlow()
@@ -58,10 +58,7 @@ constructor(
                 )
 
             _uiState.update {
-                it.copy(
-                    connections = connections.values.toList(),
-                    isLoading = false,
-                )
+                it.copy(connections = connections.values.toList(), isLoading = false)
             }
         }
     }

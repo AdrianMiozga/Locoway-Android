@@ -49,14 +49,11 @@ fun ResetPasswordDialog(onDismissRequest: () -> Unit = {}, onSendClick: (String)
                     title = { Text(stringResource(R.string.reset_password)) },
                     navigationIcon = {
                         IconButton(onClick = onDismissRequest) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = null,
-                            )
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
                         }
                     },
                 )
-            },
+            }
         ) { paddingValues ->
             Column(
                 modifier =

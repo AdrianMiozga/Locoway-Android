@@ -24,10 +24,7 @@ import org.wentura.locoway.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun DatePicker(
-    showDatePicker: MutableState<Boolean>,
-    departureDate: MutableState<LocalDate>,
-) {
+fun DatePicker(showDatePicker: MutableState<Boolean>, departureDate: MutableState<LocalDate>) {
     val datePickerState =
         rememberDatePickerState(
             selectableDates =
@@ -41,7 +38,7 @@ fun DatePicker(
                     override fun isSelectableYear(year: Int): Boolean {
                         return year >= Year.now().value
                     }
-                },
+                }
         )
 
     val confirmEnabled by remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
@@ -75,8 +72,5 @@ fun DatePicker(
 @Preview(showBackground = true)
 @Composable
 private fun DatePickerPreview() {
-    DatePicker(
-        remember { mutableStateOf(true) },
-        remember { mutableStateOf(LocalDate.now()) },
-    )
+    DatePicker(remember { mutableStateOf(true) }, remember { mutableStateOf(LocalDate.now()) })
 }

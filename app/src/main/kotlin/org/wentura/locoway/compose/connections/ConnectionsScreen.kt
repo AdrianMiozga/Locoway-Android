@@ -69,7 +69,7 @@ fun ConnectionsScreen(
     val state by uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = { ConnectionsTopAppBar(onUpClick, state.departureStation, state.arrivalStation) },
+        topBar = { ConnectionsTopAppBar(onUpClick, state.departureStation, state.arrivalStation) }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             if (state.isLoading) {
@@ -123,7 +123,7 @@ private fun ConnectionListItem(
                 } else {
                     goToAuthenticationScreen()
                 }
-            },
+            }
     ) {
         Row(
             modifier = Modifier.padding(12.dp).fillMaxSize(),
@@ -199,7 +199,7 @@ private fun ConnectionTime(localDateTime: LocalDateTime) {
 private fun ConnectionsTopAppBar(
     onUpClick: () -> Unit,
     departureStation: String,
-    arrivalStation: String
+    arrivalStation: String,
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -210,10 +210,7 @@ private fun ConnectionsTopAppBar(
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )
@@ -232,7 +229,8 @@ fun ConnectionsPreview() {
                 "Strzelce Opolskie",
                 "Gliwice",
                 LocalDateTime.parse("2024-06-24T12:00:00"),
-                LocalDateTime.parse("2024-06-24T13:00:00")),
+                LocalDateTime.parse("2024-06-24T13:00:00"),
+            ),
             Connection(
                 1,
                 64340,
@@ -241,7 +239,8 @@ fun ConnectionsPreview() {
                 "Strzelce Opolskie",
                 "Gliwice",
                 LocalDateTime.parse("2024-06-24T14:00:00"),
-                LocalDateTime.parse("2024-06-24T15:00:00")),
+                LocalDateTime.parse("2024-06-24T15:00:00"),
+            ),
             Connection(
                 1,
                 64340,
@@ -262,8 +261,9 @@ fun ConnectionsPreview() {
                         isLoading = false,
                         departureStation = "Strzelce Opolskie",
                         arrivalStation = "Gliwice",
-                        connections = connections),
-                ),
+                        connections = connections,
+                    )
+                )
         )
     }
 }

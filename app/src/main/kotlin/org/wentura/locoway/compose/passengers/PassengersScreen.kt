@@ -128,7 +128,8 @@ fun PassengersScreen(
                     items(state.passengers.size) { passenger ->
                         PassengerListItem(
                             passenger = state.passengers[passenger],
-                            onEditPassenger = { showEditPassengerDialog(passenger) })
+                            onEditPassenger = { showEditPassengerDialog(passenger) },
+                        )
 
                         if (passenger != state.passengers.size - 1) {
                             HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
@@ -174,10 +175,7 @@ fun PassengerListItem(passenger: Passenger, onEditPassenger: () -> Unit = {}) {
         }
 
         IconButton(onClick = onEditPassenger) {
-            Icon(
-                Icons.Outlined.Edit,
-                contentDescription = stringResource(R.string.edit_passenger),
-            )
+            Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit_passenger))
         }
     }
 }
@@ -193,10 +191,7 @@ fun PassengersTopAppBar(onUpClick: () -> Unit) {
         },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )

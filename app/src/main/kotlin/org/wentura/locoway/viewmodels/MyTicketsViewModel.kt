@@ -11,10 +11,7 @@ import kotlinx.coroutines.launch
 import org.wentura.locoway.data.model.Ticket
 import org.wentura.locoway.data.repository.TicketRepository
 
-data class MyTicketsUiState(
-    val tickets: List<Ticket> = emptyList(),
-    val isLoading: Boolean = true,
-)
+data class MyTicketsUiState(val tickets: List<Ticket> = emptyList(), val isLoading: Boolean = true)
 
 @HiltViewModel
 class MyTicketsViewModel @Inject constructor(private val ticketRepository: TicketRepository) :

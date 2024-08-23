@@ -76,10 +76,7 @@ fun EditPassengerDialog(
                     title = { Text(stringResource(R.string.edit_passenger)) },
                     navigationIcon = {
                         IconButton(onClick = onDismissRequest) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = null,
-                            )
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
                         }
                     },
                     actions = {
@@ -88,7 +85,7 @@ fun EditPassengerDialog(
                         }
                     },
                 )
-            },
+            }
         ) { paddingValues ->
             val discounts = stringArrayResource(R.array.discounts)
 
@@ -139,10 +136,7 @@ fun EditPassengerDialog(
                     ) {
                         Text(stringResource(R.string.regio_card))
 
-                        Checkbox(
-                            checked = hasREGIOCard,
-                            onCheckedChange = { toggleREGIOCard() },
-                        )
+                        Checkbox(checked = hasREGIOCard, onCheckedChange = { toggleREGIOCard() })
                     }
 
                     OutlinedButton(
@@ -189,10 +183,7 @@ fun ConfirmationDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) }
 
                     TextButton(onClick = onConfirmationRequest) {

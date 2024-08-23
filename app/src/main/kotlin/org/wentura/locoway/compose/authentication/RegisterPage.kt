@@ -123,10 +123,7 @@ fun RegisterPage(
                         if (passwordVisible.value) stringResource(R.string.hide_password)
                         else stringResource(R.string.show_password)
 
-                    Icon(
-                        painter = painterResource(resource),
-                        contentDescription = description,
-                    )
+                    Icon(painter = painterResource(resource), contentDescription = description)
                 }
             },
             onValueChange = { passwordText.value = it },
@@ -151,7 +148,7 @@ fun RegisterPage(
                 IconButton(
                     onClick = {
                         passwordConfirmationVisible.value = !passwordConfirmationVisible.value
-                    },
+                    }
                 ) {
                     val resource =
                         if (passwordConfirmationVisible.value) R.drawable.outline_visibility_off_24
@@ -161,10 +158,7 @@ fun RegisterPage(
                         if (passwordVisible.value) stringResource(R.string.hide_password)
                         else stringResource(R.string.show_password)
 
-                    Icon(
-                        painter = painterResource(resource),
-                        contentDescription = description,
-                    )
+                    Icon(painter = painterResource(resource), contentDescription = description)
                 }
             },
             onValueChange = { passwordConfirmationText.value = it },

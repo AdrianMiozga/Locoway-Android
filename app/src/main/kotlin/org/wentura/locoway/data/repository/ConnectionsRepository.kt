@@ -28,7 +28,10 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
 
         val koleoSearchResponse =
             koleoService.getConnections(
-                "$formattedDate+$formattedTime", departureStation, arrivalStation)
+                "$formattedDate+$formattedTime",
+                departureStation,
+                arrivalStation,
+            )
 
         connections =
             koleoSearchResponse.connections
@@ -44,7 +47,8 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
                             ?: throw IllegalStateException("Unknown train"),
                         TrainBrand.valueOf(
                             trainMap[trainId]?.trainBrand
-                                ?: throw IllegalStateException("Unknown train")),
+                                ?: throw IllegalStateException("Unknown train")
+                        ),
                         price.ticketPrice,
                         departureStation,
                         arrivalStation,

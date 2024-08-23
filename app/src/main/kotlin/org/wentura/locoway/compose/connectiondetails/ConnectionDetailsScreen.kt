@@ -122,16 +122,14 @@ fun ConnectionsDetailsScreen(
         )
     }
 
-    Scaffold(
-        topBar = { ConnectionsDetailsTopAppBar(onUpClick = onUpClick) },
-    ) { innerPadding ->
+    Scaffold(topBar = { ConnectionsDetailsTopAppBar(onUpClick = onUpClick) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).verticalScroll(rememberScrollState())) {
             Card(
                 modifier = Modifier.fillMaxWidth().padding(10.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             ) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxSize(),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).fillMaxSize()
                 ) {
                     TrainBrandWide(
                         state.connection.trainBrand,
@@ -143,7 +141,8 @@ fun ConnectionsDetailsScreen(
                         stringResource(
                             R.string.journey,
                             state.connection.departureStation,
-                            state.connection.arrivalStation),
+                            state.connection.arrivalStation,
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(vertical = 4.dp),
                     )
@@ -154,7 +153,9 @@ fun ConnectionsDetailsScreen(
 
                     Text(
                         stringResource(
-                            R.string.departure, departureDateTime.format(dateTimeFormatter)),
+                            R.string.departure,
+                            departureDateTime.format(dateTimeFormatter),
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(vertical = 4.dp),
                     )
@@ -167,7 +168,9 @@ fun ConnectionsDetailsScreen(
 
                     Text(
                         stringResource(
-                            R.string.travel_time, travelTime(departureDateTime, arrivalDateTime)),
+                            R.string.travel_time,
+                            travelTime(departureDateTime, arrivalDateTime),
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 4.dp),
                     )
@@ -191,14 +194,8 @@ fun ConnectionsDetailsScreen(
                 }
             }
 
-            IconButton(
-                onClick = showAddPassengerDialog,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = null,
-                )
+            IconButton(onClick = showAddPassengerDialog, modifier = Modifier.fillMaxWidth()) {
+                Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
             }
 
             Text(
@@ -387,7 +384,8 @@ fun ConnectionsDetailsScreen(
                                 disabledTrailingIconColor =
                                     MaterialTheme.colorScheme.onSurfaceVariant,
                             ),
-                        modifier = Modifier.fillMaxWidth().menuAnchor())
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    )
 
                     ExposedDropdownMenu(
                         expanded = classExpanded,
@@ -414,7 +412,9 @@ fun ConnectionsDetailsScreen(
             Text(
                 text =
                     stringResource(
-                        R.string.price_for_selected_passengers, numberFormat.format(state.price)),
+                        R.string.price_for_selected_passengers,
+                        numberFormat.format(state.price),
+                    ),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -474,10 +474,7 @@ fun ConnectionsDetailsTopAppBar(onUpClick: () -> Unit) {
         title = { Text(stringResource(R.string.connection_details)) },
         navigationIcon = {
             IconButton(onClick = onUpClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
         },
     )
@@ -512,8 +509,8 @@ fun ConnectionsDetailsREGScreenPreview() {
                                 arrivalDateTime = LocalDateTime.parse("2024-06-24T13:00:00"),
                             ),
                         price = BigDecimal("12.50"),
-                    ),
-                ),
+                    )
+                )
         )
     }
 }
@@ -547,8 +544,8 @@ fun ConnectionsDetailsICScreenPreview() {
                                 arrivalDateTime = LocalDateTime.parse("2024-06-24T13:00:00"),
                             ),
                         price = BigDecimal("12.50"),
-                    ),
-                ),
+                    )
+                )
         )
     }
 }

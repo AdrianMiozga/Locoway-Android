@@ -10,10 +10,7 @@ import org.wentura.locoway.R
 import org.wentura.locoway.ui.LocowayTheme
 
 @Composable
-fun AccountDeletionDialog(
-    onDismissRequest: () -> Unit = {},
-    onConfirmation: () -> Unit = {},
-) {
+fun AccountDeletionDialog(onDismissRequest: () -> Unit = {}, onConfirmation: () -> Unit = {}) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {

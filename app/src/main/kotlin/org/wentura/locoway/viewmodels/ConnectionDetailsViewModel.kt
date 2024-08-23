@@ -48,11 +48,8 @@ constructor(
     private val _uiState =
         MutableStateFlow(
             ConnectionDetailsUiState(
-                connection =
-                    connectionsRepository.getConnectionByIdFromCache(
-                        trainId.toLong(),
-                    ),
-            ),
+                connection = connectionsRepository.getConnectionByIdFromCache(trainId.toLong())
+            )
         )
     val uiState = _uiState.asStateFlow()
 
@@ -68,7 +65,8 @@ constructor(
 
         viewModelScope.launch {
             passengerRepository.addPassenger(
-                trimPassengerNameUseCase(_uiState.value.currentPassenger))
+                trimPassengerNameUseCase(_uiState.value.currentPassenger)
+            )
 
             _uiState.update {
                 it.copy(
@@ -112,7 +110,8 @@ constructor(
     fun toggleREGIOCard() {
         val passenger =
             _uiState.value.currentPassenger.copy(
-                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard)
+                hasREGIOCard = !_uiState.value.currentPassenger.hasREGIOCard
+            )
 
         _uiState.update { it.copy(currentPassenger = passenger) }
     }
@@ -124,12 +123,7 @@ constructor(
     }
 
     fun onAddPassengerDismissRequest() {
-        _uiState.update {
-            it.copy(
-                openAddPassengerDialog = false,
-                currentPassenger = Passenger(),
-            )
-        }
+        _uiState.update { it.copy(openAddPassengerDialog = false, currentPassenger = Passenger()) }
     }
 
     fun showAddPassengerDialog() {
@@ -140,7 +134,7 @@ constructor(
         _uiState.update {
             it.copy(
                 selectedPassengers =
-                    it.selectedPassengers.toMutableList().apply { set(index, value) },
+                    it.selectedPassengers.toMutableList().apply { set(index, value) }
             )
         }
 

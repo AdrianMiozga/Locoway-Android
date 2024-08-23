@@ -52,14 +52,11 @@ fun StationSearchDialog(
                     title = { Text(stringResource(dialogTitle)) },
                     navigationIcon = {
                         IconButton(onClick = onDismissRequest) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = null,
-                            )
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
                         }
                     },
                 )
-            },
+            }
         ) { paddingValues ->
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
@@ -119,7 +116,7 @@ fun StationListItem(station: Station, onStationClick: (String) -> Unit = {}) {
         modifier =
             Modifier.clickable { onStationClick(station.name) }
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
     ) {
         Text(station.name)
     }
@@ -154,10 +151,6 @@ fun EmptyStationSearchDialogPreview() {
         query = "",
         stations = emptyList(),
         recentStations =
-            listOf(
-                Station("Wrocław Główny"),
-                Station("Opole Główne"),
-                Station("Katowice"),
-            ),
+            listOf(Station("Wrocław Główny"), Station("Opole Główne"), Station("Katowice")),
     )
 }
