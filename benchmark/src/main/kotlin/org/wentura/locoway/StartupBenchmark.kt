@@ -15,7 +15,7 @@ class StartupBenchmark {
     @Test
     fun startup() =
         benchmarkRule.measureRepeated(
-            packageName = "org.wentura.locoway",
+            packageName = PACKAGE_NAME,
             metrics = listOf(StartupTimingMetric()),
             iterations = 20,
             startupMode = StartupMode.COLD,
