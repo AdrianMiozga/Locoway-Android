@@ -64,6 +64,7 @@ android {
         create("benchmark") {
             initWith(buildTypes.getByName("release"))
             signingConfig = getByName("debug").signingConfig
+            applicationIdSuffix = ".benchmark"
         }
     }
 

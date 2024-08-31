@@ -26,4 +26,4 @@ rootProject.name = "Locoway"
 
 include(":app")
 
-include(":benchmark")
+include(":benchmarks")
