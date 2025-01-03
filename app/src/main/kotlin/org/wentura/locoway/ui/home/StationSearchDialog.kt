@@ -20,7 +20,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +64,18 @@ fun StationSearchDialog(
                 )
             }
         ) { paddingValues ->
+            val focusRequester = remember { FocusRequester() }
+            val windowInfo = LocalWindowInfo.current
+
+            LaunchedEffect(windowInfo) {
+                snapshotFlow { windowInfo.isWindowFocused }
+                    .collect { isWindowFocused ->
+                        if (isWindowFocused) {
+                            focusRequester.requestFocus()
+                        }
+                    }
+            }
+
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 item {
                     OutlinedTextField(
@@ -77,7 +95,8 @@ fun StationSearchDialog(
                         },
                         keyboardOptions =
                             KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                        modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                        modifier =
+                            Modifier.padding(20.dp).fillMaxWidth().focusRequester(focusRequester),
                     )
                 }
 
