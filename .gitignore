@@ -1,6 +1,7 @@
 documentation/
 .gradle/
 build/
+.kotlin/
 .idea/*
 !.idea/ktfmt.xml
 
