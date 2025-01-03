@@ -170,8 +170,6 @@ fun signInWithGoogle(
     handleGoogleSignIn: (GetCredentialResponse) -> Unit,
     signInFailed: (GetCredentialException) -> Unit,
 ) {
-    // TODO: Add nonce
-    //  https://developer.android.com/training/sign-in/credential-manager#set-nonce
     val signInWithGoogle =
         GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
             .build()

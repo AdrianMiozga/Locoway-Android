@@ -236,7 +236,6 @@ fun HomeScreen(
                     onConfirmRequest = {
                         context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
 
-                        // TODO: Use DI
                         val locationServiceBroadcastMonitor =
                             LocationServiceBroadcastMonitor(context, scope)
 

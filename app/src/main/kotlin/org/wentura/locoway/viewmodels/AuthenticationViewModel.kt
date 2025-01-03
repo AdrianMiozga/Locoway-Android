@@ -152,7 +152,6 @@ constructor(private val authenticationRepository: AuthenticationRepository) : Vi
     }
 
     fun resetPassword(email: String): Boolean {
-        // TODO: Add UX
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return false
         }

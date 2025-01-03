@@ -77,7 +77,6 @@ class AuthenticationRepository @Inject constructor() {
     }
 
     fun deleteAccount() {
-        // TODO: Handle exceptions
         firebaseAuth.currentUser?.delete()
 
         _authentication.update {
