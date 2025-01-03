@@ -57,6 +57,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -71,10 +75,6 @@ import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.util.findActivity
 import org.wentura.locoway.viewmodels.HomeUiState
 import org.wentura.locoway.viewmodels.HomeViewModel
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable
 fun HomeScreen(
@@ -277,6 +277,13 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 
+                val departureStationDialogModifier = remember {
+                    Modifier.padding(horizontal = 20.dp)
+                        .padding(top = 20.dp, bottom = 10.dp)
+                        .fillMaxWidth()
+                        .clickable(onClick = toggleDepartureStationDialog)
+                }
+
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.departure_station)) },
                     onValueChange = {},
@@ -318,11 +325,7 @@ fun HomeScreen(
                             )
                         }
                     },
-                    modifier =
-                        Modifier.padding(horizontal = 20.dp)
-                            .padding(top = 20.dp, bottom = 10.dp)
-                            .fillMaxWidth()
-                            .clickable { toggleDepartureStationDialog() },
+                    modifier = departureStationDialogModifier,
                     colors =
                         OutlinedTextFieldDefaults.colors(
                             disabledTextColor = MaterialTheme.colorScheme.onSurface,
@@ -331,6 +334,13 @@ fun HomeScreen(
                             disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         ),
                 )
+
+                val arrivalStationDialogModifier = remember {
+                    Modifier.padding(horizontal = 20.dp)
+                        .padding(vertical = 10.dp)
+                        .fillMaxWidth()
+                        .clickable(onClick = toggleArrivalStationDialog)
+                }
 
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.arrival_station)) },
@@ -350,11 +360,7 @@ fun HomeScreen(
                             }
                         }
                     },
-                    modifier =
-                        Modifier.padding(horizontal = 20.dp)
-                            .padding(vertical = 10.dp)
-                            .fillMaxWidth()
-                            .clickable { toggleArrivalStationDialog() },
+                    modifier = arrivalStationDialogModifier,
                     colors =
                         OutlinedTextFieldDefaults.colors(
                             disabledTextColor = MaterialTheme.colorScheme.onSurface,
@@ -363,6 +369,13 @@ fun HomeScreen(
                             disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         ),
                 )
+
+                val showDatePickerModifier = remember {
+                    Modifier.padding(vertical = 10.dp)
+                        .padding(start = 20.dp, end = 10.dp)
+                        .weight(1f)
+                        .clickable(onClick = { showDatePicker.value = true })
+                }
 
                 Row {
                     OutlinedTextField(
@@ -374,11 +387,7 @@ fun HomeScreen(
                         onValueChange = {},
                         readOnly = true,
                         enabled = false,
-                        modifier =
-                            Modifier.padding(vertical = 10.dp)
-                                .padding(start = 20.dp, end = 10.dp)
-                                .weight(1f)
-                                .clickable { showDatePicker.value = true },
+                        modifier = showDatePickerModifier,
                         colors =
                             OutlinedTextFieldDefaults.colors(
                                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
@@ -386,6 +395,13 @@ fun HomeScreen(
                                 disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             ),
                     )
+
+                    val showTimePickerModifier = remember {
+                        Modifier.padding(vertical = 10.dp)
+                            .padding(start = 10.dp, end = 20.dp)
+                            .weight(1f)
+                            .clickable(onClick = { showTimePicker.value = true })
+                    }
 
                     OutlinedTextField(
                         label = { Text(stringResource(R.string.departure_time)) },
@@ -396,11 +412,7 @@ fun HomeScreen(
                         onValueChange = {},
                         readOnly = true,
                         enabled = false,
-                        modifier =
-                            Modifier.padding(vertical = 10.dp)
-                                .padding(start = 10.dp, end = 20.dp)
-                                .weight(1f)
-                                .clickable { showTimePicker.value = true },
+                        modifier = showTimePickerModifier,
                         colors =
                             OutlinedTextFieldDefaults.colors(
                                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
