@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -46,6 +48,8 @@ constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
+    private var searchJob: Job? = null
+
     init {
         viewModelScope.launch {
             authenticationRepository.authentication.collect { authentication ->
@@ -75,14 +79,19 @@ constructor(
     fun departureQueryUpdate(query: String) {
         _uiState.update { it.copy(departureQuery = query) }
 
+        searchJob?.cancel()
+
         if (query.length < MIN_QUERY_LENGTH) {
             viewModelScope.launch { _uiState.update { it.copy(departureStations = emptyList()) } }
         } else {
-            viewModelScope.launch {
-                _uiState.update {
-                    it.copy(departureStations = stationRepository.searchStations(query))
+            searchJob =
+                viewModelScope.launch {
+                    delay(500)
+
+                    _uiState.update {
+                        it.copy(departureStations = stationRepository.searchStations(query))
+                    }
                 }
-            }
         }
     }
 
@@ -95,14 +104,19 @@ constructor(
     fun arrivalQueryUpdate(query: String) {
         _uiState.update { it.copy(arrivalQuery = query) }
 
+        searchJob?.cancel()
+
         if (query.length < MIN_QUERY_LENGTH) {
             _uiState.update { it.copy(arrivalStations = emptyList()) }
         } else {
-            viewModelScope.launch {
-                _uiState.update {
-                    it.copy(arrivalStations = stationRepository.searchStations(query))
+            searchJob =
+                viewModelScope.launch {
+                    _uiState.update {
+                        delay(500)
+
+                        it.copy(arrivalStations = stationRepository.searchStations(query))
+                    }
                 }
-            }
         }
     }
 
