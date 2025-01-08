@@ -8,4 +8,4 @@ build/
 local.properties
 keystore.properties
 google-services.json
-TODO.md
+TODO*.md
