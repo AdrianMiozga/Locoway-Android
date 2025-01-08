@@ -21,9 +21,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
@@ -42,6 +44,7 @@ import org.wentura.locoway.data.model.Ticket
 import org.wentura.locoway.data.model.TrainBrand
 import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.ui.common.TrainBrandWide
+import org.wentura.locoway.util.setBrightness
 import org.wentura.locoway.util.travelTime
 import org.wentura.locoway.viewmodels.MyTicketUiState
 import org.wentura.locoway.viewmodels.MyTicketViewModel
@@ -55,6 +58,13 @@ fun MyTicketScreen(onUpClick: () -> Unit, myTicketViewModel: MyTicketViewModel =
 fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiState>) {
     val state by uiState.collectAsStateWithLifecycle()
     val trainBrand = TrainBrand.valueOf(state.ticket.trainBrand)
+
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        setBrightness(context, isFull = true)
+        onDispose { setBrightness(context, isFull = false) }
+    }
 
     Scaffold(topBar = { MyTicketTopAppBar(onUpClick) }) { innerPadding ->
         Column(
