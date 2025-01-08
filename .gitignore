@@ -9,3 +9,4 @@ local.properties
 keystore.properties
 google-services.json
 TODO*.md
+secrets.properties

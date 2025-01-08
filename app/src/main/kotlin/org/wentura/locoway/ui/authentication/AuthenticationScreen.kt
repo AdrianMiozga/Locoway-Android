@@ -1,7 +1,6 @@
 package org.wentura.locoway.ui.authentication
 
 import android.app.Activity
-import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -48,6 +47,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.wentura.locoway.BuildConfig
 import org.wentura.locoway.R
 import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.viewmodels.AuthenticationUiState
@@ -164,15 +164,13 @@ fun AuthenticationScreen(
 }
 
 fun signInWithGoogle(
-    context: Context,
     activity: Activity,
     coroutineScope: CoroutineScope,
     handleGoogleSignIn: (GetCredentialResponse) -> Unit,
     signInFailed: (GetCredentialException) -> Unit,
 ) {
     val signInWithGoogle =
-        GetSignInWithGoogleOption.Builder(context.getString(R.string.firebase_web_client_id))
-            .build()
+        GetSignInWithGoogleOption.Builder(BuildConfig.FIREBASE_WEB_CLIENT_ID).build()
 
     val request = GetCredentialRequest.Builder().addCredentialOption(signInWithGoogle).build()
 

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.secrets)
 }
 
 val keystoreProperties = Properties()
@@ -77,7 +78,10 @@ android {
 
     kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
@@ -124,3 +128,5 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
 }
+
+secrets { propertiesFileName = "secrets.properties" }

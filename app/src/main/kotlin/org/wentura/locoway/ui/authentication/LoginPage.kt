@@ -156,13 +156,7 @@ fun LoginPage(
             onClick = {
                 val activity = context.findActivity()
 
-                signInWithGoogle(
-                    context,
-                    activity,
-                    coroutineScope,
-                    handleGoogleSignIn,
-                    signInFailed,
-                )
+                signInWithGoogle(activity, coroutineScope, handleGoogleSignIn, signInFailed)
             },
             modifier = Modifier.padding(10.dp),
         ) {
