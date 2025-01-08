@@ -1,5 +1,6 @@
 package org.wentura.locoway.data.repository
 
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.AuthCredential
@@ -34,6 +35,8 @@ class AuthenticationRepository @Inject constructor() {
 
             _authentication.update { it.copy(isSignedIn = true, userMessage = R.string.signed_in) }
         } catch (exception: Exception) {
+            Log.d("TAG", "signInWithCredential", exception)
+
             val userMessage =
                 when (exception) {
                     is FirebaseNetworkException -> R.string.network_error
