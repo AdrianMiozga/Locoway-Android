@@ -1,6 +1,5 @@
 package org.wentura.locoway.ui.home
 
-import androidx.compose.material3.DatePicker as AndroidDatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
@@ -15,12 +14,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.wentura.locoway.R
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.Year
 import java.time.ZoneId
-import org.wentura.locoway.R
+import androidx.compose.material3.DatePicker as AndroidDatePicker
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,9 +30,10 @@ fun DatePicker(showDatePicker: MutableState<Boolean>, departureDate: MutableStat
             selectableDates =
                 object : SelectableDates {
                     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                        val time = Instant.now().minus(Duration.ofDays(1)).toEpochMilli()
+                        val minimum = Instant.now().minus(Duration.ofDays(1)).toEpochMilli()
+                        val maximum = Instant.now().plus(Duration.ofDays(14)).toEpochMilli()
 
-                        return utcTimeMillis >= time
+                        return utcTimeMillis in minimum..maximum
                     }
 
                     override fun isSelectableYear(year: Int): Boolean {
