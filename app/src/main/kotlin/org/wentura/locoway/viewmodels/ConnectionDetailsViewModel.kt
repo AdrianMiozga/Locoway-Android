@@ -98,6 +98,8 @@ constructor(
             val passengers = passengerRepository.getPassengers()
 
             _uiState.update { it.copy(passengers = passengers) }
+
+            _uiState.update { it.copy(price = getPrice()) }
         }
     }
 
