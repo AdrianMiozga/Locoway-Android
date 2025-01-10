@@ -354,7 +354,7 @@ fun HomeScreen(
                         ) {
                             IconButton(onClick = onSwapStationsClick) {
                                 Icon(
-                                    painter = painterResource(R.drawable.outline_swap_vert_24),
+                                    painter = painterResource(R.drawable.ic_swap_vert),
                                     contentDescription = stringResource(R.string.swap_stations),
                                 )
                             }
