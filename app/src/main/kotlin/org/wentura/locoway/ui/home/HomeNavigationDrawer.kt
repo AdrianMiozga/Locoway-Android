@@ -83,8 +83,7 @@ fun HomeNavigationDrawer(
                         label = { Text(text = stringResource(R.string.my_tickets)) },
                         icon = {
                             Icon(
-                                painter =
-                                    painterResource(R.drawable.outline_confirmation_number_24),
+                                painter = painterResource(R.drawable.ic_confirmation_number),
                                 contentDescription = null,
                             )
                         },
