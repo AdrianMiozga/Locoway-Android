@@ -320,7 +320,7 @@ fun HomeScreen(
                             }
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.my_location_24),
+                                painter = painterResource(R.drawable.ic_my_location),
                                 contentDescription = stringResource(R.string.swap_stations),
                             )
                         }

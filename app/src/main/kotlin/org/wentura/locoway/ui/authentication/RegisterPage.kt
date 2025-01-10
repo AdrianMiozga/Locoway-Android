@@ -88,7 +88,7 @@ fun RegisterPage(
             trailingIcon = {
                 if (isEmailWrong) {
                     Icon(
-                        painter = painterResource(R.drawable.outline_error_24),
+                        painter = painterResource(R.drawable.ic_error_filled),
                         tint = MaterialTheme.colorScheme.error,
                         contentDescription = null,
                     )
@@ -116,8 +116,8 @@ fun RegisterPage(
             trailingIcon = {
                 IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                     val resource =
-                        if (passwordVisible.value) R.drawable.outline_visibility_off_24
-                        else R.drawable.outline_visibility_24
+                        if (passwordVisible.value) R.drawable.ic_visibility_off
+                        else R.drawable.ic_visibility
 
                     val description =
                         if (passwordVisible.value) stringResource(R.string.hide_password)
@@ -151,8 +151,8 @@ fun RegisterPage(
                     }
                 ) {
                     val resource =
-                        if (passwordConfirmationVisible.value) R.drawable.outline_visibility_off_24
-                        else R.drawable.outline_visibility_24
+                        if (passwordConfirmationVisible.value) R.drawable.ic_visibility_off
+                        else R.drawable.ic_visibility
 
                     val description =
                         if (passwordVisible.value) stringResource(R.string.hide_password)
@@ -187,7 +187,7 @@ fun RegisterPage(
             modifier = Modifier.padding(10.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.google_g_logo),
+                painter = painterResource(R.drawable.ic_google_g_logo),
                 tint = Color.Unspecified,
                 contentDescription = null,
             )

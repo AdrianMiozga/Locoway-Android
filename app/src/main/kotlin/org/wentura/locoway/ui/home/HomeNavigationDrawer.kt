@@ -96,7 +96,7 @@ fun HomeNavigationDrawer(
                         label = { Text(text = stringResource(R.string.passengers)) },
                         icon = {
                             Icon(
-                                painter = painterResource(R.drawable.outline_groups_24),
+                                painter = painterResource(R.drawable.ic_groups),
                                 contentDescription = null,
                             )
                         },
