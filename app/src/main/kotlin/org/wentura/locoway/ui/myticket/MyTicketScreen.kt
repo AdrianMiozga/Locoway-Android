@@ -99,30 +99,47 @@ fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiStat
                             R.string.journey,
                             state.ticket.departureStation,
                             state.ticket.arrivalStation,
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 2.dp),
                     )
 
                     Text(
                         stringResource(
                             R.string.departure,
                             departureDateTime.format(dateTimeFormatter),
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 2.dp),
                     )
 
                     Text(
-                        stringResource(R.string.arrival, arrivalDateTime.format(dateTimeFormatter))
+                        stringResource(R.string.arrival, arrivalDateTime.format(dateTimeFormatter)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 2.dp),
                     )
 
                     Text(
                         stringResource(
                             R.string.travel_time,
                             travelTime(departureDateTime, arrivalDateTime),
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 2.dp),
                     )
 
                     if (trainBrand != TrainBrand.REG) {
-                        Text(stringResource(R.string.class_with_value, state.ticket.trainClass))
-                        Text(stringResource(R.string.seat_number, state.ticket.seat))
+                        Text(
+                            stringResource(R.string.class_with_value, state.ticket.trainClass),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+                        )
+
+                        Text(
+                            stringResource(R.string.seat_number, state.ticket.seat),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 2.dp),
+                        )
                     }
                 }
             }
