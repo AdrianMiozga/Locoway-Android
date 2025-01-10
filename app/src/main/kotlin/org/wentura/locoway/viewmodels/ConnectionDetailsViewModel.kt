@@ -4,8 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.math.BigDecimal
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,6 +15,8 @@ import org.wentura.locoway.data.repository.PassengerRepository
 import org.wentura.locoway.data.repository.PriceRepository
 import org.wentura.locoway.data.repository.TicketRepository
 import org.wentura.locoway.domain.TrimPassengerNameUseCase
+import java.math.BigDecimal
+import javax.inject.Inject
 
 data class ConnectionDetailsUiState(
     val passengers: List<Passenger> = emptyList(),
@@ -28,7 +28,7 @@ data class ConnectionDetailsUiState(
     val amountOfDogs: Int = 0,
     val amountOfBikes: Int = 0,
     val amountOfLuggage: Int = 0,
-    val selectedClass: Int = 0,
+    val selectedClass: Int = 1,
     val userMessage: Boolean = false,
 )
 
