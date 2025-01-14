@@ -201,7 +201,7 @@ fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiStat
                                 state.ticket.dog,
                             ),
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(start = 24.dp, top = 5.dp, bottom = 5.dp),
                     )
                 }
 
@@ -214,7 +214,7 @@ fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiStat
                                 state.ticket.bicycle,
                             ),
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(start = 24.dp, top = 5.dp, bottom = 5.dp),
                     )
                 }
 
@@ -227,7 +227,7 @@ fun MyTicketScreen(onUpClick: () -> Unit = {}, uiState: StateFlow<MyTicketUiStat
                                 state.ticket.additionalLuggage,
                             ),
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(start = 24.dp, top = 5.dp, bottom = 5.dp),
                     )
                 }
             }
