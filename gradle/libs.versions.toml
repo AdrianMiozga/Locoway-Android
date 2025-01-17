@@ -4,6 +4,7 @@ desugar_jdk_libs = "2.0.4"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"
 minSdk = "23"
+pagination = "3.3.5"
 targetSdk = "34"
 compileSdk = "34"
 coreKtx = "1.13.1"
@@ -36,6 +37,8 @@ androidx-credentials-play-services-auth = { module = "androidx.credentials:crede
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagination" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagination" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }

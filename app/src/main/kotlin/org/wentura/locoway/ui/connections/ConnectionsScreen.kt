@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,14 +33,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.wentura.locoway.R
 import org.wentura.locoway.data.model.Connection
+import org.wentura.locoway.data.model.ConnectionPagingModel
 import org.wentura.locoway.data.model.TrainBrand
 import org.wentura.locoway.ui.LocowayTheme
 import org.wentura.locoway.ui.common.TrainBrandCircle
@@ -55,41 +61,65 @@ fun ConnectionsScreen(
     goToAuthenticationScreen: () -> Unit,
 ) {
     val uiState = connectionsViewModel.uiState
+    val pagingDataStateFlow = connectionsViewModel.pagingDataFlow
 
-    ConnectionsScreen(uiState, onUpClick, onConnectionClick, goToAuthenticationScreen)
+    ConnectionsScreen(
+        uiState,
+        pagingDataStateFlow,
+        onUpClick,
+        onConnectionClick,
+        goToAuthenticationScreen,
+    )
 }
 
 @Composable
 fun ConnectionsScreen(
     uiState: StateFlow<ConnectionsUiState>,
+    pagingDataStateFlow: StateFlow<Flow<PagingData<ConnectionPagingModel>>>,
     onUpClick: () -> Unit = {},
     onConnectionClick: (Long) -> Unit = {},
     goToAuthenticationScreen: () -> Unit = {},
 ) {
     val state by uiState.collectAsStateWithLifecycle()
+    val pagingDataFlow by pagingDataStateFlow.collectAsStateWithLifecycle()
+    val lazyPagingItems = pagingDataFlow.collectAsLazyPagingItems()
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM")
 
     Scaffold(
         topBar = { ConnectionsTopAppBar(onUpClick, state.departureStation, state.arrivalStation) }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            if (state.isLoading) {
+            if (
+                lazyPagingItems.loadState.refresh is LoadState.Loading ||
+                    lazyPagingItems.loadState.append is LoadState.Loading
+            ) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             } else {
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
             LazyColumn {
-                if (state.connections.isNotEmpty() || state.isLoading) {
-                    items(state.connections.size) { connection ->
-                        ConnectionListItem(
-                            state.connections[connection],
-                            state.isSignedIn,
-                            onConnectionClick,
-                            goToAuthenticationScreen,
-                        )
+                if (lazyPagingItems.itemCount > 0 || state.isLoading) {
+                    items(lazyPagingItems.itemCount) { index ->
+                        when (val connection = lazyPagingItems[index]) {
+                            is ConnectionPagingModel.UiConnection -> {
+                                ConnectionListItem(
+                                    connection.connection,
+                                    state.isSignedIn,
+                                    onConnectionClick,
+                                    goToAuthenticationScreen,
+                                )
+                            }
 
-                        if (connection != state.connections.size - 1) {
-                            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                            is ConnectionPagingModel.DateSeparator -> {
+                                SeparatorListItem(connection.localDate.format(dateFormatter))
+                            }
+
+                            is ConnectionPagingModel.Divider -> {
+                                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                            }
+
+                            else -> {}
                         }
                     }
                 } else {
@@ -126,17 +156,14 @@ private fun ConnectionListItem(
             }
     ) {
         Row(
-            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp).fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TrainBrandCircle(connection.trainBrand)
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                ConnectionTime(connection.departureDateTime)
-                ConnectionDate(connection.departureDateTime)
-            }
+            ConnectionTime(connection.departureDateTime)
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val minutes = travelTime(connection.departureDateTime, connection.arrivalDateTime)
@@ -153,10 +180,7 @@ private fun ConnectionListItem(
                 )
             }
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                ConnectionTime(connection.arrivalDateTime)
-                ConnectionDate(connection.arrivalDateTime)
-            }
+            ConnectionTime(connection.arrivalDateTime)
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -175,6 +199,13 @@ private fun ConnectionListItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SeparatorListItem(text: String) {
+    Surface(color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.fillMaxWidth()) {
+        Text(text, modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
     }
 }
 
@@ -263,7 +294,8 @@ fun ConnectionsPreview() {
                         arrivalStation = "Gliwice",
                         connections = connections,
                     )
-                )
+                ),
+            pagingDataStateFlow = MutableStateFlow(MutableStateFlow(PagingData.empty())),
         )
     }
 }
