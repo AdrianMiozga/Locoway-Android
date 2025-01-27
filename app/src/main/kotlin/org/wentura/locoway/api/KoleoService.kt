@@ -1,11 +1,15 @@
 package org.wentura.locoway.api
 
+import org.wentura.locoway.data.model.KoleoNearestStationResponse
 import org.wentura.locoway.data.model.KoleoPriceResponse
 import org.wentura.locoway.data.model.KoleoSearchResponse
+import org.wentura.locoway.data.model.Location
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -22,6 +26,9 @@ interface KoleoService {
 
     @GET("prices/{price_id}")
     suspend fun getPrices(@Path("price_id") priceId: Long): KoleoPriceResponse
+
+    @POST("geolocations")
+    suspend fun getNearestStation(@Body location: Location): KoleoNearestStationResponse
 
     companion object {
         private const val BASE_URL = "https://koleo.pl/pl/"

@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.provider.Settings
 import androidx.activity.compose.ReportDrawn
@@ -105,7 +104,6 @@ fun HomeScreen(
         onSwapStationsClick = homeViewModel::swapStations,
         onGetCurrentLocation = homeViewModel::onGetCurrentLocation,
         onGotLocality = homeViewModel::onGotLocality,
-        onGeocoderFail = homeViewModel::onGeocoderFail,
         onCancelLocation = homeViewModel::onCancelLocation,
         toggleOnNoLocationDialog = homeViewModel::toggleOnNoLocationDialog,
         onMessageShown = homeViewModel::onMessageShown,
@@ -131,8 +129,7 @@ fun HomeScreen(
     onClearArrivalQuery: () -> Unit = {},
     onSwapStationsClick: () -> Unit = {},
     onGetCurrentLocation: () -> Unit = {},
-    onGotLocality: (String) -> Unit = {},
-    onGeocoderFail: () -> Unit = {},
+    onGotLocality: (Double, Double) -> Unit = { _, _ -> },
     onCancelLocation: () -> Unit = {},
     toggleOnNoLocationDialog: () -> Unit = {},
     onMessageShown: () -> Unit = {},
@@ -177,7 +174,6 @@ fun HomeScreen(
                             onGetCurrentLocation,
                             onGotLocality,
                             toggleOnNoLocationDialog,
-                            onGeocoderFail,
                         )
                     }
                 }
@@ -255,7 +251,6 @@ fun HomeScreen(
                                             onGetCurrentLocation,
                                             onGotLocality,
                                             toggleOnNoLocationDialog,
-                                            onGeocoderFail,
                                         )
 
                                         toggleOnNoLocationDialog()
@@ -303,7 +298,6 @@ fun HomeScreen(
                                         onGetCurrentLocation,
                                         onGotLocality,
                                         toggleOnNoLocationDialog,
-                                        onGeocoderFail,
                                     )
                                 } else if (
                                     ActivityCompat.shouldShowRequestPermissionRationale(
@@ -454,9 +448,8 @@ fun HomeScreen(
 private fun getCurrentLocation(
     activity: Activity,
     onGetCurrentLocation: () -> Unit,
-    onGotLocality: (String) -> Unit,
+    onGotLocation: (Double, Double) -> Unit,
     onNoLocationService: () -> Unit,
-    onGeocoderFail: () -> Unit,
 ) {
     if (
         activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ==
@@ -474,16 +467,7 @@ private fun getCurrentLocation(
                     return@addOnSuccessListener
                 }
 
-                val result =
-                    Geocoder(activity)
-                        .getFromLocation(location.latitude, location.longitude, 1)
-                        ?.first()
-
-                if (result == null) {
-                    onGeocoderFail()
-                } else {
-                    onGotLocality(result.locality)
-                }
+                onGotLocation(location.latitude, location.longitude)
             }
     }
 }

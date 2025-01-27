@@ -15,6 +15,7 @@ import org.wentura.locoway.R
 import org.wentura.locoway.data.model.RecentSearchStation
 import org.wentura.locoway.data.model.Station
 import org.wentura.locoway.data.repository.AuthenticationRepository
+import org.wentura.locoway.data.repository.NearestStationRepository
 import org.wentura.locoway.data.repository.RecentSearchRepository
 import org.wentura.locoway.data.repository.StationRepository
 import org.wentura.locoway.data.repository.TicketRepository
@@ -42,6 +43,7 @@ class HomeViewModel
 constructor(
     private val authenticationRepository: AuthenticationRepository,
     private val stationRepository: StationRepository,
+    private val nearestStationRepository: NearestStationRepository,
     private val recentSearchRepository: RecentSearchRepository,
     private val ticketRepository: TicketRepository,
 ) : ViewModel() {
@@ -215,20 +217,12 @@ constructor(
         _uiState.update { it.copy(isLoading = false) }
     }
 
-    fun onGotLocality(locality: String) {
+    fun onGotLocality(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            val stations = stationRepository.searchStations(locality)
+            val station = nearestStationRepository.getNearestStation(latitude, longitude)
 
-            if (stations.first().name == locality) {
-                _uiState.update {
-                    it.copy(
-                        departureStation = locality,
-                        departureQuery = locality,
-                        isLoading = false,
-                    )
-                }
-            } else {
-                onGeocoderFail()
+            _uiState.update {
+                it.copy(departureStation = station, departureQuery = station, isLoading = false)
             }
         }
     }
