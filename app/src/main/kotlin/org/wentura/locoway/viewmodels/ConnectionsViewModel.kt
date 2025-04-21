@@ -58,6 +58,8 @@ constructor(
     val pagingDataFlow = _pagingDataFlow.asStateFlow()
 
     private fun createPagerFlow(): Flow<PagingData<ConnectionPagingModel>> {
+        connectionsRepository.clear()
+
         return Pager(PagingConfig(pageSize = 8, prefetchDistance = 1, enablePlaceholders = false)) {
                 ConnectionsPagingSource(
                     connectionsRepository = connectionsRepository,

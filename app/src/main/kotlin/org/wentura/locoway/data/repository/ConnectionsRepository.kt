@@ -1,5 +1,6 @@
 package org.wentura.locoway.data.repository
 
+import android.util.Log
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -12,7 +13,11 @@ import org.wentura.locoway.data.model.TrainBrand
 
 @Singleton
 class ConnectionsRepository @Inject constructor(private val koleoService: KoleoService) {
-    private var connections: Map<Long, Connection> = emptyMap()
+    companion object {
+        private val TAG = ConnectionsRepository::class.java.simpleName
+    }
+
+    private var connections: MutableMap<Long, Connection> = mutableMapOf()
 
     suspend fun getConnections(
         departureDate: String,
@@ -33,7 +38,7 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
                 arrivalStation,
             )
 
-        connections =
+        connections.putAll(
             koleoSearchResponse.connections
                 .map {
                     val trainId = it.trainIds.first()
@@ -60,11 +65,19 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
                     )
                 }
                 .associateBy { it.trainId }
+        )
+
+        Log.d(TAG, "Added new connections")
 
         return connections
     }
 
     fun getConnectionByIdFromCache(id: Long): Connection {
         return connections[id] ?: throw IllegalArgumentException("Connection with id $id not found")
+    }
+
+    fun clear() {
+        connections = mutableMapOf()
+        Log.d(TAG, "Cleared connections hashMap")
     }
 }
