@@ -54,9 +54,9 @@ class ConnectionsRepository @Inject constructor(private val koleoService: KoleoS
                         arrivalStation,
                         LocalDateTime.parse(it.departureDateTime, koleoFormatter),
                         LocalDateTime.parse(it.arrivalDateTime, koleoFormatter),
-                        price.dogPrice,
-                        price.bikePrice,
-                        price.luggagePrice,
+                        price.dogPrice ?: "0",
+                        price.bikePrice ?: "0",
+                        price.luggagePrice ?: "0",
                     )
                 }
                 .associateBy { it.trainId }
