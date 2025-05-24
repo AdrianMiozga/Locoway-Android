@@ -17,7 +17,7 @@ class StartupBenchmark {
         benchmarkRule.measureRepeated(
             packageName = PACKAGE_NAME,
             metrics = listOf(StartupTimingMetric()),
-            iterations = 30,
+            iterations = 50,
             startupMode = StartupMode.COLD,
         ) {
             pressHome()
@@ -29,7 +29,7 @@ class StartupBenchmark {
         benchmarkRule.measureRepeated(
             packageName = PACKAGE_NAME,
             metrics = listOf(StartupTimingMetric()),
-            iterations = 30,
+            iterations = 50,
             startupMode = StartupMode.WARM,
         ) {
             pressHome()
